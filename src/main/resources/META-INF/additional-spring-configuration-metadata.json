@@ -1,0 +1,27 @@
+{"properties": [
+  {
+    "name": "app.security.jwt.access_token.duration",
+    "type": "java.lang.Long",
+    "description": "JWT access token validity time in milisecond"
+  },
+  {
+    "name": "app.security.jwt.refresh_token.duration",
+    "type": "java.lang.Long",
+    "description": "JWT refresh token validity time in milisecond"
+  },
+  {
+    "name": "app.security.jwt.access_token.secret",
+    "type": "java.lang.String",
+    "description": "JWT access token secret"
+  },
+  {
+    "name": "app.security.jwt.refresh_token.secret",
+    "type": "java.lang.String",
+    "description": "JWT refresh secret"
+  },
+  {
+    "name": "spring.application.version",
+    "type": "java.lang.String",
+    "description": "Current application version"
+  }
+]}
