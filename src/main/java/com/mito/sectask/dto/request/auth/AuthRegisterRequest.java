@@ -21,12 +21,15 @@ public class AuthRegisterRequest {
         max = 100,
         message = ValidationMessage.STRING_LENGTH + 0 + "," + 100
     )
-    @Email(message = ValidationMessage.INVALID_EMAIL)
+    @Email(message = ValidationMessage.STRING_EMAIL)
     @SerializedName("email")
     private String email;
 
     @NotBlank(message = ValidationMessage.REQUIRED)
-    @Pattern(regexp = Regex.ALPHANUM, message = ValidationMessage.ALPHANUM)
+    @Pattern(
+        regexp = Regex.ALPHANUM,
+        message = ValidationMessage.STRING_ALPHANUM
+    )
     @Size(
         min = 0,
         max = 30,
@@ -46,11 +49,14 @@ public class AuthRegisterRequest {
 
     @NotBlank(message = ValidationMessage.REQUIRED)
     @Size(
-        min = 0,
+        min = 5,
         max = 100,
-        message = ValidationMessage.STRING_LENGTH + 0 + "," + 100
+        message = ValidationMessage.STRING_LENGTH + 5 + "," + 100
     )
-    @Pattern(regexp = Regex.ALPHANUM, message = ValidationMessage.ALPHANUM)
+    @Pattern(
+        regexp = Regex.ALPHANUM,
+        message = ValidationMessage.STRING_ALPHANUM
+    )
     @SerializedName("password")
     private String password;
 }

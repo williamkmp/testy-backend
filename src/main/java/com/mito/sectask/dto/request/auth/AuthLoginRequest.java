@@ -20,7 +20,7 @@ public class AuthLoginRequest {
         max = 100,
         message = ValidationMessage.STRING_LENGTH + 0 + "," + 100
     )
-    @Email(message = ValidationMessage.INVALID_EMAIL)
+    @Email(message = ValidationMessage.STRING_EMAIL)
     private String email;
 
     @NotBlank(message = ValidationMessage.REQUIRED)
@@ -29,6 +29,9 @@ public class AuthLoginRequest {
         max = 100,
         message = ValidationMessage.STRING_LENGTH + 0 + "," + 100
     )
-    @Pattern(regexp = Regex.ALPHANUM, message = ValidationMessage.ALPHANUM)
+    @Pattern(
+        regexp = Regex.ALPHANUM,
+        message = ValidationMessage.STRING_ALPHANUM
+    )
     private String password;
 }

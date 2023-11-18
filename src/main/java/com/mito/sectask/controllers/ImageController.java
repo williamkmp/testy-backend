@@ -1,14 +1,7 @@
 package com.mito.sectask.controllers;
 
-import com.mito.sectask.annotations.Authenticated;
-import com.mito.sectask.dto.response.StandardResponse;
-import com.mito.sectask.dto.response.image.ImageUploadResponse;
-import com.mito.sectask.entities.ImageEntity;
-import com.mito.sectask.services.image.ImageService;
-import com.mito.sectask.values.Message;
 import java.io.IOException;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +13,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import com.mito.sectask.annotations.Authenticated;
+import com.mito.sectask.dto.response.StandardResponse;
+import com.mito.sectask.dto.response.image.ImageUploadResponse;
+import com.mito.sectask.entities.ImageEntity;
+import com.mito.sectask.entities.UserEntity;
+import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
+import com.mito.sectask.services.image.ImageService;
+import com.mito.sectask.services.user.UserService;
+import com.mito.sectask.values.Message;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping(path = "/image")
@@ -27,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageController {
 
     private final ImageService imageService;
+    private final UserService userService;
 
     @PostMapping(
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -35,16 +39,14 @@ public class ImageController {
     @Authenticated(true)
     @ResponseBody
     public StandardResponse<ImageUploadResponse> upload(
-        @RequestParam("file") MultipartFile file
+        @RequestParam("image") MultipartFile file
     ) throws IOException {
         Optional<ImageEntity> maybeImage = imageService.saveImage(
             file.getBytes()
         );
 
         if (maybeImage.isEmpty()) {
-            return new StandardResponse<ImageUploadResponse>()
-                .setStatus(HttpStatus.BAD_REQUEST)
-                .setError(Message.ERROR_UPLOAD_FAILED);
+            throw new RequestHttpException(Message.ERROR_UPLOAD_FAILED);
         }
 
         ImageEntity savedImage = maybeImage.get();
@@ -53,24 +55,41 @@ public class ImageController {
             .setData(new ImageUploadResponse().setId(savedImage.getId()));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> get(@PathVariable("id") Long id) {
+    @GetMapping("/{imageId}")
+    @Authenticated(true)
+    public ResponseEntity<byte[]> get(@PathVariable("imageId") Long id) {
         Optional<ImageEntity> maybeImage = imageService.findById(id);
 
         if (maybeImage.isEmpty()) {
-            return ResponseEntity
-                .badRequest()
-                .body(
-                    new StandardResponse<>()
-                        .setStatus(HttpStatus.NOT_FOUND)
-                        .setError(Message.ERROR_RESOURCE_NOT_FOUND)
-                );
+            throw new RequestHttpException(Message.ERROR_RESOURCE_NOT_FOUND);
         }
-        
+
         ImageEntity image = maybeImage.get();
         return ResponseEntity
             .ok()
             .header("Content-Type", "image/*")
             .body(image.getFile());
+    }
+
+    @GetMapping("/user/{userId}")
+    @Authenticated(true)
+    public ResponseEntity<byte[]> getUserImage(
+        @PathVariable("userId") Long userId
+    ) {
+        Optional<UserEntity> maybeUser = userService.findById(userId);
+        if (maybeUser.isEmpty()) {
+            throw new RequestHttpException(Message.ERROR_RESOURCE_NOT_FOUND);
+        }
+
+        ImageEntity userImage = maybeUser.get().getImage();
+
+        if (userImage == null) {
+            throw new RequestHttpException(Message.ERROR_RESOURCE_NOT_FOUND);
+        }
+
+        return ResponseEntity
+            .ok()
+            .header("Content-Type", "image/*")
+            .body(userImage.getFile());
     }
 }
