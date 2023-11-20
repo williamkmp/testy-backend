@@ -10,6 +10,7 @@ import com.mito.sectask.entities.UserEntity;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
-    @GetMapping(path = "/me")
+    @GetMapping(
+        path = "/me",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @Authenticated(true)
     public StandardResponse<UserMeResponse> me(@Caller UserEntity caller) {
         return new StandardResponse<UserMeResponse>()
@@ -41,6 +45,7 @@ public class UserController {
         @Valid @RequestBody UserUpdateProfileRequest request,
         @Caller UserEntity caller
     ) {
+        //TODO: implement user update
         return new StandardResponse<>();
     }
 }
