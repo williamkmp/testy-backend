@@ -73,28 +73,28 @@ public class AuthController {
     public StandardResponse<AuthRegisterResponse> register(
         @RequestBody @Valid AuthRegisterRequest request
     ) {
-        Boolean isEmailAvailable = userService.checkEmailIsTaken(
-            request.getEmail()
+        boolean isEmailAvailable = Boolean.TRUE.equals(
+            userService.checkEmailIsAvailable(request.getEmail())
         );
-        Boolean isUserNammeAvailable = userService.checkUsernameIsTaken(
-            request.getEmail()
+        boolean isTagNameAvailable = Boolean.TRUE.equals(
+            userService.checkTagNameIsAvailable(request.getTagName())
         );
 
         //email or tagname is note available
         if (
-            Boolean.FALSE.equals(isEmailAvailable) ||
-            Boolean.FALSE.equals(isUserNammeAvailable)
+            !isEmailAvailable ||
+            !isTagNameAvailable
         ) {
             Map<String, String> validationError = new HashMap<>();
             validationError.put(
                 "email",
-                Boolean.FALSE.equals(isEmailAvailable)
+                !isEmailAvailable
                     ? ValidationMessage.UNIQUE
                     : null
             );
             validationError.put(
                 "tagName",
-                Boolean.FALSE.equals(isEmailAvailable)
+                !isTagNameAvailable
                     ? ValidationMessage.UNIQUE
                     : null
             );
@@ -166,7 +166,7 @@ public class AuthController {
             .setData(
                 new AuthRefreshToken()
                     .setAccessToken(tokens.getAccessToken())
-                    .setRefreshToken(tokens.getAccessToken())
+                    .setRefreshToken(tokens.getRefreshToken())
             );
     }
 }

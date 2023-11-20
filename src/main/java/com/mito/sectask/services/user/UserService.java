@@ -6,46 +6,80 @@ import java.util.Optional;
 
 public interface UserService {
     /**
-     * register new user account to the application
-     * @param newUserData new account data
-     * @return created user data
+     * register new user account to the database
+     *
+     * @param   newUserData {@link RegisterUserParameter}
+     *          new account data
+     *
+     * @return  {@link Optional}<{@link UserEntity}>
+     *          containing created user data, else 
+     *          optional.empty() if failed to save
      */
     public Optional<UserEntity> registerUser(RegisterUserParameter newUserData);
 
     /**
-     * find user information by it's id
-     * @param userId user id
-     * @return user data, otherwise <code>null</code> if not found.
+     * find user by id
+     *
+     * @param   userId {@link Long}
+     *          user id
+     *
+     * @return  {@link Optional}<{@link UserEntity}>
+     *          containing searcher user data, 
+     *          otherwise Optional.empty() if not found.
      */
     public Optional<UserEntity> findById(Long userId);
 
     /**
      * check if no other user has this email
-     * @param email email email to be checked
-     * @return true if exist another user with same email, else false
+     *
+     * @param   email {@link String}
+     *          email to be checked
+     *
+     * @return  {@link Boolean} true if no other user
+     *          have the same email, else false
      */
-    public Boolean checkEmailIsTaken(String email);
+    public Boolean checkEmailIsAvailable(String email);
 
     /**
-     * check if no other user has this email, excluding current user email
-     * @param email email to be checked
-     * @param userId excluding this user
-     * @return true if exist another user with same email, else false
+     * check if no other user has this email,
+     * excluding a certain user
+     *
+     * @param   email {@link String}
+     *          email to be checked
+     *
+     * @param   userId {@link Long}
+     *          excluding user with this id
+     *
+     * @return  {@link Boolean} true if no other user
+     *          have the same email, else false
      */
-    public Boolean checkEmailIsTakenExcept(String email, Long userId);
+    public Boolean checkEmailIsAvailable(String email, Long userId);
 
     /**
-     * check if no other user has this email
-     * @param username username to be checked
-     * @return true if exist another user with same email, else false
+     * check if no other user has this tagname
+     *
+     * @param       tagName {@link String}
+     *              tagname to be checked
+     *
+     * @return      true if no other user
+     *              have the same tagname,
+     *              else false
      */
-    public Boolean checkUsernameIsTaken(String username);
+    public Boolean checkTagNameIsAvailable(String tagName);
 
     /**
-     * check if no other user has this username, excluding current user username
-     * @param username username to be checked
-     * @param userId excluding this user
-     * @return true if exist another user with same username, else false
+     * check if no other user has this tagname,
+     * excluding a certain user
+     *
+     * @param   tagName {@link String}
+     *          tagname to be checked
+     *
+     * @param   userId {@link String}
+     *          excluding this user
+     *
+     * @return  true if no other user
+     *          have the same tagname,
+     *          else false
      */
-    public Boolean checkUsernameIsTakenExcept(String username, Long userId);
+    public Boolean checkTagNameIsAvailable(String tagName, Long userId);
 }

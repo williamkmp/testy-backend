@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean checkEmailIsTaken(String email) {
+    public Boolean checkEmailIsAvailable (String email) {
         Long duplicateEmail = db
             .stream(UserEntity.class)
             .filter(UserEntityField.email.equal(email))
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean checkEmailIsTakenExcept(String email, Long userId) {
+    public Boolean checkEmailIsAvailable(String email, Long userId) {
         Long duplicateEmail = db
             .stream(UserEntity.class)
             .filter(UserEntityField.email.equal(email))
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean checkUsernameIsTaken(String tagName) {
+    public Boolean checkTagNameIsAvailable(String tagName) {
         Long duplicateUsername = db
             .stream(UserEntity.class)
             .filter(UserEntityField.tagName.equal(tagName))
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean checkUsernameIsTakenExcept(String tagName, Long userId) {
+    public Boolean checkTagNameIsAvailable(String tagName, Long userId) {
         Long duplicateUsername = db
             .stream(UserEntity.class)
             .filter(UserEntityField.tagName.equal(tagName))
