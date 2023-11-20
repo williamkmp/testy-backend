@@ -42,7 +42,9 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncocder password;
 
     @Override
-    public Optional<AuthLoginResponse> loginUser(LoginParameter userCredential) {
+    public Optional<AuthLoginResponse> loginUser(
+        LoginParameter userCredential
+    ) {
         Optional<UserEntity> maybeUser = userRepository.findByEmail(
             userCredential.getEmail()
         );
@@ -107,7 +109,26 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Optional<JwtPayload> verifyRefreshToken(String refreshToken) {
-        return verifyToken(REFRESH_TOKEN_SECRET, refreshToken);
+        Optional<JwtPayload> maybePayload = verifyToken(
+            REFRESH_TOKEN_SECRET,
+            refreshToken
+        );
+
+        if (maybePayload.isEmpty()) return Optional.empty();
+        JwtPayload payload = maybePayload.get();
+
+        Optional<UserEntity> maybeUser = userRepository.findById(
+            payload.getId()
+        );
+
+        if (maybeUser.isEmpty()) return Optional.empty();
+        UserEntity user = maybeUser.get();
+
+        if (
+            !user.getRefreshToken().equals(refreshToken)
+        ) return Optional.empty();
+
+        return Optional.of(payload);
     }
 
     /**
