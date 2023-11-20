@@ -26,6 +26,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         HttpServletResponse response,
         Object handler
     ) throws Exception {
+        if(!(handler instanceof HandlerMethod)) return true;
+
         if (!isHandlerProtected((HandlerMethod) handler)) {
             return true;
         }
