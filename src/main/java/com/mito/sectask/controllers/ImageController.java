@@ -19,6 +19,7 @@ import com.mito.sectask.dto.response.image.ImageUploadResponse;
 import com.mito.sectask.entities.ImageEntity;
 import com.mito.sectask.entities.UserEntity;
 import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
+import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.services.user.UserService;
 import com.mito.sectask.values.Message;
@@ -78,7 +79,7 @@ public class ImageController {
     ) {
         Optional<UserEntity> maybeUser = userService.findById(userId);
         if (maybeUser.isEmpty()) {
-            throw new RequestHttpException(Message.ERROR_RESOURCE_NOT_FOUND);
+            throw new UnauthorizedHttpException();
         }
 
         ImageEntity userImage = maybeUser.get().getImage();
