@@ -27,7 +27,7 @@ public class AuthRegisterRequest {
 
     @NotBlank(message = ValidationMessage.REQUIRED)
     @Pattern(
-        regexp = Regex.ALPHANUM,
+        regexp = Regex.TAGNAME,
         message = ValidationMessage.STRING_ALPHANUM
     )
     @Size(
