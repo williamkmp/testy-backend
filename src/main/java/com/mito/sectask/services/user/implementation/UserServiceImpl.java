@@ -52,7 +52,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean checkEmailIsAvailable (String email) {
+    public Optional<UserEntity> updateUser(UserEntity userData) {
+        boolean isUserExist = userRepository.existsById(userData.getId());
+        if (!isUserExist) return Optional.empty();
+        UserEntity updatedUser = userRepository.save(userData);
+        return Optional.ofNullable(updatedUser);
+    }
+
+    @Override
+    public Boolean checkEmailIsAvailable(String email) {
         Long duplicateEmail = db
             .stream(UserEntity.class)
             .filter(UserEntityField.email.equal(email))

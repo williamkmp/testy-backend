@@ -12,10 +12,23 @@ public interface UserService {
      *          new account data
      *
      * @return  {@link Optional}<{@link UserEntity}>
-     *          containing created user data, else 
+     *          containing created user data, else
      *          optional.empty() if failed to save
      */
     public Optional<UserEntity> registerUser(RegisterUserParameter newUserData);
+
+    /**
+     * update user data, by overwriting existing user
+     * based on a given user param
+     *
+     * @param   userData {@link UserEntity}
+     *          user data, must have id
+     *
+     * @return  {@link Optional}<{@link UserEntity}>
+     *          conatining the updated user data, else
+     *          Optional.empty() if update fails
+     */
+    public Optional<UserEntity> updateUser(UserEntity userData);
 
     /**
      * find user by id
@@ -24,7 +37,7 @@ public interface UserService {
      *          user id
      *
      * @return  {@link Optional}<{@link UserEntity}>
-     *          containing searcher user data, 
+     *          containing searcher user data,
      *          otherwise Optional.empty() if not found.
      */
     public Optional<UserEntity> findById(Long userId);
