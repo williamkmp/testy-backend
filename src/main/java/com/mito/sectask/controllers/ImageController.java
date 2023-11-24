@@ -1,7 +1,21 @@
 package com.mito.sectask.controllers;
 
+import java.io.IOException;
+import java.util.Optional;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
+import com.mito.sectask.dto.response.StandardResponse;
+import com.mito.sectask.dto.response.image.ImageUploadResponse;
 import com.mito.sectask.entities.ImageEntity;
 import com.mito.sectask.entities.UserEntity;
 import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
@@ -9,20 +23,10 @@ import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.services.user.UserService;
 import com.mito.sectask.values.Message;
-import java.io.IOException;
-import java.util.Optional;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
-@Controller
+@RestController
 @RequestMapping(path = "/image")
 @RequiredArgsConstructor
 public class ImageController {
@@ -47,6 +51,7 @@ public class ImageController {
     }
 
     @GetMapping("/user/{userId}")
+    @Transactional
     public ResponseEntity<byte[]> getUserImage(
         @PathVariable("userId") Long userId
     ) {
@@ -73,10 +78,11 @@ public class ImageController {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Authenticated(true)
-    public ResponseEntity<byte[]> uploadImageUser(
+    public StandardResponse<ImageUploadResponse> uploadImageUser(
         @RequestParam("image") MultipartFile file,
         @Caller UserEntity caller
     ) {
+        //TODO: implement logic for user with existing image
         Optional<ImageEntity> maybeImage;
         try {
             maybeImage = imageService.saveImage(file.getBytes());
@@ -88,6 +94,13 @@ public class ImageController {
         }
         ImageEntity savedImage = maybeImage.get();
         caller.setImage(savedImage);
-        return ResponseEntity.ok().build();
+        UserEntity updatedCaller = userService
+            .updateUser(caller)
+            .orElseThrow(() ->
+                new RequestHttpException(Message.ERROR_UPLOAD_FAILED)
+            );
+        return new StandardResponse<ImageUploadResponse>()
+            .setStatus(HttpStatus.CREATED)
+            .setData(new ImageUploadResponse().setId(updatedCaller.getId()));
     }
 }

@@ -1,9 +1,9 @@
 package com.mito.sectask.entities;
 
-import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Set;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -44,10 +45,14 @@ public class UserEntity {
     @Column(name = "refresh_token", nullable = true)
     private String refreshToken;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = true)
     private ImageEntity image;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(
+        cascade = CascadeType.ALL,
+        mappedBy = "user",
+        fetch = FetchType.LAZY
+    )
     private Set<UserProjectRoleEntity> authoritySet;
 }
