@@ -68,7 +68,7 @@ public class ImageController {
     }
 
     @PostMapping(
-        path = "/user/image",
+        path = "/user",
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
