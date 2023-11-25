@@ -95,4 +95,17 @@ public interface UserService {
      *          else false
      */
     public Boolean checkTagNameIsAvailable(String tagName, Long userId);
+
+    /**
+     * validate password against a registered user
+     *
+     * @param   userId {@link Long}
+     *          user's id tobe validated against
+     *
+     * @param   password {@link String}
+     *          raw not encoded password string
+     *
+     * @return boolean is password match and valid
+     */
+    public Boolean validatePassword(Long userId, String password);
 }

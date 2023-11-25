@@ -13,6 +13,7 @@ public class ValidationMessage {
     public static final String REQUIRED = "required";
     public static final String UNIQUE = "unique";
     public static final String INVALID = "invalid";
+    public static final String WRONG = "wrong_value";
     
     // string validation
     public static final String STRING_EMAIL = "string.email";

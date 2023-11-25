@@ -96,4 +96,16 @@ public class UserServiceImpl implements UserService {
             .count();
         return duplicateUsername <= 0;
     }
+
+    @Override
+    public Boolean validatePassword(Long userId, String password) {
+        Optional<UserEntity> maybeUser = userRepository.findById(userId);
+        if (maybeUser.isEmpty()) {
+            return Boolean.FALSE;
+        }
+        UserEntity registeredUser = maybeUser.get();
+        return Boolean.valueOf(
+            passwordEncoder.matches(password, registeredUser.getPassword())
+        );
+    }
 }

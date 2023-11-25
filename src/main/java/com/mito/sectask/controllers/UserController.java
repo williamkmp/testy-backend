@@ -1,17 +1,8 @@
 package com.mito.sectask.controllers;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
+import com.mito.sectask.dto.request.user.UserUpdatePasswordRequest;
 import com.mito.sectask.dto.request.user.UserUpdateProfileRequest;
 import com.mito.sectask.dto.response.StandardResponse;
 import com.mito.sectask.dto.response.user.UserMeResponse;
@@ -23,7 +14,17 @@ import com.mito.sectask.services.encoder.PasswordEncocder;
 import com.mito.sectask.services.user.UserService;
 import com.mito.sectask.values.ValidationMessage;
 import jakarta.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
@@ -113,8 +114,40 @@ public class UserController {
 
     @Authenticated(true)
     @PutMapping(path = "/password")
-    public StandardResponse<UserUpdateProfileResponse> updatePassword(){
-        // TODO implement this
-        return null;
+    public StandardResponse<UserUpdateProfileResponse> updatePassword(
+        @RequestBody @Valid UserUpdatePasswordRequest request,
+        @Caller UserEntity caller
+    ) {
+        boolean isPasswordMatch = userService.validatePassword(
+            caller.getId(),
+            request.getOldPassword()
+        );
+
+        if (!isPasswordMatch) {
+            Map<String, String> validationError = new HashMap<>();
+            validationError.put("oldPassword", ValidationMessage.WRONG);
+
+            throw new RequestHttpException(
+                new StandardResponse<>()
+                    .setStatus(HttpStatus.BAD_REQUEST)
+                    .setFormError(validationError)
+            );
+        }
+
+        String encodedPassword = encoder.encode(request.getNewPassword());
+        caller.setPassword(encodedPassword);
+        UserEntity updatedUser = userService
+            .updateUser(caller)
+            .orElseThrow(UnauthorizedHttpException::new);
+
+        return new StandardResponse<UserUpdateProfileResponse>()
+            .setStatus(HttpStatus.OK)
+            .setData(
+                new UserUpdateProfileResponse()
+                    .setId(updatedUser.getId().toString())
+                    .setEmail(updatedUser.getEmail())
+                    .setTagName(updatedUser.getTagName())
+                    .setFullName(updatedUser.getFullName())
+            );
     }
 }
