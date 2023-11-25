@@ -1,8 +1,11 @@
 package com.mito.sectask.services.image.impl;
 
 import com.mito.sectask.entities.ImageEntity;
+import com.mito.sectask.entities.UserEntity;
 import com.mito.sectask.repositories.ImageRepository;
+import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.image.ImageService;
+import jakarta.transaction.Transactional;
 import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +17,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
-    private final ImageRepository imageRepository;
     private Logger log = LoggerFactory.getLogger(ImageServiceImpl.class);
+    private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
 
     @Override
+    public Optional<ImageEntity> findById(Long id) {
+        return imageRepository.findById(id);
+    }
+
+    @Override
+    @Transactional
     public Optional<ImageEntity> saveImage(byte[] imageBinary) {
         ImageEntity newImage = new ImageEntity()
             .setFile(imageBinary)
@@ -34,7 +44,41 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Optional<ImageEntity> findById(Long id) {
-        return imageRepository.findById(id);
+    @Transactional
+    public Optional<ImageEntity> saveUserImage(
+        Long userId,
+        byte[] imageBinary
+    ) {
+        Optional<UserEntity> maybeUser = userRepository.findById(userId);
+        if (maybeUser.isEmpty()) {
+            return Optional.empty();
+        }
+
+        UserEntity user = maybeUser.get();
+        ImageEntity userProfilePicture = user.getImage();
+        if (userProfilePicture != null) {
+            imageRepository.delete(userProfilePicture);
+        }
+
+        Optional<ImageEntity> maybeImage = saveImage(imageBinary);
+        if (maybeImage.isEmpty()) {
+            return Optional.empty();
+        }
+        ImageEntity newProfilePicture = maybeImage.get();
+        user.setImage(newProfilePicture);
+        userRepository.save(user);
+        return Optional.of(newProfilePicture);
+    }
+
+    @Override
+    @Transactional
+    public Optional<ImageEntity> findUserProfilePicture(Long userId) {
+        Optional<UserEntity> maybeUser = userRepository.findById(userId);
+        if (maybeUser.isEmpty()) {
+            return Optional.empty();
+        }
+        ImageEntity userProfilePicture = maybeUser.get().getImage();
+        userProfilePicture.getFile();
+        return Optional.ofNullable(userProfilePicture);
     }
 }
