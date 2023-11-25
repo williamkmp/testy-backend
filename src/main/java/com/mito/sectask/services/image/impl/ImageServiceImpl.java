@@ -78,7 +78,7 @@ public class ImageServiceImpl implements ImageService {
             return Optional.empty();
         }
         ImageEntity userProfilePicture = maybeUser.get().getImage();
-        userProfilePicture.getFile();
+        if(userProfilePicture != null) userProfilePicture.getFile();
         return Optional.ofNullable(userProfilePicture);
     }
 }
