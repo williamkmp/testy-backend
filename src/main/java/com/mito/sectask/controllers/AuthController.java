@@ -17,8 +17,8 @@ import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.auth.AuthService;
 import com.mito.sectask.services.user.UserService;
-import com.mito.sectask.values.Message;
-import com.mito.sectask.values.ValidationMessage;
+import com.mito.sectask.values.ERROR;
+import com.mito.sectask.values.VALIDATION;
 import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +57,7 @@ public class AuthController {
 
         if (maybeResponse.isEmpty()) {
             throw new RequestHttpException(
-                ValidationMessage.INVALID_CREDENTIAL
+                VALIDATION.INVALID_CREDENTIAL
             );
         }
         return new StandardResponse<AuthLoginResponse>()
@@ -89,13 +89,13 @@ public class AuthController {
             validationError.put(
                 "email",
                 !isEmailAvailable
-                    ? ValidationMessage.UNIQUE
+                    ? VALIDATION.UNIQUE
                     : null
             );
             validationError.put(
                 "tagName",
                 !isTagNameAvailable
-                    ? ValidationMessage.UNIQUE
+                    ? VALIDATION.UNIQUE
                     : null
             );
 
@@ -116,7 +116,7 @@ public class AuthController {
                 );
 
         if (maybeUser.isEmpty()) {
-            throw new RequestHttpException(Message.ERROR_INTERNAL_SERVER);
+            throw new RequestHttpException(ERROR.ERROR_INTERNAL_SERVER);
         }
 
         UserEntity createdUser = maybeUser.get();

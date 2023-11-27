@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ValidationMessage {
+public class VALIDATION {
 
     // special validation
     public static final String INVALID_CREDENTIAL = "invalid_credential";

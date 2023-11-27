@@ -17,7 +17,7 @@ import com.mito.sectask.entities.ImageEntity;
 import com.mito.sectask.entities.UserEntity;
 import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
 import com.mito.sectask.services.image.ImageService;
-import com.mito.sectask.values.Message;
+import com.mito.sectask.values.ERROR;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -32,7 +32,7 @@ public class ImageController {
         Optional<ImageEntity> maybeImage = imageService.findById(id);
 
         if (maybeImage.isEmpty()) {
-            throw new RequestHttpException(Message.ERROR_RESOURCE_NOT_FOUND);
+            throw new RequestHttpException(ERROR.ERROR_RESOURCE_NOT_FOUND);
         }
 
         ImageEntity image = maybeImage.get();
@@ -49,7 +49,7 @@ public class ImageController {
         ImageEntity userProfilePicture = imageService
             .findUserProfilePicture(userId)
             .orElseThrow(() ->
-                new RequestHttpException(Message.ERROR_UPLOAD_FAILED)
+                new RequestHttpException(ERROR.ERROR_UPLOAD_FAILED)
             );
 
         return ResponseEntity
@@ -77,7 +77,7 @@ public class ImageController {
                 .status(HttpStatus.CREATED.value())
                 .body(savedImage.getFile());
         } catch (Exception e) {
-            throw new RequestHttpException(Message.ERROR_UPLOAD_FAILED);
+            throw new RequestHttpException(ERROR.ERROR_UPLOAD_FAILED);
         }
     }
 }

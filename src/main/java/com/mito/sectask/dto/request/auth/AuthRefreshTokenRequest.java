@@ -1,6 +1,6 @@
 package com.mito.sectask.dto.request.auth;
 
-import com.mito.sectask.values.ValidationMessage;
+import com.mito.sectask.values.VALIDATION;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Value;
 
@@ -10,6 +10,6 @@ import lombok.Value;
 @Value
 public class AuthRefreshTokenRequest {
 
-    @NotBlank(message = ValidationMessage.REQUIRED)
+    @NotBlank(message = VALIDATION.REQUIRED)
     private String refreshToken;
 }

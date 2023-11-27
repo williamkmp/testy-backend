@@ -15,7 +15,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import com.mito.sectask.dto.response.StandardResponse;
 import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
-import com.mito.sectask.values.Message;
+import com.mito.sectask.values.ERROR;
 
 @ControllerAdvice
 public class ExceptionCatcher {
@@ -33,7 +33,7 @@ public class ExceptionCatcher {
             .body(
                 new StandardResponse<>()
                     .setStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .setError(Message.ERROR_INTERNAL_SERVER)
+                    .setError(ERROR.ERROR_INTERNAL_SERVER)
             );
     }
 
@@ -43,7 +43,7 @@ public class ExceptionCatcher {
     ) {
         String errorMessage = exception.getMessage() == null
             ? exception.getMessage()
-            : Message.ERROR_UNAUTHORIZED;
+            : ERROR.ERROR_UNAUTHORIZED;
 
         return ResponseEntity
             .status(HttpStatus.UNAUTHORIZED.value())

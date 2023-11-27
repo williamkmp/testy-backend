@@ -12,7 +12,7 @@ import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.encoder.PasswordEncocder;
 import com.mito.sectask.services.user.UserService;
-import com.mito.sectask.values.ValidationMessage;
+import com.mito.sectask.values.VALIDATION;
 import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,11 +76,11 @@ public class UserController {
             Map<String, String> validationError = new HashMap<>();
             validationError.put(
                 "tagName",
-                !isTagNameAvailable ? ValidationMessage.UNIQUE : null
+                !isTagNameAvailable ? VALIDATION.UNIQUE : null
             );
             validationError.put(
                 "email",
-                !isEmailAvailable ? ValidationMessage.UNIQUE : null
+                !isEmailAvailable ? VALIDATION.UNIQUE : null
             );
 
             throw new RequestHttpException(
@@ -125,7 +125,7 @@ public class UserController {
 
         if (!isPasswordMatch) {
             Map<String, String> validationError = new HashMap<>();
-            validationError.put("oldPassword", ValidationMessage.WRONG);
+            validationError.put("oldPassword", VALIDATION.WRONG);
 
             throw new RequestHttpException(
                 new StandardResponse<>()

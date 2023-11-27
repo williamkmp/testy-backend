@@ -1,7 +1,7 @@
 package com.mito.sectask.dto.request.user;
 
-import com.mito.sectask.values.Regex;
-import com.mito.sectask.values.ValidationMessage;
+import com.mito.sectask.values.PATTERN;
+import com.mito.sectask.values.VALIDATION;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -13,27 +13,27 @@ import lombok.Value;
 @Value
 public class UserUpdatePasswordRequest {
 
-    @NotBlank(message = ValidationMessage.REQUIRED)
+    @NotBlank(message = VALIDATION.REQUIRED)
     @Size(
         min = 0,
         max = 100,
-        message = ValidationMessage.STRING_LENGTH + 0 + "," + 100
+        message = VALIDATION.STRING_LENGTH + 0 + "," + 100
     )
     @Pattern(
-        regexp = Regex.ALPHANUM,
-        message = ValidationMessage.STRING_ALPHANUM
+        regexp = PATTERN.ALPHANUM,
+        message = VALIDATION.STRING_ALPHANUM
     )
     private String oldPassword;
 
-    @NotBlank(message = ValidationMessage.REQUIRED)
+    @NotBlank(message = VALIDATION.REQUIRED)
     @Size(
         min = 0,
         max = 100,
-        message = ValidationMessage.STRING_LENGTH + 0 + "," + 100
+        message = VALIDATION.STRING_LENGTH + 0 + "," + 100
     )
     @Pattern(
-        regexp = Regex.ALPHANUM,
-        message = ValidationMessage.STRING_ALPHANUM
+        regexp = PATTERN.ALPHANUM,
+        message = VALIDATION.STRING_ALPHANUM
     )
     private String newPassword;
 }
