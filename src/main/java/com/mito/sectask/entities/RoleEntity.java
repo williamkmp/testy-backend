@@ -1,9 +1,12 @@
 package com.mito.sectask.entities;
 
 import java.util.Set;
+import com.mito.sectask.values.USER_ROLE;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,8 +27,9 @@ public class RoleEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "name", unique = true, nullable = false)
-    private String name;
+    private USER_ROLE name;
 
     @Column(name = "description", nullable = false)
     private String description;
