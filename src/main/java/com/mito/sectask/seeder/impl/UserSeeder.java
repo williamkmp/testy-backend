@@ -47,7 +47,7 @@ public class UserSeeder implements Seeder {
 
         users.add(
             new UserEntity()
-                .setFullName("AIsyah Poetri Rahmadhania")
+                .setFullName("Aisyah Poetri Rahmadhania")
                 .setEmail("aisyah@email.com")
                 .setTagName("aisyah.poetri")
                 .setPassword(DEFAULT_APSSWORD)
@@ -75,7 +75,7 @@ public class UserSeeder implements Seeder {
         users.add(
             new UserEntity()
                 .setFullName("Filipus Bramantyo Meridivitanto")
-                .setEmail("bram@email.com")
+                .setEmail("filipus@email.com")
                 .setTagName("filipus.bm")
                 .setPassword(DEFAULT_APSSWORD)
                 .setIsDeleted(false)
@@ -93,7 +93,7 @@ public class UserSeeder implements Seeder {
         users.add(
             new UserEntity()
                 .setFullName("Josephine Gunawan")
-                .setEmail("Josephine@email.com")
+                .setEmail("josephine@email.com")
                 .setTagName("ipin")
                 .setPassword(DEFAULT_APSSWORD)
                 .setIsDeleted(false)
