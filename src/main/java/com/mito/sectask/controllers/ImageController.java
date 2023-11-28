@@ -1,16 +1,5 @@
 package com.mito.sectask.controllers;
 
-import java.util.Optional;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.entities.ImageEntity;
@@ -18,7 +7,19 @@ import com.mito.sectask.entities.UserEntity;
 import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
 import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.values.ERROR;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(path = "/image")
@@ -79,5 +80,12 @@ public class ImageController {
         } catch (Exception e) {
             throw new RequestHttpException(ERROR.ERROR_UPLOAD_FAILED);
         }
+    }
+
+    @DeleteMapping(path = "/user")
+    @Authenticated(true)
+    public ResponseEntity<Object> deleteImageUser(@Caller UserEntity caller) {
+        imageService.deleteUserProfilePicture(caller.getId());
+        return ResponseEntity.ok().build();
     }
 }
