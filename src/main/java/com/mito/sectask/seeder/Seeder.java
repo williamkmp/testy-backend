@@ -7,5 +7,5 @@ public interface Seeder {
     /**
      * seed method to run the seeder
      */
-    public void seed();
+    public void seed() throws Exception;
 }
