@@ -78,7 +78,25 @@ public class ImageServiceImpl implements ImageService {
             return Optional.empty();
         }
         ImageEntity userProfilePicture = maybeUser.get().getImage();
-        if(userProfilePicture != null) userProfilePicture.getFile();
+        if (userProfilePicture != null) userProfilePicture.getFile();
         return Optional.ofNullable(userProfilePicture);
+    }
+
+    @Override
+    @Transactional
+    public Optional<ImageEntity> deleteUserProfilePicture(Long userId) {
+        Optional<UserEntity> maybeUser = userRepository.findById(userId);
+        if (maybeUser.isEmpty()) {
+            return Optional.empty();
+        }
+
+        UserEntity user = maybeUser.get();
+        ImageEntity userProfilePicture = user.getImage();
+        if (userProfilePicture != null) {
+            imageRepository.delete(userProfilePicture);
+            return Optional.ofNullable(userProfilePicture);
+        }
+
+        return Optional.empty();
     }
 }

@@ -58,4 +58,17 @@ public interface ImageService {
      *          Optional.empty()
      */
     public Optional<ImageEntity> findUserProfilePicture(Long userId);
+
+    /**
+     * delete user's profile picture from the database
+     * if thereis any, if theres none do nothing
+     * 
+     * @param   userId {@link Long}
+     *          user's id
+     * 
+     * @return  {@link Optional}<{@link ImageEntity}>
+     *          containing user's previous profile picture
+     *          before deleteion, else Optional.empty()
+     */
+    public Optional<ImageEntity> deleteUserProfilePicture(Long userId);
 }
