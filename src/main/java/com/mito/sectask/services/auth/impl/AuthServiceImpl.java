@@ -125,6 +125,7 @@ public class AuthServiceImpl implements AuthService {
         UserEntity user = maybeUser.get();
 
         if (
+            user.getRefreshToken() == null ||
             !user.getRefreshToken().equals(refreshToken)
         ) return Optional.empty();
 
