@@ -2,6 +2,7 @@ package com.mito.sectask.entities;
 
 import java.util.Date;
 import java.util.Set;
+import org.hibernate.annotations.CreationTimestamp;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,9 +29,10 @@ public class ProjectEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = true)
     private String description;
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
