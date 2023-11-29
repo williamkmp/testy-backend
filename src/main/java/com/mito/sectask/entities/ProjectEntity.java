@@ -46,10 +46,6 @@ public class ProjectEntity {
     private Date createdAt;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "background_image_id", referencedColumnName = "id", nullable = true)
-    private ImageEntity backgroundImage;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_image_id", referencedColumnName = "id", nullable = true)
     private ImageEntity profileImage;
 
