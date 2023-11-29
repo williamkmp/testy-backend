@@ -32,6 +32,9 @@ public class UserProjectRoleEntity {
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     private RoleEntity role;
 
+    @Column(name = "is_pending", nullable = false )
+    private Boolean isPending = true; 
+
     @ManyToOne
     @JoinColumn(
         name = "project_id",

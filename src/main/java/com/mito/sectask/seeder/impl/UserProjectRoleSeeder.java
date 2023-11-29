@@ -137,6 +137,7 @@ public class UserProjectRoleSeeder implements Seeder {
                 .setProject(project)
                 .setUser(owner)
                 .setRole(fullAccessRole)
+                .setIsPending(false)
         );
 
         for (UserEntity member : members) {
@@ -145,6 +146,7 @@ public class UserProjectRoleSeeder implements Seeder {
                     .setProject(project)
                     .setUser(member)
                     .setRole(collaboratorRole)
+                    .setIsPending(false)
             );
         }
 
