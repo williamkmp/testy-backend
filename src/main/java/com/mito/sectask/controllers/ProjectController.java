@@ -14,7 +14,7 @@ public class ProjectController {
       
     @PostMapping
     @Authenticated(true)
-    public StandardResponse createProject(){
+    public StandardResponse<Object> createProject(){
         //TODO: implement this
         return null;
     }
