@@ -59,6 +59,22 @@ public class ImageController {
             .body(userProfilePicture.getFile());
     }
 
+    @GetMapping("/project/profile/{projectId}")
+    public ResponseEntity<byte[]> getProjectProfile(
+        @PathVariable("projectId") Long userId
+    ) {
+        //TODO: implement this
+        return null;
+    }
+
+    @PostMapping("/project/profile/{projectId}")
+    public ResponseEntity<byte[]> uploadProjectProfile(
+        @PathVariable("projectId") Long userId
+    ) {
+        //TODO: implement this
+        return null;
+    }
+
     @PostMapping(
         path = "/user",
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
