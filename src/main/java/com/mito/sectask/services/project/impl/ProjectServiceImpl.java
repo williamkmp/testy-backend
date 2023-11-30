@@ -11,6 +11,7 @@ import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.project.ProjectService;
 import com.mito.sectask.values.USER_ROLE;
 import jakarta.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -53,9 +54,17 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<UserProjectRoleEntity> getInvites(Long userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getInvites'"
-        );
+        // TODO implement this
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<ProjectEntity> getUserProjects(Long userId) {
+        Optional<UserEntity> maybeUser = userRepository.findById(userId);
+        if(maybeUser.isEmpty()){
+            return Collections.emptyList();
+        }
+
+
     }
 }

@@ -35,4 +35,15 @@ public interface ProjectService {
      *          are not null
      */
     public List<UserProjectRoleEntity> getInvites(Long userId);
+
+    /**
+     * get all project list that is affiliated with this user
+     * 
+     * @param   userId {@link Long}
+     *          user id
+     * 
+     * @return  {@link List}<{@link ProjectEntity}>
+     *          project affiliated with this user
+     */
+    public List<ProjectEntity> getUserProjects(Long userId);
 }
