@@ -35,10 +35,10 @@ public class ProjectEntity {
     @Column(name = "description", nullable = true)
     private String description;
 
-    @Column(name = "start_date", nullable = true)
+    @Column(name = "start_date", nullable = false)
     private Date startDate;
 
-    @Column(name = "end_date", nullable = true)
+    @Column(name = "end_date", nullable = false)
     private Date endDate;
 
     @CreationTimestamp

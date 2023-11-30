@@ -4,6 +4,7 @@ import com.mito.sectask.entities.ProjectEntity;
 import com.mito.sectask.repositories.ProjectRepository;
 import com.mito.sectask.seeder.Seeder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,27 +22,42 @@ public class ProjectSeeder implements Seeder {
     @Override
     public void seed() {
         List<ProjectEntity> projects = new ArrayList<>();
-        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        Date startDate = calendar.getTime();
+        calendar.add(Calendar.DATE, 30);
+        Date endDate = calendar.getTime();
 
         projects.add(
             new ProjectEntity()
                 .setName("Bina Nusantara")
-                .setDescription(null)
-                .setCreatedAt(now)
+                .setDescription(
+                    "Penetration testing for Bina Nusantara internal system code PC-1080"
+                )
+                .setCreatedAt(startDate)
+                .setEndDate(endDate)
+                .setCreatedAt(new Date())
         );
 
         projects.add(
             new ProjectEntity()
                 .setName("Adicipta Inovasi")
-                .setDescription(null)
-                .setCreatedAt(now)
+                .setDescription(
+                    "Mobilw application & cloud service penetration testing for P.T. Adicipta Inovasi PK-9087"
+                )
+                .setCreatedAt(startDate)
+                .setEndDate(endDate)
+                .setCreatedAt(new Date())
         );
 
         projects.add(
             new ProjectEntity()
                 .setName("Dunia Indah")
-                .setDescription(null)
-                .setCreatedAt(now)
+                .setDescription(
+                    "Internal Web application bug hunt and penetration testing for C.V. Dunia Indah"
+                )
+                .setCreatedAt(startDate)
+                .setEndDate(endDate)
+                .setCreatedAt(new Date())
         );
 
         projectRepository.saveAllAndFlush(projects);
