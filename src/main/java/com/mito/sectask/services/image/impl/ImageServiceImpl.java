@@ -1,8 +1,10 @@
 package com.mito.sectask.services.image.impl;
 
 import com.mito.sectask.entities.ImageEntity;
+import com.mito.sectask.entities.ProjectEntity;
 import com.mito.sectask.entities.UserEntity;
 import com.mito.sectask.repositories.ImageRepository;
+import com.mito.sectask.repositories.ProjectRepository;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.image.ImageService;
 import jakarta.transaction.Transactional;
@@ -20,6 +22,7 @@ public class ImageServiceImpl implements ImageService {
     private Logger log = LoggerFactory.getLogger(ImageServiceImpl.class);
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
+    private final ProjectRepository projectRepository;
 
     @Override
     public Optional<ImageEntity> findById(Long id) {
@@ -89,16 +92,80 @@ public class ImageServiceImpl implements ImageService {
         if (maybeUser.isEmpty()) {
             return Optional.empty();
         }
-        
+
         UserEntity user = maybeUser.get();
         ImageEntity userProfilePicture = user.getImage();
         user.setImage(null);
         userRepository.save(user);
-        
+
         if (userProfilePicture != null) {
             Long imageId = userProfilePicture.getId();
             imageRepository.deleteById(imageId);
             return Optional.ofNullable(userProfilePicture);
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<ImageEntity> saveProjectImage(
+        Long projectId,
+        byte[] imageBinary
+    ) {
+        Optional<ProjectEntity> maybeProject = projectRepository.findById(
+            projectId
+        );
+        if (maybeProject.isEmpty()) {
+            return Optional.empty();
+        }
+
+        ProjectEntity project = maybeProject.get();
+        ImageEntity projectPicture = project.getProfileImage();
+        if (projectPicture != null) {
+            imageRepository.delete(projectPicture);
+        }
+
+        Optional<ImageEntity> maybeImage = saveImage(imageBinary);
+        if (maybeImage.isEmpty()) {
+            return Optional.empty();
+        }
+        ImageEntity newPicture = maybeImage.get();
+        project.setProfileImage(newPicture);
+        projectRepository.save(project);
+        return Optional.of(newPicture);
+    }
+
+    @Override
+    public Optional<ImageEntity> getProjectPicture(Long projectId) {
+        Optional<ProjectEntity> maybeProject = projectRepository.findById(
+            projectId
+        );
+        if (maybeProject.isEmpty()) {
+            return Optional.empty();
+        }
+        ImageEntity picture = maybeProject.get().getProfileImage();
+        if (picture != null) picture.getFile();
+        return Optional.ofNullable(picture);
+    }
+
+    @Override
+    public Optional<ImageEntity> deleteProjectPicture(Long projectId) {
+        Optional<ProjectEntity> maybeProject = projectRepository.findById(
+            projectId
+        );
+        if (maybeProject.isEmpty()) {
+            return Optional.empty();
+        }
+
+        ProjectEntity project = maybeProject.get();
+        ImageEntity picture = project.getProfileImage();
+        project.setProfileImage(null);
+        projectRepository.save(project);
+
+        if (picture != null) {
+            Long imageId = picture.getId();
+            imageRepository.deleteById(imageId);
+            return Optional.ofNullable(picture);
         }
 
         return Optional.empty();

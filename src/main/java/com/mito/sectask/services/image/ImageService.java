@@ -71,4 +71,49 @@ public interface ImageService {
      *          before deleteion, else Optional.empty()
      */
     public Optional<ImageEntity> deleteUserProfilePicture(Long userId);
+
+    /**
+     * save or update a given project's profile picture
+     * to the database. 
+     * 
+     * @param   projectId {@link Long}
+     *          id of the project that the image belongs to 
+     * 
+     * @param   imageBinary {@link Byte array<byte>}
+     *          new image file 
+     * 
+     * @return  {@link Optional}<{@link ImageEntity}>
+     *          containing the new uploaded image data,
+     *          else Optional.empty if failed
+     */
+    public Optional<ImageEntity> saveProjectImage(Long projectId, byte[] imageBinary);
+
+
+    /**
+     * retrieve project's profile picture from the database,
+     * return <code>empty</code> if project doesn't have
+     * a profile picture
+     * 
+     * @param   projectId {@link Long}
+     *          project's id
+     * 
+     * @return  {@link Optional}<{@link ImageEntity}>
+     *          containing project's profile picture, else
+     *          Optional.empty()
+     */
+    public Optional<ImageEntity> getProjectPicture(Long projectId);
+
+    /**
+     * delete project's profile picture from the database
+     * if there is any, if theres none do nothing
+     * 
+     * @param   projectId {@link Long}
+     *          project's id
+     * 
+     * @return  {@link Optional}<{@link ImageEntity}>
+     *          containing project's previous profile picture
+     *          before deleteion, else Optional.empty()
+     */
+    public Optional<ImageEntity> deleteProjectPicture(Long projectId);
+
 }

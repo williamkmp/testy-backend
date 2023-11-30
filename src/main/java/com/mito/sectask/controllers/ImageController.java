@@ -2,6 +2,8 @@ package com.mito.sectask.controllers;
 
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
+import com.mito.sectask.dto.response.StandardResponse;
+import com.mito.sectask.dto.response.image.ImageUploadResponse;
 import com.mito.sectask.entities.ImageEntity;
 import com.mito.sectask.entities.UserEntity;
 import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
@@ -59,29 +61,13 @@ public class ImageController {
             .body(userProfilePicture.getFile());
     }
 
-    @GetMapping("/project/profile/{projectId}")
-    public ResponseEntity<byte[]> getProjectProfile(
-        @PathVariable("projectId") Long userId
-    ) {
-        //TODO: implement this
-        return null;
-    }
-
-    @PostMapping("/project/profile/{projectId}")
-    public ResponseEntity<byte[]> uploadProjectProfile(
-        @PathVariable("projectId") Long userId
-    ) {
-        //TODO: implement this
-        return null;
-    }
-
     @PostMapping(
         path = "/user",
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Authenticated(true)
-    public ResponseEntity<byte[]> uploadImageUser(
+    public StandardResponse<ImageUploadResponse> uploadImageUser(
         @RequestParam("image") MultipartFile file,
         @Caller UserEntity caller
     ) {
@@ -90,9 +76,9 @@ public class ImageController {
                 .saveUserImage(caller.getId(), file.getBytes())
                 .orElseThrow(Exception::new);
 
-            return ResponseEntity
-                .status(HttpStatus.CREATED.value())
-                .body(savedImage.getFile());
+            return new StandardResponse<ImageUploadResponse>()
+                .setStatus(HttpStatus.CREATED)
+                .setData(new ImageUploadResponse().setId(savedImage.getId()));
         } catch (Exception e) {
             throw new RequestHttpException(ERROR.ERROR_UPLOAD_FAILED);
         }
@@ -102,6 +88,54 @@ public class ImageController {
     @Authenticated(true)
     public ResponseEntity<Object> deleteImageUser(@Caller UserEntity caller) {
         imageService.deleteUserProfilePicture(caller.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/project/profile/{projectId}")
+    public ResponseEntity<byte[]> getProjectProfile(
+        @PathVariable("projectId") Long projectId
+    ) {
+        ImageEntity picture = imageService
+            .getProjectPicture(projectId)
+            .orElseThrow(() ->
+                new RequestHttpException(ERROR.ERROR_UPLOAD_FAILED)
+            );
+
+        return ResponseEntity
+            .ok()
+            .header("Content-Type", "image/*")
+            .body(picture.getFile());
+    }
+
+    @PostMapping(
+        path = "/project/{projectId}",
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Authenticated(true)
+    public StandardResponse<ImageUploadResponse> uploadProjectProfile(
+        @PathVariable("projectId") Long projectId,
+        @RequestParam("image") MultipartFile file
+    ) {
+        try {
+            ImageEntity savedImage = imageService
+                .saveUserImage(projectId, file.getBytes())
+                .orElseThrow(Exception::new);
+
+            return new StandardResponse<ImageUploadResponse>()
+                .setStatus(HttpStatus.CREATED)
+                .setData(new ImageUploadResponse().setId(savedImage.getId()));
+        } catch (Exception e) {
+            throw new RequestHttpException(ERROR.ERROR_UPLOAD_FAILED);
+        }
+    }
+
+    @DeleteMapping(path = "/project/{projectId}")
+    @Authenticated(true)
+    public ResponseEntity<Object> deleteProjectPicture(
+        @PathVariable("projectId") Long projectId
+    ) {
+        imageService.deleteProjectPicture(projectId);
         return ResponseEntity.ok().build();
     }
 }
