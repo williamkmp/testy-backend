@@ -11,4 +11,5 @@ public class ERROR {
     public static final String ERROR_UNAUTHORIZED = "unauthoried";
     public static final String ERROR_INVALID_TOKEN = "invalid_token";
     public static final String ERROR_UPLOAD_FAILED = "upload.fail";
+    public static final String ERROR_TRY_AGAIN = "retry";
 }
