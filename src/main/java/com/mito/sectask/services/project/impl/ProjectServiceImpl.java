@@ -64,7 +64,7 @@ public class ProjectServiceImpl implements ProjectService {
         if(maybeUser.isEmpty()){
             return Collections.emptyList();
         }
-
-
+        //TODO: implement this
+        return Collections.emptyList();
     }
 }
