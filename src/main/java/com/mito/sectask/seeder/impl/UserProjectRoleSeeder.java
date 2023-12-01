@@ -1,5 +1,9 @@
 package com.mito.sectask.seeder.impl;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.springframework.stereotype.Component;
 import com.mito.sectask.entities.ProjectEntity;
 import com.mito.sectask.entities.QProjectEntity;
 import com.mito.sectask.entities.QRoleEntity;
@@ -7,24 +11,15 @@ import com.mito.sectask.entities.QUserEntity;
 import com.mito.sectask.entities.RoleEntity;
 import com.mito.sectask.entities.UserEntity;
 import com.mito.sectask.entities.UserProjectRoleEntity;
-import com.mito.sectask.repositories.ProjectRepository;
-import com.mito.sectask.repositories.RoleRepository;
 import com.mito.sectask.repositories.UserProjectRoleRepository;
-import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.seeder.Seeder;
 import com.mito.sectask.values.USER_ROLE;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
-import org.springframework.data.domain.Example;
-import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
