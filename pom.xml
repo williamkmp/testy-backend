@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.5</version>
+		<version>3.2.0</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.mito</groupId>
@@ -53,15 +53,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.speedment.jpastreamer</groupId>
-			<artifactId>jpastreamer-core</artifactId>
-			<version>3.0.4</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.speedment.jpastreamer.integration.spring</groupId>
-			<artifactId>spring-boot-jpastreamer-autoconfigure</artifactId>
-			<version>3.0.4</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jooq</artifactId>
 		</dependency>
 
 		<dependency>
@@ -73,7 +66,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<scope>annotationProcessor</scope>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -103,34 +96,30 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.2.0</version>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq-codegen-maven</artifactId>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
 						<goals>
-							<goal>add-source</goal>
+							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<sources>
-								<source>${project.build.directory}/generated-sources/annotations</source>
-							</sources>
+							<jdbc>
+								<driver>org.postgresql.Driver</driver>
+								<url>jdbc:postgresql://localhost:5432/sectask</url>
+								<user>postgres</user>
+								<password>Wkmp778899</password>
+							</jdbc>
+							<generator>
+								<target>
+									<packageName>com.mito.sectask.dto</packageName>
+									<directory>src/main/java</directory>
+								</target>
+							</generator>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.10.1</version>
-				<configuration>
-					<compilerArgs>
-						<!-- <arg>-AjpaStreamerPackage=com.mito.sectask.entities.fields</arg> -->
-						<arg>-AjpaStreamerSuffix=Field</arg>
-					</compilerArgs>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

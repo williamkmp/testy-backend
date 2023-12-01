@@ -2,11 +2,9 @@ package com.mito.sectask.services.user.implementation;
 
 import com.mito.sectask.dto.parameters.RegisterUserParameter;
 import com.mito.sectask.entities.UserEntity;
-import com.mito.sectask.entities.UserEntityField;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.encoder.PasswordEncocder;
 import com.mito.sectask.services.user.UserService;
-import com.speedment.jpastreamer.application.JPAStreamer;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +16,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncocder passwordEncoder;
-    private final JPAStreamer db;
 
     @Override
     @Transactional
@@ -60,44 +57,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean checkEmailIsAvailable(String email) {
-        Long duplicateEmail = db
-            .stream(UserEntity.class)
-            .filter(UserEntityField.email.equal(email))
-            .count();
-        return duplicateEmail <= 0;
-    }
-
-    @Override
-    public Boolean checkEmailIsAvailable(String email, Long userId) {
-        Long duplicateEmail = db
-            .stream(UserEntity.class)
-            .filter(UserEntityField.email.equal(email))
-            .filter(UserEntityField.id.notEqual(userId))
-            .count();
-        return duplicateEmail <= 0;
-    }
-
-    @Override
-    public Boolean checkTagNameIsAvailable(String tagName) {
-        Long duplicateUsername = db
-            .stream(UserEntity.class)
-            .filter(UserEntityField.tagName.equal(tagName))
-            .count();
-        return duplicateUsername <= 0;
-    }
-
-    @Override
-    public Boolean checkTagNameIsAvailable(String tagName, Long userId) {
-        Long duplicateUsername = db
-            .stream(UserEntity.class)
-            .filter(UserEntityField.tagName.equal(tagName))
-            .filter(UserEntityField.id.notEqual(userId))
-            .count();
-        return duplicateUsername <= 0;
-    }
-
-    @Override
     public Boolean validatePassword(Long userId, String password) {
         Optional<UserEntity> maybeUser = userRepository.findById(userId);
         if (maybeUser.isEmpty()) {
@@ -107,5 +66,37 @@ public class UserServiceImpl implements UserService {
         return Boolean.valueOf(
             passwordEncoder.matches(password, registeredUser.getPassword())
         );
+    }
+
+    @Override
+    public Boolean checkEmailIsAvailable(String email) {
+        Optional<UserEntity> maybeDuplicate = userRepository.findByEmail(email);
+        return Boolean.valueOf(maybeDuplicate.isEmpty());
+    }
+
+    @Override
+    public Boolean checkEmailIsAvailable(String email, Long userId) {
+        Optional<UserEntity> maybeDuplicate = userRepository.findByEmail(email);
+        if (maybeDuplicate.isEmpty()) return Boolean.TRUE;
+        UserEntity duplicate = maybeDuplicate.get();
+        return !duplicate.getId().equals(userId);
+    }
+
+    @Override
+    public Boolean checkTagNameIsAvailable(String tagName) {
+        Optional<UserEntity> maybeDuplicate = userRepository.findByTagName(
+            tagName
+        );
+        return Boolean.valueOf(maybeDuplicate.isEmpty());
+    }
+
+    @Override
+    public Boolean checkTagNameIsAvailable(String tagName, Long userId) {
+        Optional<UserEntity> maybeDuplicate = userRepository.findByTagName(
+            tagName
+        );
+        if (maybeDuplicate.isEmpty()) return Boolean.TRUE;
+        UserEntity duplicate = maybeDuplicate.get();
+        return !duplicate.getId().equals(userId);
     }
 }

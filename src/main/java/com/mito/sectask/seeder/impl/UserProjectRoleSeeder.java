@@ -4,20 +4,18 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
 import com.mito.sectask.entities.ProjectEntity;
-import com.mito.sectask.entities.ProjectEntityField;
 import com.mito.sectask.entities.RoleEntity;
 import com.mito.sectask.entities.UserEntity;
-import com.mito.sectask.entities.UserEntityField;
 import com.mito.sectask.entities.UserProjectRoleEntity;
+import com.mito.sectask.repositories.ProjectRepository;
 import com.mito.sectask.repositories.RoleRepository;
 import com.mito.sectask.repositories.UserProjectRoleRepository;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.seeder.Seeder;
 import com.mito.sectask.values.USER_ROLE;
-import com.speedment.jpastreamer.application.JPAStreamer;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +28,7 @@ public class UserProjectRoleSeeder implements Seeder {
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-    private final JPAStreamer database;
+    private final ProjectRepository projectRepository;
     private final UserProjectRoleRepository authorityRepository;
 
     @Override
@@ -73,62 +71,32 @@ public class UserProjectRoleSeeder implements Seeder {
     private List<UserProjectRoleEntity> getAuthorities(
         ProjectConfiguration projectConfiguration
     ) throws Exception {
-        ProjectEntity project = database
-            .stream(ProjectEntity.class)
-            .filter(
-                ProjectEntityField.name.equal(
-                    projectConfiguration.getProjectName()
-                )
-            )
-            .findFirst()
-            .orElseThrow(() ->
-                new Exception(
-                    String.format(
-                        "Project with name: %s not found",
-                        projectConfiguration.getProjectName()
-                    )
-                )
-            );
-
-        UserEntity owner = userRepository
-            .findByEmail(projectConfiguration.getOwnerEmail())
-            .orElseThrow(() ->
-                new Exception(
-                    String.format(
-                        "User as owner with email: '%s' not found",
-                        projectConfiguration.getOwnerEmail()
-                    )
-                )
-            );
-
-        List<UserEntity> members = database
-            .stream(UserEntity.class)
-            .filter(
-                UserEntityField.email.in(projectConfiguration.getMemberEmails())
-            )
-            .collect(Collectors.toList());
-
         RoleEntity fullAccessRole = roleRepository
             .findByName(USER_ROLE.FULL_ACCESS)
-            .orElseThrow(() ->
-                new Exception(
-                    String.format(
-                        "USER_ROLE: [%s] not found",
-                        USER_ROLE.FULL_ACCESS
-                    )
-                )
-            );
+            .orElseThrow(Exception::new);
 
         RoleEntity collaboratorRole = roleRepository
             .findByName(USER_ROLE.COLLABORATORS)
-            .orElseThrow(() ->
-                new Exception(
-                    String.format(
-                        "USER_ROLE: [%s] not found",
-                        USER_ROLE.COLLABORATORS
-                    )
+            .orElseThrow(Exception::new);
+
+        ProjectEntity project = projectRepository
+            .findOne(
+                Example.of(
+                    new ProjectEntity()
+                        .setName(projectConfiguration.getProjectName())
                 )
-            );
+            )
+            .orElseThrow(Exception::new);
+
+        UserEntity owner = userRepository
+            .findByEmail(projectConfiguration.getOwnerEmail())
+            .orElseThrow(Exception::new);
+
+        List<String> memberEmailList = new ArrayList<>();
+        memberEmailList.addAll(projectConfiguration.getMemberEmails());
+        List<UserEntity> members = userRepository.findByEmailList(
+            memberEmailList
+        );
 
         List<UserProjectRoleEntity> authorities = new ArrayList<>();
 
