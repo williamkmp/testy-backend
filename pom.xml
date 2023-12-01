@@ -51,12 +51,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jooq</artifactId>
-		</dependency>
-
+		
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -93,33 +88,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-
-			<plugin>
-				<groupId>org.jooq</groupId>
-				<artifactId>jooq-codegen-maven</artifactId>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<jdbc>
-								<driver>org.postgresql.Driver</driver>
-								<url>jdbc:postgresql://localhost:5432/sectask</url>
-								<user>postgres</user>
-								<password>Wkmp778899</password>
-							</jdbc>
-							<generator>
-								<target>
-									<packageName>com.mito.sectask.dto</packageName>
-									<directory>src/main/java</directory>
-								</target>
-							</generator>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
