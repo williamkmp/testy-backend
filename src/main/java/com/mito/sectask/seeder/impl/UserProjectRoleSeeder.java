@@ -1,12 +1,9 @@
 package com.mito.sectask.seeder.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.springframework.data.domain.Example;
-import org.springframework.stereotype.Component;
 import com.mito.sectask.entities.ProjectEntity;
+import com.mito.sectask.entities.QProjectEntity;
+import com.mito.sectask.entities.QRoleEntity;
+import com.mito.sectask.entities.QUserEntity;
 import com.mito.sectask.entities.RoleEntity;
 import com.mito.sectask.entities.UserEntity;
 import com.mito.sectask.entities.UserProjectRoleEntity;
@@ -16,20 +13,28 @@ import com.mito.sectask.repositories.UserProjectRoleRepository;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.seeder.Seeder;
 import com.mito.sectask.values.USER_ROLE;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import org.springframework.data.domain.Example;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class UserProjectRoleSeeder implements Seeder {
 
-    private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
-    private final ProjectRepository projectRepository;
+    private final JPAQueryFactory query;
     private final UserProjectRoleRepository authorityRepository;
+    private QRoleEntity roleTable = QRoleEntity.roleEntity;
+    private QUserEntity userTable = QUserEntity.userEntity;
+    private QProjectEntity projectTable = QProjectEntity.projectEntity;
 
     @Override
     @Transactional
@@ -71,34 +76,45 @@ public class UserProjectRoleSeeder implements Seeder {
     private List<UserProjectRoleEntity> getAuthorities(
         ProjectConfiguration projectConfiguration
     ) throws Exception {
-        RoleEntity fullAccessRole = roleRepository
-            .findByName(USER_ROLE.FULL_ACCESS)
-            .orElseThrow(Exception::new);
+        final RoleEntity fullAccessRole = query
+            .selectFrom(roleTable)
+            .where(roleTable.name.eq(USER_ROLE.FULL_ACCESS))
+            .fetchFirst();
 
-        RoleEntity collaboratorRole = roleRepository
-            .findByName(USER_ROLE.COLLABORATORS)
-            .orElseThrow(Exception::new);
+        final RoleEntity collaboratorRole = query
+            .selectFrom(roleTable)
+            .where(roleTable.name.eq(USER_ROLE.COLLABORATORS))
+            .fetchFirst();
 
-        ProjectEntity project = projectRepository
-            .findOne(
-                Example.of(
-                    new ProjectEntity()
-                        .setName(projectConfiguration.getProjectName())
+        final ProjectEntity project = query
+            .selectFrom(projectTable)
+            .where(
+                projectTable.name.equalsIgnoreCase(
+                    projectConfiguration.getProjectName()
                 )
             )
-            .orElseThrow(Exception::new);
+            .fetchFirst();
 
-        UserEntity owner = userRepository
-            .findByEmail(projectConfiguration.getOwnerEmail())
-            .orElseThrow(Exception::new);
+        UserEntity owner = query
+            .selectFrom(userTable)
+            .where(userTable.email.eq(projectConfiguration.getOwnerEmail()))
+            .fetchOne();
 
-        List<String> memberEmailList = new ArrayList<>();
-        memberEmailList.addAll(projectConfiguration.getMemberEmails());
-        List<UserEntity> members = userRepository.findByEmailList(
-            memberEmailList
-        );
+        List<UserEntity> members = query
+            .selectFrom(userTable)
+            .where(userTable.email.in(projectConfiguration.getMemberEmails()))
+            .fetch();
 
-        List<UserProjectRoleEntity> authorities = new ArrayList<>();
+        List<UserProjectRoleEntity> authorities = members
+            .stream()
+            .map(member ->
+                new UserProjectRoleEntity()
+                    .setProject(project)
+                    .setUser(member)
+                    .setRole(collaboratorRole)
+                    .setIsPending(false)
+            )
+            .toList();
 
         authorities.add(
             new UserProjectRoleEntity()
@@ -107,16 +123,6 @@ public class UserProjectRoleSeeder implements Seeder {
                 .setRole(fullAccessRole)
                 .setIsPending(false)
         );
-
-        for (UserEntity member : members) {
-            authorities.add(
-                new UserProjectRoleEntity()
-                    .setProject(project)
-                    .setUser(member)
-                    .setRole(collaboratorRole)
-                    .setIsPending(false)
-            );
-        }
 
         return authorities;
     }
