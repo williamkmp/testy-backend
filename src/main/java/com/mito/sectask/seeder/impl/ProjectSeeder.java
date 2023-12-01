@@ -33,7 +33,7 @@ public class ProjectSeeder implements Seeder {
                 .setDescription(
                     "Penetration testing for Bina Nusantara internal system code PC-1080"
                 )
-                .setCreatedAt(startDate)
+                .setStartDate(startDate)
                 .setEndDate(endDate)
                 .setCreatedAt(new Date())
         );
@@ -44,7 +44,7 @@ public class ProjectSeeder implements Seeder {
                 .setDescription(
                     "Mobilw application & cloud service penetration testing for P.T. Adicipta Inovasi PK-9087"
                 )
-                .setCreatedAt(startDate)
+                .setStartDate(startDate)
                 .setEndDate(endDate)
                 .setCreatedAt(new Date())
         );
@@ -55,7 +55,7 @@ public class ProjectSeeder implements Seeder {
                 .setDescription(
                     "Internal Web application bug hunt and penetration testing for C.V. Dunia Indah"
                 )
-                .setCreatedAt(startDate)
+                .setStartDate(startDate)
                 .setEndDate(endDate)
                 .setCreatedAt(new Date())
         );
