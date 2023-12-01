@@ -1,6 +1,10 @@
 package com.mito.sectask.services.project.impl;
 
 import com.mito.sectask.entities.ProjectEntity;
+import com.mito.sectask.entities.QProjectEntity;
+import com.mito.sectask.entities.QRoleEntity;
+import com.mito.sectask.entities.QUserEntity;
+import com.mito.sectask.entities.QUserProjectRoleEntity;
 import com.mito.sectask.entities.RoleEntity;
 import com.mito.sectask.entities.UserEntity;
 import com.mito.sectask.entities.UserProjectRoleEntity;
@@ -10,6 +14,7 @@ import com.mito.sectask.repositories.UserProjectRoleRepository;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.project.ProjectService;
 import com.mito.sectask.values.USER_ROLE;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +30,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserProjectRoleRepository authorityRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final JPAQueryFactory query;
 
     @Override
     @Transactional
@@ -59,12 +65,22 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public List<ProjectEntity> getUserProjects(Long userId) {
-        Optional<UserEntity> maybeUser = userRepository.findById(userId);
-        if(maybeUser.isEmpty()){
-            return Collections.emptyList();
-        }
-        //TODO: implement this
-        return Collections.emptyList();
+        final QProjectEntity project = QProjectEntity.projectEntity;
+        final QUserEntity user = QUserEntity.userEntity;
+        final QUserProjectRoleEntity authority =
+            QUserProjectRoleEntity.userProjectRoleEntity;
+        final QRoleEntity role = QRoleEntity.roleEntity;
+
+        return query
+            .selectFrom(project)
+            .join(project.authoritySet, authority)
+            .join(authority.user, user)
+            .join(authority.role, role)
+            .where(user.id.eq(userId))
+            .where(authority.isPending.eq(false))
+            .orderBy(project.endDate.desc())
+            .fetch();
     }
 }
