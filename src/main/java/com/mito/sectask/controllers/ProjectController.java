@@ -60,15 +60,28 @@ public class ProjectController {
             );
     }
 
-    @GetMapping(
-        produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
     public StandardResponse<List<CreateProjectResponse>> getProjects(
         @Caller UserEntity caller
     ) {
-
-        
-        return null;
+        List<ProjectEntity> userProjects = projectService.getUserProjects(
+            caller.getId()
+        );
+        return new StandardResponse<List<CreateProjectResponse>>()
+            .setStatus(HttpStatus.NO_CONTENT)
+            .setData(
+                userProjects
+                    .stream()
+                    .map(project ->
+                        new CreateProjectResponse()
+                            .setProjectId(project.getId().toString())
+                            .setProjectName(project.getName())
+                            .setProjectDescription(project.getDescription())
+                            .setProjectStartDate(project.getStartDate())
+                            .setProjectEndDate(project.getEndDate())
+                    )
+                    .toList()
+            );
     }
 }
