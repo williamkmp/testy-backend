@@ -22,6 +22,7 @@ import lombok.experimental.Accessors;
 public class User {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 

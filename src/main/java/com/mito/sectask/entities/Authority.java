@@ -32,14 +32,10 @@ public class Authority {
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     private Role role;
 
-    @Column(name = "is_pending", nullable = false )
-    private Boolean isPending = true; 
-
     @ManyToOne
-    @JoinColumn(
-        name = "project_id",
-        referencedColumnName = "id",
-        nullable = false
-    )
-    private Project project;
+    @JoinColumn(name = "page_id", referencedColumnName = "id", nullable = false)
+    private Page page;
+
+    @Column(name = "is_pending", nullable = false)
+    private Boolean isPending = true;
 }

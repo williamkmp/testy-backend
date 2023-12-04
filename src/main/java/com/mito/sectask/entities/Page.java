@@ -6,13 +6,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,10 +19,11 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity
-@Table(name = "projects")
-public class Project {
+@Table(name = "pages")
+public class Page {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -45,9 +43,8 @@ public class Project {
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_image_id", referencedColumnName = "id", nullable = true)
-    private Image profileImage;
+    @Column(name = "image_src", nullable = false)
+    private String imageSrc;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
     private Set<Authority> authoritySet;
