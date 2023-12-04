@@ -1,5 +1,9 @@
 package com.mito.sectask.services.project.impl;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.stereotype.Service;
 import com.mito.sectask.entities.ProjectEntity;
 import com.mito.sectask.entities.QProjectEntity;
 import com.mito.sectask.entities.QRoleEntity;
@@ -16,13 +20,7 @@ import com.mito.sectask.services.project.ProjectService;
 import com.mito.sectask.values.USER_ROLE;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.transaction.Transactional;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
