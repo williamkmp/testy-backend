@@ -9,7 +9,7 @@ import com.mito.sectask.dto.dto.JwtPayload;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.auth.AuthService;
 import com.mito.sectask.values.KEY;
-import com.mito.sectask.values.ERROR;
+import com.mito.sectask.values.MESSAGES;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +43,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         );
 
         if (maybePayload.isEmpty()) {
-            throw new UnauthorizedHttpException(ERROR.ERROR_INVALID_TOKEN);
+            throw new UnauthorizedHttpException(MESSAGES.ERROR_UNAUTHORIZED);
         }
 
         JwtPayload caller = maybePayload.get();

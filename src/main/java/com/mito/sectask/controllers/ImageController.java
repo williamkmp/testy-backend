@@ -8,7 +8,7 @@ import com.mito.sectask.entities.ImageEntity;
 import com.mito.sectask.entities.UserEntity;
 import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
 import com.mito.sectask.services.image.ImageService;
-import com.mito.sectask.values.ERROR;
+import com.mito.sectask.values.MESSAGES;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,7 +35,7 @@ public class ImageController {
         Optional<ImageEntity> maybeImage = imageService.findById(id);
 
         if (maybeImage.isEmpty()) {
-            throw new RequestHttpException(ERROR.ERROR_RESOURCE_NOT_FOUND);
+            throw new RequestHttpException(MESSAGES.ERROR_RESOURCE_NOT_FOUND);
         }
 
         ImageEntity image = maybeImage.get();
@@ -52,7 +52,7 @@ public class ImageController {
         ImageEntity userProfilePicture = imageService
             .findUserProfilePicture(userId)
             .orElseThrow(() ->
-                new RequestHttpException(ERROR.ERROR_UPLOAD_FAILED)
+                new RequestHttpException(MESSAGES.UPLOAD_FAIL)
             );
 
         return ResponseEntity
@@ -80,7 +80,7 @@ public class ImageController {
                 .setStatus(HttpStatus.CREATED)
                 .setData(new ImageUploadResponse().setId(savedImage.getId()));
         } catch (Exception e) {
-            throw new RequestHttpException(ERROR.ERROR_UPLOAD_FAILED);
+            throw new RequestHttpException(MESSAGES.UPLOAD_FAIL);
         }
     }
 
@@ -98,7 +98,7 @@ public class ImageController {
         ImageEntity picture = imageService
             .getProjectPicture(projectId)
             .orElseThrow(() ->
-                new RequestHttpException(ERROR.ERROR_UPLOAD_FAILED)
+                new RequestHttpException(MESSAGES.UPLOAD_FAIL)
             );
 
         return ResponseEntity
@@ -126,7 +126,7 @@ public class ImageController {
                 .setStatus(HttpStatus.CREATED)
                 .setData(new ImageUploadResponse().setId(savedImage.getId()));
         } catch (Exception e) {
-            throw new RequestHttpException(ERROR.ERROR_UPLOAD_FAILED);
+            throw new RequestHttpException(MESSAGES.UPLOAD_FAIL);
         }
     }
 

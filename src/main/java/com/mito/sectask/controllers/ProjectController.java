@@ -9,7 +9,7 @@ import com.mito.sectask.entities.ProjectEntity;
 import com.mito.sectask.entities.UserEntity;
 import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
 import com.mito.sectask.services.project.ProjectService;
-import com.mito.sectask.values.ERROR;
+import com.mito.sectask.values.MESSAGES;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +46,7 @@ public class ProjectController {
 
         ProjectEntity createdProject = projectService
             .createProject(newProject, ownerId)
-            .orElseThrow(() -> new RequestHttpException(ERROR.ERROR_TRY_AGAIN));
+            .orElseThrow(() -> new RequestHttpException(MESSAGES.ERROR_INTERNAL_SERVER));
 
         return new StandardResponse<CreateProjectResponse>()
             .setStatus(HttpStatus.CREATED)
