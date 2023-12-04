@@ -4,14 +4,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import com.mito.sectask.entities.Authority;
 import com.mito.sectask.entities.Project;
-import com.mito.sectask.entities.QProjectEntity;
-import com.mito.sectask.entities.QRoleEntity;
-import com.mito.sectask.entities.QUserEntity;
-import com.mito.sectask.entities.QUserProjectRoleEntity;
 import com.mito.sectask.entities.Role;
 import com.mito.sectask.entities.User;
-import com.mito.sectask.entities.Authority;
 import com.mito.sectask.repositories.ProjectRepository;
 import com.mito.sectask.repositories.RoleRepository;
 import com.mito.sectask.repositories.UserProjectRoleRepository;
@@ -67,22 +63,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public List<Project> getUserProjects(Long userId) {
-        final QProjectEntity project = QProjectEntity.projectEntity;
-        final QUserEntity user = QUserEntity.userEntity;
-        final QUserProjectRoleEntity authority =
-            QUserProjectRoleEntity.userProjectRoleEntity;
-        final QRoleEntity role = QRoleEntity.roleEntity;
-
-        return query
-            .selectFrom(project)
-            .join(project.authoritySet, authority)
-            .join(authority.user, user)
-            .join(authority.role, role)
-            .where(user.id.eq(userId))
-            .where(authority.isPending.eq(false))
-            .where(role.name.eq(USER_ROLE.FULL_ACCESS))
-            .orderBy(project.endDate.desc())
-            .fetch();
+       //TODO: implement this
+       return null;
     }
 
     @Override
