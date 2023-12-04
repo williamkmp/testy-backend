@@ -2,7 +2,6 @@ package com.mito.sectask.seeder;
 
 import com.mito.sectask.seeder.impl.ProjectSeeder;
 import com.mito.sectask.seeder.impl.RoleSeeder;
-import com.mito.sectask.seeder.impl.UserProjectRoleSeeder;
 import com.mito.sectask.seeder.impl.UserSeeder;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,6 @@ public class SeedRunner implements CommandLineRunner {
     private final RoleSeeder roleSeeder;
     private final UserSeeder userSeeder;
     private final ProjectSeeder projectSeeder;
-    private final UserProjectRoleSeeder authoritySeeder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -32,7 +30,6 @@ public class SeedRunner implements CommandLineRunner {
             seeders.add(roleSeeder);
             seeders.add(userSeeder);
             seeders.add(projectSeeder);
-            seeders.add(authoritySeeder);
 
             for (Seeder seeder : seeders) {
                 String seederName = seeder.getClass().getSimpleName();
