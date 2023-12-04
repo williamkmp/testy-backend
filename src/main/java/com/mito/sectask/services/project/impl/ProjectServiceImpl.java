@@ -4,14 +4,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
-import com.mito.sectask.entities.ProjectEntity;
+import com.mito.sectask.entities.Project;
 import com.mito.sectask.entities.QProjectEntity;
 import com.mito.sectask.entities.QRoleEntity;
 import com.mito.sectask.entities.QUserEntity;
 import com.mito.sectask.entities.QUserProjectRoleEntity;
-import com.mito.sectask.entities.RoleEntity;
-import com.mito.sectask.entities.UserEntity;
-import com.mito.sectask.entities.UserProjectRoleEntity;
+import com.mito.sectask.entities.Role;
+import com.mito.sectask.entities.User;
+import com.mito.sectask.entities.Authority;
 import com.mito.sectask.repositories.ProjectRepository;
 import com.mito.sectask.repositories.RoleRepository;
 import com.mito.sectask.repositories.UserProjectRoleRepository;
@@ -34,22 +34,22 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public Optional<ProjectEntity> createProject(
-        ProjectEntity project,
+    public Optional<Project> createProject(
+        Project project,
         Long ownerId
     ) {
-        Optional<UserEntity> maybeUser = userRepository.findById(ownerId);
-        Optional<RoleEntity> maybeRole = roleRepository.findByName(
+        Optional<User> maybeUser = userRepository.findById(ownerId);
+        Optional<Role> maybeRole = roleRepository.findByName(
             USER_ROLE.FULL_ACCESS
         );
         if (maybeUser.isEmpty() || maybeRole.isEmpty()) {
             return Optional.empty();
         }
 
-        UserEntity owner = maybeUser.get();
-        RoleEntity fullAccessRole = maybeRole.get();
-        ProjectEntity newProject = projectRepository.save(project);
-        UserProjectRoleEntity ownerAuthority = new UserProjectRoleEntity()
+        User owner = maybeUser.get();
+        Role fullAccessRole = maybeRole.get();
+        Project newProject = projectRepository.save(project);
+        Authority ownerAuthority = new Authority()
             .setProject(newProject)
             .setUser(owner)
             .setRole(fullAccessRole);
@@ -59,14 +59,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<UserProjectRoleEntity> getInvites(Long userId) {
+    public List<Authority> getInvites(Long userId) {
         // TODO implement this
         return Collections.emptyList();
     }
 
     @Override
     @Transactional
-    public List<ProjectEntity> getUserProjects(Long userId) {
+    public List<Project> getUserProjects(Long userId) {
         final QProjectEntity project = QProjectEntity.projectEntity;
         final QUserEntity user = QUserEntity.userEntity;
         final QUserProjectRoleEntity authority =
@@ -86,7 +86,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<UserEntity> getProjectMembers(
+    public List<User> getProjectMembers(
         Long projectId,
         List<USER_ROLE> roles
     ) {

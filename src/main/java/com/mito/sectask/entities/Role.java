@@ -21,7 +21,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor()
 @Entity
 @Table(name = "roles")
-public class RoleEntity {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,5 +35,5 @@ public class RoleEntity {
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
-    private Set<UserProjectRoleEntity> authoritySet;
+    private Set<Authority> authoritySet;
 }

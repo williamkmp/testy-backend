@@ -18,7 +18,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Accessors(chain = true)
 @Entity
 @Table(name = "images")
-public class ImageEntity {
+public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

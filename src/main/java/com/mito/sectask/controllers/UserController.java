@@ -7,7 +7,7 @@ import com.mito.sectask.dto.request.user.UserUpdateProfileRequest;
 import com.mito.sectask.dto.response.StandardResponse;
 import com.mito.sectask.dto.response.user.UserMeResponse;
 import com.mito.sectask.dto.response.user.UserUpdateProfileResponse;
-import com.mito.sectask.entities.UserEntity;
+import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.encoder.PasswordEncocder;
@@ -36,7 +36,7 @@ public class UserController {
 
     @Authenticated(true)
     @GetMapping(path = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
-    public StandardResponse<UserMeResponse> me(@Caller UserEntity caller) {
+    public StandardResponse<UserMeResponse> me(@Caller User caller) {
         return new StandardResponse<UserMeResponse>()
             .setStatus(HttpStatus.OK)
             .setData(
@@ -56,7 +56,7 @@ public class UserController {
     )
     public StandardResponse<UserUpdateProfileResponse> updateProfile(
         @Valid @RequestBody UserUpdateProfileRequest request,
-        @Caller UserEntity caller
+        @Caller User caller
     ) {
         boolean isTagNameAvailable = Boolean.TRUE.equals(
             userService.checkTagNameIsAvailable(
@@ -94,12 +94,12 @@ public class UserController {
         caller.setTagName(request.getTagName());
         caller.setFullName(request.getFullName());
 
-        Optional<UserEntity> maybeUser = userService.updateUser(caller);
+        Optional<User> maybeUser = userService.updateUser(caller);
 
         if (maybeUser.isEmpty()) {
             throw new UnauthorizedHttpException();
         }
-        UserEntity updatedUser = maybeUser.get();
+        User updatedUser = maybeUser.get();
 
         return new StandardResponse<UserUpdateProfileResponse>()
             .setStatus(HttpStatus.OK)
@@ -116,7 +116,7 @@ public class UserController {
     @PutMapping(path = "/password")
     public StandardResponse<UserUpdateProfileResponse> updatePassword(
         @RequestBody @Valid UserUpdatePasswordRequest request,
-        @Caller UserEntity caller
+        @Caller User caller
     ) {
         boolean isPasswordMatch = userService.validatePassword(
             caller.getId(),
@@ -136,7 +136,7 @@ public class UserController {
 
         String encodedPassword = encoder.encode(request.getNewPassword());
         caller.setPassword(encodedPassword);
-        UserEntity updatedUser = userService
+        User updatedUser = userService
             .updateUser(caller)
             .orElseThrow(UnauthorizedHttpException::new);
 

@@ -1,6 +1,6 @@
 package com.mito.sectask.seeder.impl;
 
-import com.mito.sectask.entities.ProjectEntity;
+import com.mito.sectask.entities.Project;
 import com.mito.sectask.repositories.ProjectRepository;
 import com.mito.sectask.seeder.Seeder;
 import java.util.ArrayList;
@@ -21,14 +21,14 @@ public class ProjectSeeder implements Seeder {
 
     @Override
     public void seed() {
-        List<ProjectEntity> projects = new ArrayList<>();
+        List<Project> projects = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         Date startDate = calendar.getTime();
         calendar.add(Calendar.DATE, 30);
         Date endDate = calendar.getTime();
 
         projects.add(
-            new ProjectEntity()
+            new Project()
                 .setName("Bina Nusantara")
                 .setDescription(
                     "Penetration testing for Bina Nusantara internal system code PC-1080"
@@ -39,7 +39,7 @@ public class ProjectSeeder implements Seeder {
         );
 
         projects.add(
-            new ProjectEntity()
+            new Project()
                 .setName("Adicipta Inovasi")
                 .setDescription(
                     "Mobilw application & cloud service penetration testing for P.T. Adicipta Inovasi PK-9087"
@@ -50,7 +50,7 @@ public class ProjectSeeder implements Seeder {
         );
 
         projects.add(
-            new ProjectEntity()
+            new Project()
                 .setName("Dunia Indah")
                 .setDescription(
                     "Internal Web application bug hunt and penetration testing for C.V. Dunia Indah"

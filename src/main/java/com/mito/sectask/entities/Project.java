@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Entity
 @Table(name = "projects")
-public class ProjectEntity {
+public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,8 +47,8 @@ public class ProjectEntity {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_image_id", referencedColumnName = "id", nullable = true)
-    private ImageEntity profileImage;
+    private Image profileImage;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private Set<UserProjectRoleEntity> authoritySet;
+    private Set<Authority> authoritySet;
 }

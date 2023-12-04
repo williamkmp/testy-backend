@@ -5,8 +5,8 @@ import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.dto.request.project.ProjectCreateRequest;
 import com.mito.sectask.dto.response.StandardResponse;
 import com.mito.sectask.dto.response.project.CreateProjectResponse;
-import com.mito.sectask.entities.ProjectEntity;
-import com.mito.sectask.entities.UserEntity;
+import com.mito.sectask.entities.Project;
+import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
 import com.mito.sectask.services.project.ProjectService;
 import com.mito.sectask.values.MESSAGES;
@@ -35,16 +35,16 @@ public class ProjectController {
     @Authenticated(true)
     public StandardResponse<CreateProjectResponse> createProject(
         @RequestBody @Valid ProjectCreateRequest request,
-        @Caller UserEntity caller
+        @Caller User caller
     ) {
         Long ownerId = caller.getId();
-        ProjectEntity newProject = new ProjectEntity()
+        Project newProject = new Project()
             .setName(request.getProjectName())
             .setDescription(request.getProjectDescription())
             .setStartDate(request.getProjectStartDate())
             .setEndDate(request.getProjectEndDate());
 
-        ProjectEntity createdProject = projectService
+        Project createdProject = projectService
             .createProject(newProject, ownerId)
             .orElseThrow(() -> new RequestHttpException(MESSAGES.ERROR_INTERNAL_SERVER));
 
@@ -63,9 +63,9 @@ public class ProjectController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
     public StandardResponse<List<CreateProjectResponse>> getProjects(
-        @Caller UserEntity caller
+        @Caller User caller
     ) {
-        List<ProjectEntity> userProjects = projectService.getUserProjects(
+        List<Project> userProjects = projectService.getUserProjects(
             caller.getId()
         );
         return new StandardResponse<List<CreateProjectResponse>>()

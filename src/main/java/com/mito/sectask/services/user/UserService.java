@@ -1,7 +1,7 @@
 package com.mito.sectask.services.user;
 
 import com.mito.sectask.dto.parameters.RegisterUserParameter;
-import com.mito.sectask.entities.UserEntity;
+import com.mito.sectask.entities.User;
 import java.util.Optional;
 
 public interface UserService {
@@ -11,24 +11,24 @@ public interface UserService {
      * @param   newUserData {@link RegisterUserParameter}
      *          new account data
      *
-     * @return  {@link Optional}<{@link UserEntity}>
+     * @return  {@link Optional}<{@link User}>
      *          containing created user data, else
      *          optional.empty() if failed to save
      */
-    public Optional<UserEntity> registerUser(RegisterUserParameter newUserData);
+    public Optional<User> registerUser(RegisterUserParameter newUserData);
 
     /**
      * update user data, by overwriting existing user
      * based on a given user param
      *
-     * @param   userData {@link UserEntity}
+     * @param   userData {@link User}
      *          user data, must have id
      *
-     * @return  {@link Optional}<{@link UserEntity}>
+     * @return  {@link Optional}<{@link User}>
      *          conatining the updated user data, else
      *          Optional.empty() if update fails
      */
-    public Optional<UserEntity> updateUser(UserEntity userData);
+    public Optional<User> updateUser(User userData);
 
     /**
      * find user by id
@@ -36,11 +36,11 @@ public interface UserService {
      * @param   userId {@link Long}
      *          user id
      *
-     * @return  {@link Optional}<{@link UserEntity}>
+     * @return  {@link Optional}<{@link User}>
      *          containing searcher user data,
      *          otherwise Optional.empty() if not found.
      */
-    public Optional<UserEntity> findById(Long userId);
+    public Optional<User> findById(Long userId);
 
     /**
      * check if no other user has this email

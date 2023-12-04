@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
-import com.mito.sectask.entities.ProjectEntity;
+import com.mito.sectask.entities.Project;
 import com.mito.sectask.entities.QProjectEntity;
 import com.mito.sectask.entities.QRoleEntity;
 import com.mito.sectask.entities.QUserEntity;
-import com.mito.sectask.entities.RoleEntity;
-import com.mito.sectask.entities.UserEntity;
-import com.mito.sectask.entities.UserProjectRoleEntity;
+import com.mito.sectask.entities.Role;
+import com.mito.sectask.entities.User;
+import com.mito.sectask.entities.Authority;
 import com.mito.sectask.repositories.UserProjectRoleRepository;
 import com.mito.sectask.seeder.Seeder;
 import com.mito.sectask.values.USER_ROLE;
@@ -60,29 +60,29 @@ public class UserProjectRoleSeeder implements Seeder {
             .addMember("calvin@email.com")
             .addMember("stefan@email.com");
 
-        List<UserProjectRoleEntity> proj1Authorities = getAuthorities(project1);
-        List<UserProjectRoleEntity> proj2Authorities = getAuthorities(project2);
-        List<UserProjectRoleEntity> proj3Authorities = getAuthorities(project3);
+        List<Authority> proj1Authorities = getAuthorities(project1);
+        List<Authority> proj2Authorities = getAuthorities(project2);
+        List<Authority> proj3Authorities = getAuthorities(project3);
 
         authorityRepository.saveAll(proj1Authorities);
         authorityRepository.saveAll(proj2Authorities);
         authorityRepository.saveAll(proj3Authorities);
     }
 
-    private List<UserProjectRoleEntity> getAuthorities(
+    private List<Authority> getAuthorities(
         ProjectConfiguration projectConfiguration
     ) throws Exception {
-        final RoleEntity fullAccessRole = query
+        final Role fullAccessRole = query
             .selectFrom(roleTable)
             .where(roleTable.name.eq(USER_ROLE.FULL_ACCESS))
             .fetchFirst();
 
-        final RoleEntity collaboratorRole = query
+        final Role collaboratorRole = query
             .selectFrom(roleTable)
             .where(roleTable.name.eq(USER_ROLE.COLLABORATORS))
             .fetchFirst();
 
-        final ProjectEntity project = query
+        final Project project = query
             .selectFrom(projectTable)
             .where(
                 projectTable.name.equalsIgnoreCase(
@@ -91,20 +91,20 @@ public class UserProjectRoleSeeder implements Seeder {
             )
             .fetchFirst();
 
-        UserEntity owner = query
+        User owner = query
             .selectFrom(userTable)
             .where(userTable.email.eq(projectConfiguration.getOwnerEmail()))
             .fetchOne();
 
-        List<UserEntity> members = query
+        List<User> members = query
             .selectFrom(userTable)
             .where(userTable.email.in(projectConfiguration.getMemberEmails()))
             .fetch();
 
-        List<UserProjectRoleEntity> authorities = members
+        List<Authority> authorities = members
             .stream()
             .map(member ->
-                new UserProjectRoleEntity()
+                new Authority()
                     .setProject(project)
                     .setUser(member)
                     .setRole(collaboratorRole)
@@ -113,7 +113,7 @@ public class UserProjectRoleSeeder implements Seeder {
             .collect(Collectors.toList());
 
         authorities.add(
-            new UserProjectRoleEntity()
+            new Authority()
                 .setProject(project)
                 .setUser(owner)
                 .setRole(fullAccessRole)

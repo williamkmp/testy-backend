@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Entity
 @Table(name = "user_Project_roles")
-public class UserProjectRoleEntity {
+public class Authority {
 
     @Id
     @Column(name = "id")
@@ -26,11 +26,11 @@ public class UserProjectRoleEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private UserEntity user;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
-    private RoleEntity role;
+    private Role role;
 
     @Column(name = "is_pending", nullable = false )
     private Boolean isPending = true; 
@@ -41,5 +41,5 @@ public class UserProjectRoleEntity {
         referencedColumnName = "id",
         nullable = false
     )
-    private ProjectEntity project;
+    private Project project;
 }

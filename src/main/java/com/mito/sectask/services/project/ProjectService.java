@@ -1,8 +1,8 @@
 package com.mito.sectask.services.project;
 
-import com.mito.sectask.entities.ProjectEntity;
-import com.mito.sectask.entities.UserEntity;
-import com.mito.sectask.entities.UserProjectRoleEntity;
+import com.mito.sectask.entities.Project;
+import com.mito.sectask.entities.User;
+import com.mito.sectask.entities.Authority;
 import com.mito.sectask.values.USER_ROLE;
 import java.util.List;
 import java.util.Optional;
@@ -11,18 +11,18 @@ public interface ProjectService {
     /**
      *  create a project and linked it to an owner
      *
-     * @param   project {@link ProjectEntity}
+     * @param   project {@link Project}
      *          the new project data
      *
      * @param   ownerId {@link Long}
      *          project owner's user id
      *
-     * @return  {@link Optional}<{@link ProjectEntity}>
+     * @return  {@link Optional}<{@link Project}>
      *          containing the created project, else
      *          Optional.empty()
      */
-    public Optional<ProjectEntity> createProject(
-        ProjectEntity project,
+    public Optional<Project> createProject(
+        Project project,
         Long ownerId
     );
 
@@ -32,11 +32,11 @@ public interface ProjectService {
      * @param   userId {@link Long}
      *          user id
      *
-     * @return  {@link List}<{@link UserProjectRoleEntity}>
+     * @return  {@link List}<{@link Authority}>
      *          where the user, project , and role fields
      *          are not null
      */
-    public List<UserProjectRoleEntity> getInvites(Long userId);
+    public List<Authority> getInvites(Long userId);
 
     /**
      * get all project list that is affiliated with this user
@@ -44,10 +44,10 @@ public interface ProjectService {
      * @param   userId {@link Long}
      *          user id
      *
-     * @return  {@link List}<{@link ProjectEntity}>
+     * @return  {@link List}<{@link Project}>
      *          project affiliated with this user
      */
-    public List<ProjectEntity> getUserProjects(Long userId);
+    public List<Project> getUserProjects(Long userId);
 
     /**
      * get a certain project list of member filter by
@@ -59,10 +59,10 @@ public interface ProjectService {
      * @param   roles {@link List}<{@link USER_ROLE}>
      *          role filter, allowed user roles
      *
-     * @return  {@link List}<{@link UserEntity}>
+     * @return  {@link List}<{@link User}>
      *          project member, based on filtered role
      */
-    public List<UserEntity> getProjectMembers(
+    public List<User> getProjectMembers(
         Long projectId,
         List<USER_ROLE> roles
     );

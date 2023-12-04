@@ -12,12 +12,12 @@ import com.mito.sectask.dto.response.StandardResponse;
 import com.mito.sectask.dto.response.auth.AuthLoginResponse;
 import com.mito.sectask.dto.response.auth.AuthRefreshToken;
 import com.mito.sectask.dto.response.auth.AuthRegisterResponse;
-import com.mito.sectask.entities.UserEntity;
+import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.auth.AuthService;
 import com.mito.sectask.services.user.UserService;
-import com.mito.sectask.values.ERROR;
+import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.VALIDATION;
 import jakarta.validation.Valid;
 import java.util.HashMap;
@@ -106,7 +106,7 @@ public class AuthController {
             );
         }
 
-        Optional<UserEntity> maybeUser =
+        Optional<User> maybeUser =
             this.userService.registerUser(
                     new RegisterUserParameter()
                         .setEmail(request.getEmail())
@@ -116,10 +116,10 @@ public class AuthController {
                 );
 
         if (maybeUser.isEmpty()) {
-            throw new RequestHttpException(ERROR.ERROR_INTERNAL_SERVER);
+            throw new RequestHttpException(MESSAGES.ERROR_INTERNAL_SERVER);
         }
 
-        UserEntity createdUser = maybeUser.get();
+        User createdUser = maybeUser.get();
 
         return new StandardResponse<AuthRegisterResponse>()
             .setStatus(HttpStatus.BAD_REQUEST)

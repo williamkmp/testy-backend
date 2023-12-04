@@ -1,7 +1,7 @@
 package com.mito.sectask.annotations.caller;
 
 import com.mito.sectask.dto.dto.JwtPayload;
-import com.mito.sectask.entities.UserEntity;
+import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.user.UserService;
 import com.mito.sectask.values.KEY;
@@ -25,7 +25,7 @@ public class CallerResolver implements HandlerMethodArgumentResolver {
     public boolean supportsParameter(MethodParameter parameter) {
         return (
             parameter.hasParameterAnnotation(Caller.class) &&
-            UserEntity.class.isAssignableFrom(parameter.getParameterType())
+            User.class.isAssignableFrom(parameter.getParameterType())
         );
     }
 
@@ -46,7 +46,7 @@ public class CallerResolver implements HandlerMethodArgumentResolver {
         }
 
         JwtPayload callerInfo = (JwtPayload) payload;
-        Optional<UserEntity> callerData = userService.findById(
+        Optional<User> callerData = userService.findById(
             callerInfo.getId()
         );
 

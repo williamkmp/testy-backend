@@ -1,6 +1,6 @@
 package com.mito.sectask.seeder.impl;
 
-import com.mito.sectask.entities.RoleEntity;
+import com.mito.sectask.entities.Role;
 import com.mito.sectask.repositories.RoleRepository;
 import com.mito.sectask.seeder.Seeder;
 import com.mito.sectask.values.USER_ROLE;
@@ -20,10 +20,10 @@ public class RoleSeeder implements Seeder {
 
     @Override
     public void seed() {
-        List<RoleEntity> roles = new ArrayList<>();
+        List<Role> roles = new ArrayList<>();
 
         roles.add(
-            new RoleEntity()
+            new Role()
                 .setName(USER_ROLE.FULL_ACCESS)
                 .setDescription(
                     "Can view, edit, configure, and add collaborators to the project"
@@ -31,7 +31,7 @@ public class RoleSeeder implements Seeder {
         );
 
         roles.add(
-            new RoleEntity()
+            new Role()
                 .setName(USER_ROLE.COLLABORATORS)
                 .setDescription(
                     "Can access, view, and add/edit project items but cannot configure project"
@@ -39,7 +39,7 @@ public class RoleSeeder implements Seeder {
         );
 
         roles.add(
-            new RoleEntity()
+            new Role()
                 .setName(USER_ROLE.VIEWERS)
                 .setDescription(
                     "Can only view and comment, but cannot add or edit project"

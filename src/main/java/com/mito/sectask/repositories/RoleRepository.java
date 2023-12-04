@@ -3,11 +3,11 @@ package com.mito.sectask.repositories;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.mito.sectask.entities.RoleEntity;
+import com.mito.sectask.entities.Role;
 import com.mito.sectask.values.USER_ROLE;
 
 @Repository
-public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
     
     /**
      * find roles by it's name
@@ -17,5 +17,5 @@ public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
      * 
      * @return  optional role
      */
-    public Optional<RoleEntity> findByName(USER_ROLE name);
+    public Optional<Role> findByName(USER_ROLE name);
 }

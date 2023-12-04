@@ -1,7 +1,7 @@
 package com.mito.sectask.services.image;
 
 import java.util.Optional;
-import com.mito.sectask.entities.ImageEntity;
+import com.mito.sectask.entities.Image;
 
 public interface ImageService {
     /**
@@ -10,11 +10,11 @@ public interface ImageService {
      * @param   imageBinary {@link Byte}[]
      *          image file
      *
-     * @return  {@link Optional}<{@link ImageEntity}>
+     * @return  {@link Optional}<{@link Image}>
      *          conatining image if saved, else
      *          Optional.empty()
      */
-    public Optional<ImageEntity> saveImage(byte[] imageBinary);
+    public Optional<Image> saveImage(byte[] imageBinary);
 
     /**
      * retrieve image from the database
@@ -22,11 +22,11 @@ public interface ImageService {
      * @param   id {@link Long}
      *          image record id
      *
-     * @return  {@link Optional}<{@link ImageEntity}>
+     * @return  {@link Optional}<{@link Image}>
      *          conatining image if found
      *          else Optional.empty()
      */
-    public Optional<ImageEntity> findById(Long id);
+    public Optional<Image> findById(Long id);
 
     /**
      * saved or update a given user's profile picture
@@ -38,11 +38,11 @@ public interface ImageService {
      * @param   imageBinary {@link Byte array<byte>}
      *          user new profile picture 
      * 
-     * @return  {@link Optional}<{@link ImageEntity}>
+     * @return  {@link Optional}<{@link Image}>
      *          containing the new uploaded image data,
      *          else Optional.empty if failed
      */
-    public Optional<ImageEntity> saveUserImage(Long userId, byte[] imageBinary);
+    public Optional<Image> saveUserImage(Long userId, byte[] imageBinary);
 
 
     /**
@@ -53,11 +53,11 @@ public interface ImageService {
      * @param   userId {@link Long}
      *          user's id
      * 
-     * @return  {@link Optional}<{@link ImageEntity}>
+     * @return  {@link Optional}<{@link Image}>
      *          containing user's profile picture, else
      *          Optional.empty()
      */
-    public Optional<ImageEntity> findUserProfilePicture(Long userId);
+    public Optional<Image> findUserProfilePicture(Long userId);
 
     /**
      * delete user's profile picture from the database
@@ -66,11 +66,11 @@ public interface ImageService {
      * @param   userId {@link Long}
      *          user's id
      * 
-     * @return  {@link Optional}<{@link ImageEntity}>
+     * @return  {@link Optional}<{@link Image}>
      *          containing user's previous profile picture
      *          before deleteion, else Optional.empty()
      */
-    public Optional<ImageEntity> deleteUserProfilePicture(Long userId);
+    public Optional<Image> deleteUserProfilePicture(Long userId);
 
     /**
      * save or update a given project's profile picture
@@ -82,11 +82,11 @@ public interface ImageService {
      * @param   imageBinary {@link Byte array<byte>}
      *          new image file 
      * 
-     * @return  {@link Optional}<{@link ImageEntity}>
+     * @return  {@link Optional}<{@link Image}>
      *          containing the new uploaded image data,
      *          else Optional.empty if failed
      */
-    public Optional<ImageEntity> saveProjectImage(Long projectId, byte[] imageBinary);
+    public Optional<Image> saveProjectImage(Long projectId, byte[] imageBinary);
 
 
     /**
@@ -97,11 +97,11 @@ public interface ImageService {
      * @param   projectId {@link Long}
      *          project's id
      * 
-     * @return  {@link Optional}<{@link ImageEntity}>
+     * @return  {@link Optional}<{@link Image}>
      *          containing project's profile picture, else
      *          Optional.empty()
      */
-    public Optional<ImageEntity> getProjectPicture(Long projectId);
+    public Optional<Image> getProjectPicture(Long projectId);
 
     /**
      * delete project's profile picture from the database
@@ -110,10 +110,10 @@ public interface ImageService {
      * @param   projectId {@link Long}
      *          project's id
      * 
-     * @return  {@link Optional}<{@link ImageEntity}>
+     * @return  {@link Optional}<{@link Image}>
      *          containing project's previous profile picture
      *          before deleteion, else Optional.empty()
      */
-    public Optional<ImageEntity> deleteProjectPicture(Long projectId);
+    public Optional<Image> deleteProjectPicture(Long projectId);
 
 }

@@ -3,7 +3,7 @@ package com.mito.sectask.seeder.impl;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
-import com.mito.sectask.entities.UserEntity;
+import com.mito.sectask.entities.User;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.seeder.Seeder;
 import com.mito.sectask.services.encoder.PasswordEncocder;
@@ -25,10 +25,10 @@ public class UserSeeder implements Seeder {
     public void seed() {
         final String DEFAULT_APSSWORD = password.encode("password");
 
-        List<UserEntity> users = new ArrayList<>();
+        List<User> users = new ArrayList<>();
 
         users.add(
-            new UserEntity()
+            new User()
                 .setFullName("William Kurnia Mulyadi Putra")
                 .setEmail("william@email.com")
                 .setTagName("william.kmp")
@@ -37,7 +37,7 @@ public class UserSeeder implements Seeder {
         );
 
         users.add(
-            new UserEntity()
+            new User()
                 .setFullName("Andre Wijaya")
                 .setEmail("andre@email.com")
                 .setTagName("andre.w")
@@ -46,7 +46,7 @@ public class UserSeeder implements Seeder {
         );
 
         users.add(
-            new UserEntity()
+            new User()
                 .setFullName("Aisyah Poetri Rahmadhania")
                 .setEmail("aisyah@email.com")
                 .setTagName("aisyah.poetri")
@@ -55,7 +55,7 @@ public class UserSeeder implements Seeder {
         );
 
         users.add(
-            new UserEntity()
+            new User()
                 .setFullName("Calvin Kurnia Mulyadi")
                 .setEmail("calvin@email.com")
                 .setTagName("calvin.kmp")
@@ -64,7 +64,7 @@ public class UserSeeder implements Seeder {
         );
 
         users.add(
-            new UserEntity()
+            new User()
                 .setFullName("Stefan Kurnia")
                 .setEmail("stefan@email.com")
                 .setTagName("stefan.km")
@@ -73,7 +73,7 @@ public class UserSeeder implements Seeder {
         );
 
         users.add(
-            new UserEntity()
+            new User()
                 .setFullName("Filipus Bramantyo Meridivitanto")
                 .setEmail("filipus@email.com")
                 .setTagName("filipus.bm")
@@ -82,7 +82,7 @@ public class UserSeeder implements Seeder {
         );
 
         users.add(
-            new UserEntity()
+            new User()
                 .setFullName("Guido Owen Lwiantoro")
                 .setEmail("owen@email.com")
                 .setTagName("guido.owen")
@@ -91,7 +91,7 @@ public class UserSeeder implements Seeder {
         );
 
         users.add(
-            new UserEntity()
+            new User()
                 .setFullName("Josephine Gunawan")
                 .setEmail("josephine@email.com")
                 .setTagName("ipin")
@@ -100,7 +100,7 @@ public class UserSeeder implements Seeder {
         );
 
         users.add(
-            new UserEntity()
+            new User()
                 .setFullName("Hendry Gunawan")
                 .setEmail("hendry@email.com")
                 .setTagName("igun")
@@ -109,7 +109,7 @@ public class UserSeeder implements Seeder {
         );
 
         users.add(
-            new UserEntity()
+            new User()
                 .setFullName("Blisstina Merada")
                 .setEmail("blisstine@email.com")
                 .setTagName("itin")

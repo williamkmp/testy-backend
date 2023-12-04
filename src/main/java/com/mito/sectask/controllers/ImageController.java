@@ -4,8 +4,8 @@ import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.dto.response.StandardResponse;
 import com.mito.sectask.dto.response.image.ImageUploadResponse;
-import com.mito.sectask.entities.ImageEntity;
-import com.mito.sectask.entities.UserEntity;
+import com.mito.sectask.entities.Image;
+import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
 import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.values.MESSAGES;
@@ -32,13 +32,13 @@ public class ImageController {
 
     @GetMapping("/{imageId}")
     public ResponseEntity<byte[]> get(@PathVariable("imageId") Long id) {
-        Optional<ImageEntity> maybeImage = imageService.findById(id);
+        Optional<Image> maybeImage = imageService.findById(id);
 
         if (maybeImage.isEmpty()) {
             throw new RequestHttpException(MESSAGES.ERROR_RESOURCE_NOT_FOUND);
         }
 
-        ImageEntity image = maybeImage.get();
+        Image image = maybeImage.get();
         return ResponseEntity
             .ok()
             .header("Content-Type", "image/*")
@@ -49,7 +49,7 @@ public class ImageController {
     public ResponseEntity<byte[]> getUserImage(
         @PathVariable("userId") Long userId
     ) {
-        ImageEntity userProfilePicture = imageService
+        Image userProfilePicture = imageService
             .findUserProfilePicture(userId)
             .orElseThrow(() ->
                 new RequestHttpException(MESSAGES.UPLOAD_FAIL)
@@ -69,10 +69,10 @@ public class ImageController {
     @Authenticated(true)
     public StandardResponse<ImageUploadResponse> uploadImageUser(
         @RequestParam("image") MultipartFile file,
-        @Caller UserEntity caller
+        @Caller User caller
     ) {
         try {
-            ImageEntity savedImage = imageService
+            Image savedImage = imageService
                 .saveUserImage(caller.getId(), file.getBytes())
                 .orElseThrow(Exception::new);
 
@@ -86,7 +86,7 @@ public class ImageController {
 
     @DeleteMapping(path = "/user")
     @Authenticated(true)
-    public ResponseEntity<Object> deleteImageUser(@Caller UserEntity caller) {
+    public ResponseEntity<Object> deleteImageUser(@Caller User caller) {
         imageService.deleteUserProfilePicture(caller.getId());
         return ResponseEntity.ok().build();
     }
@@ -95,7 +95,7 @@ public class ImageController {
     public ResponseEntity<byte[]> getProjectProfile(
         @PathVariable("projectId") Long projectId
     ) {
-        ImageEntity picture = imageService
+        Image picture = imageService
             .getProjectPicture(projectId)
             .orElseThrow(() ->
                 new RequestHttpException(MESSAGES.UPLOAD_FAIL)
@@ -118,7 +118,7 @@ public class ImageController {
         @RequestParam("image") MultipartFile file
     ) {
         try {
-            ImageEntity savedImage = imageService
+            Image savedImage = imageService
                 .saveUserImage(projectId, file.getBytes())
                 .orElseThrow(Exception::new);
 

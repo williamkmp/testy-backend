@@ -9,7 +9,7 @@ import com.mito.sectask.dto.dto.TokenDto;
 import com.mito.sectask.dto.parameters.LoginParameter;
 import com.mito.sectask.dto.response.auth.AuthLoginResponse;
 import com.mito.sectask.dto.response.auth.AuthRefreshToken;
-import com.mito.sectask.entities.UserEntity;
+import com.mito.sectask.entities.User;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.auth.AuthService;
 import com.mito.sectask.services.encoder.PasswordEncocder;
@@ -45,13 +45,13 @@ public class AuthServiceImpl implements AuthService {
     public Optional<AuthLoginResponse> loginUser(
         LoginParameter userCredential
     ) {
-        Optional<UserEntity> maybeUser = userRepository.findByEmail(
+        Optional<User> maybeUser = userRepository.findByEmail(
             userCredential.getEmail()
         );
 
         if (maybeUser.isEmpty()) return Optional.empty();
 
-        UserEntity registeredUser = maybeUser.get();
+        User registeredUser = maybeUser.get();
         Optional<String> maybeAccessToken = generateAccessToken(
             registeredUser.getId()
         );
@@ -117,12 +117,12 @@ public class AuthServiceImpl implements AuthService {
         if (maybePayload.isEmpty()) return Optional.empty();
         JwtPayload payload = maybePayload.get();
 
-        Optional<UserEntity> maybeUser = userRepository.findById(
+        Optional<User> maybeUser = userRepository.findById(
             payload.getId()
         );
 
         if (maybeUser.isEmpty()) return Optional.empty();
-        UserEntity user = maybeUser.get();
+        User user = maybeUser.get();
 
         if (
             user.getRefreshToken() == null ||
@@ -143,11 +143,11 @@ public class AuthServiceImpl implements AuthService {
      *          Optional.empty() if generation failed
      */
     private Optional<String> generateAccessToken(Long userId) {
-        Optional<UserEntity> maybeUser = userRepository.findById(userId);
+        Optional<User> maybeUser = userRepository.findById(userId);
 
         if (maybeUser.isEmpty()) return Optional.empty();
 
-        UserEntity user = maybeUser.get();
+        User user = maybeUser.get();
         JwtPayload tokenPayload = JwtPayload
             .builder()
             .id(user.getId())
@@ -175,11 +175,11 @@ public class AuthServiceImpl implements AuthService {
      */
     @Transactional
     private Optional<String> generateRefreshToken(Long userId) {
-        Optional<UserEntity> maybeUser = userRepository.findById(userId);
+        Optional<User> maybeUser = userRepository.findById(userId);
 
         if (maybeUser.isEmpty()) return Optional.empty();
 
-        UserEntity user = maybeUser.get();
+        User user = maybeUser.get();
         JwtPayload tokenPayload = JwtPayload
             .builder()
             .id(user.getId())
