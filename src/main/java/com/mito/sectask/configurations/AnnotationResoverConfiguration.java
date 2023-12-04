@@ -8,15 +8,15 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class ResoverConfiguration implements WebMvcConfigurer {
+public class AnnotationResoverConfiguration implements WebMvcConfigurer {
 
     @Autowired
-    private CallerResolver callerResolver;
+    private CallerResolver callerAnnotationResolver;
 
     @Override
     public void addArgumentResolvers(
         List<HandlerMethodArgumentResolver> resolvers
     ) {
-        resolvers.add(callerResolver);
+        resolvers.add(callerAnnotationResolver);
     }
 }
