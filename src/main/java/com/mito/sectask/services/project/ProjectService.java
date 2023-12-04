@@ -1,7 +1,9 @@
 package com.mito.sectask.services.project;
 
 import com.mito.sectask.entities.ProjectEntity;
+import com.mito.sectask.entities.UserEntity;
 import com.mito.sectask.entities.UserProjectRoleEntity;
+import com.mito.sectask.values.USER_ROLE;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,12 +40,30 @@ public interface ProjectService {
 
     /**
      * get all project list that is affiliated with this user
-     * 
+     *
      * @param   userId {@link Long}
      *          user id
-     * 
+     *
      * @return  {@link List}<{@link ProjectEntity}>
      *          project affiliated with this user
      */
     public List<ProjectEntity> getUserProjects(Long userId);
+
+    /**
+     * get a certain project list of member filter by
+     * user role
+     *
+     * @param   projectId {@link Long}
+     *          project id
+     *
+     * @param   roles {@link List}<{@link USER_ROLE}>
+     *          role filter, allowed user roles
+     *
+     * @return  {@link List}<{@link UserEntity}>
+     *          project member, based on filtered role
+     */
+    public List<UserEntity> getProjectMembers(
+        Long projectId,
+        List<USER_ROLE> roles
+    );
 }

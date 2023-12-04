@@ -16,7 +16,9 @@ import com.mito.sectask.services.project.ProjectService;
 import com.mito.sectask.values.USER_ROLE;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.transaction.Transactional;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -80,7 +82,17 @@ public class ProjectServiceImpl implements ProjectService {
             .join(authority.role, role)
             .where(user.id.eq(userId))
             .where(authority.isPending.eq(false))
+            .where(role.name.eq(USER_ROLE.FULL_ACCESS))
             .orderBy(project.endDate.desc())
             .fetch();
+    }
+
+    @Override
+    public List<UserEntity> getProjectMembers(
+        Long projectId,
+        List<USER_ROLE> roles
+    ) {
+        //TODO: implement this
+        return Collections.emptyList();
     }
 }
