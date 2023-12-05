@@ -24,4 +24,6 @@ public class UserUpdateProfileResponse {
 
     @NonNull
     private String fullName;
+
+    private String imageSrc;
 }

@@ -21,4 +21,6 @@ public class UserMeResponse {
 
     @NonNull
     private String fullName;
+
+    private String imageSrc;
 }

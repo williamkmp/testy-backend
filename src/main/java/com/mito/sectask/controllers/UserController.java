@@ -44,6 +44,7 @@ public class UserController {
                     .setEmail(caller.getEmail())
                     .setTagName(caller.getTagName())
                     .setFullName(caller.getFullName())
+                    .setImageSrc(caller.getImageSrc())
             );
     }
 
@@ -92,6 +93,7 @@ public class UserController {
         caller.setEmail(request.getEmail());
         caller.setTagName(request.getTagName());
         caller.setFullName(request.getFullName());
+        caller.setImageSrc(request.getImageSrc());
 
         Optional<User> maybeUser = userService.updateUser(caller);
 
@@ -108,6 +110,7 @@ public class UserController {
                     .setEmail(updatedUser.getEmail())
                     .setTagName(updatedUser.getTagName())
                     .setFullName(updatedUser.getFullName())
+                    .setImageSrc(updatedUser.getImageSrc())
             );
     }
 
