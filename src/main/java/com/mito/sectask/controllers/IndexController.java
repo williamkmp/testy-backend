@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.mito.sectask.dto.response.Response;
-import com.mito.sectask.values.MESSAGES;
 
 @RestController
 public class IndexController {
