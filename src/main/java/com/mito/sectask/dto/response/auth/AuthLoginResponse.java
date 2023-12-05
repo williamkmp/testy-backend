@@ -1,5 +1,6 @@
 package com.mito.sectask.dto.response.auth;
 
+import com.mito.sectask.dto.dto.TokenDto;
 import io.micrometer.common.lang.NonNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,10 @@ public class AuthLoginResponse {
     @NonNull
     private String fullName;
 
+    private String imageSrc;
+
     @NonNull
-    private AuthRefreshToken token;
+    private TokenDto token;
+
+
 }

@@ -1,5 +1,10 @@
 package com.mito.sectask.services.auth.impl;
 
+import java.util.Base64;
+import java.util.Date;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -8,18 +13,12 @@ import com.mito.sectask.dto.dto.JwtPayload;
 import com.mito.sectask.dto.dto.TokenDto;
 import com.mito.sectask.dto.parameters.LoginParameter;
 import com.mito.sectask.dto.response.auth.AuthLoginResponse;
-import com.mito.sectask.dto.response.auth.AuthRefreshToken;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.auth.AuthService;
 import com.mito.sectask.services.encoder.PasswordEncocder;
 import jakarta.transaction.Transactional;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -78,8 +77,9 @@ public class AuthServiceImpl implements AuthService {
                 .setEmail(registeredUser.getEmail())
                 .setFullName(registeredUser.getFullName())
                 .setTagName(registeredUser.getTagName())
+                .setImageSrc(registeredUser.getImageSrc())
                 .setToken(
-                    new AuthRefreshToken()
+                    new TokenDto()
                         .setAccessToken(maybeAccessToken.get())
                         .setRefreshToken(maybeRefreshToken.get())
                 )
