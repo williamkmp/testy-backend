@@ -9,7 +9,6 @@ import com.mito.sectask.dto.dto.JwtPayload;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.auth.AuthService;
 import com.mito.sectask.values.KEY;
-import com.mito.sectask.values.MESSAGES;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
