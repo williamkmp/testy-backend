@@ -122,7 +122,7 @@ public class AuthController {
     }
 
     @PostMapping(
-        path = "/token/refresh",
+        path = "/token",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
