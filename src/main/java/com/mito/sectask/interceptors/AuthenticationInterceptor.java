@@ -43,7 +43,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         );
 
         if (maybePayload.isEmpty()) {
-            throw new UnauthorizedHttpException(MESSAGES.ERROR_UNAUTHORIZED);
+            throw new UnauthorizedHttpException();
         }
 
         JwtPayload caller = maybePayload.get();

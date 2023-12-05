@@ -29,6 +29,6 @@ public class Image {
     private byte[] file;
 
     @CreationTimestamp
-    @Column(name = "craeted_at", nullable = false)
+    @Column(name = "created_at", nullable = false)
     private Date createdAt;
 }

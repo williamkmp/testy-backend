@@ -6,15 +6,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpStatusCodeException;
-import com.mito.sectask.dto.response.StandardResponse;
-import com.mito.sectask.exceptions.httpexceptions.RequestHttpException;
-import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
+import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.values.MESSAGES;
 
 @ControllerAdvice
@@ -23,71 +20,24 @@ public class ExceptionCatcher {
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<StandardResponse<Object>> internalServerException(
-        Exception exception
-    ) {
+    public Response<Object> internalServerException(Exception exception) {
         log.error("Unhandled exception occured", exception);
-
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-            .body(
-                new StandardResponse<>()
-                    .setStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .setError(MESSAGES.ERROR_INTERNAL_SERVER)
-            );
-    }
-
-    @ExceptionHandler(UnauthorizedHttpException.class)
-    public ResponseEntity<StandardResponse<Object>> unauthorizedException(
-        UnauthorizedHttpException exception
-    ) {
-        String errorMessage = exception.getMessage() == null
-            ? exception.getMessage()
-            : MESSAGES.ERROR_UNAUTHORIZED;
-
-        return ResponseEntity
-            .status(HttpStatus.UNAUTHORIZED.value())
-            .body(
-                new StandardResponse<>()
-                    .setStatus(HttpStatus.UNAUTHORIZED)
-                    .setError(errorMessage)
-            );
+        return new Response<Object>(HttpStatus.INTERNAL_SERVER_ERROR)
+            .setMessage(MESSAGES.ERROR_INTERNAL_SERVER);
     }
 
     @ExceptionHandler(HttpStatusCodeException.class)
-    public ResponseEntity<StandardResponse<Object>> httpException(
+    public Response<Object> httpStatusCodeException(
         HttpStatusCodeException exception
     ) {
-        Integer statusCode = exception.getStatusCode().value();
-        String errorMessage = exception.getMessage();
-
-        if (null == errorMessage) {
-            errorMessage = exception.getStatusText();
-        }
-
-        return ResponseEntity
-            .status(statusCode)
-            .body(
-                new StandardResponse<>()
-                    .setStatus(HttpStatus.valueOf(statusCode))
-                    .setError(errorMessage)
-            );
-    }
-
-    @ExceptionHandler(RequestHttpException.class)
-    public ResponseEntity<StandardResponse<?>> requestHttpException(
-        RequestHttpException exception
-    ) {
-        StandardResponse<?> responseBody = exception.getResponseBody();
-        Integer statusCode = responseBody.getStatus();
-        return ResponseEntity.status(statusCode).body(responseBody);
+        return new Response<Object>(exception.getStatusCode())
+            .setMessage(exception.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<StandardResponse<Object>> validationException(
+    public Response<Object> validationException(
         MethodArgumentNotValidException exception
     ) {
-        Integer statusCode = HttpStatus.BAD_REQUEST.value();
         List<FieldError> errors = exception.getBindingResult().getFieldErrors();
         Map<String, String> failedValidations = new HashMap<>();
         for (FieldError error : errors) {
@@ -97,12 +47,7 @@ public class ExceptionCatcher {
             failedValidations.put(key, message);
         }
 
-        return ResponseEntity
-            .status(statusCode)
-            .body(
-                new StandardResponse<>()
-                    .setStatus(HttpStatus.valueOf(statusCode))
-                    .setFormError(failedValidations)
-            );
+        return new Response<>(HttpStatus.BAD_REQUEST)
+            .setError(failedValidations);
     }
 }
