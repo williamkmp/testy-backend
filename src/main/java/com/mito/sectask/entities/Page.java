@@ -46,6 +46,6 @@ public class Page {
     @Column(name = "image_src", nullable = false)
     private String imageSrc;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "page")
     private Set<Authority> authoritySet;
 }
