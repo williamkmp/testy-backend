@@ -50,7 +50,6 @@ public class UserController {
 
     @Authenticated(true)
     @PutMapping(
-        path = "",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -103,7 +102,7 @@ public class UserController {
         User updatedUser = maybeUser.get();
 
         return new Response<UserUpdateProfileResponse>(HttpStatus.OK)
-            .setMessage(MESSAGES.UPLOAD_SUCCESS)
+            .setMessage(MESSAGES.UPDATE_SUCCESS)
             .setData(
                 new UserUpdateProfileResponse()
                     .setId(updatedUser.getId().toString())
