@@ -19,7 +19,6 @@ import com.mito.sectask.dto.request.auth.AuthRefreshTokenRequest;
 import com.mito.sectask.dto.request.auth.AuthRegisterRequest;
 import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.dto.response.auth.AuthLoginResponse;
-import com.mito.sectask.dto.response.auth.AuthRefreshToken;
 import com.mito.sectask.dto.response.auth.AuthRegisterResponse;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
@@ -126,7 +125,7 @@ public class AuthController {
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Response<AuthRefreshToken> refresh(
+    public Response<TokenDto> refresh(
         @RequestBody @Valid AuthRefreshTokenRequest request
     ) {
         String refreshToken = request.getRefreshToken();
@@ -148,13 +147,9 @@ public class AuthController {
             throw new UnauthorizedHttpException();
         }
 
-        TokenDto tokens = maybeTokens.get();
-
-        return new Response<AuthRefreshToken>(HttpStatus.OK)
+        return new Response<TokenDto>(HttpStatus.OK)
             .setData(
-                new AuthRefreshToken()
-                    .setAccessToken(tokens.getAccessToken())
-                    .setRefreshToken(tokens.getRefreshToken())
+                maybeTokens.get()
             );
     }
 }
