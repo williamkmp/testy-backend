@@ -66,7 +66,7 @@ public class ImageController {
                 .saveImage(file.getBytes())
                 .orElseThrow(Exception::new);
 
-            return new Response<ImageUploadResponse>(HttpStatus.BAD_REQUEST)
+            return new Response<ImageUploadResponse>(HttpStatus.CREATED)
                 .setMessage(MESSAGES.UPLOAD_SUCCESS)
                 .setData(new ImageUploadResponse().setSrc(baseUrl + "/image/" + savedImage.getId().toString()));
         } catch (Exception e) {

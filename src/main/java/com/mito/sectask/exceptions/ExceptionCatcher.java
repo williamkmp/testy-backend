@@ -31,7 +31,7 @@ public class ExceptionCatcher {
         HttpStatusCodeException exception
     ) {
         return new Response<Object>(exception.getStatusCode())
-            .setMessage(exception.getMessage());
+            .setMessage(exception.getStatusText());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
