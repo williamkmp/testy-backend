@@ -9,5 +9,5 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class ImageUploadResponse {
 
-    private Long id;
+    private String src;
 }
