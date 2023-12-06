@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> maybeDuplicate = userRepository.findByEmail(email);
         if (maybeDuplicate.isEmpty()) return Boolean.TRUE;
         User duplicate = maybeDuplicate.get();
-        return !duplicate.getId().equals(userId);
+        return duplicate.getId().equals(userId);
     }
 
     @Override
@@ -97,6 +97,6 @@ public class UserServiceImpl implements UserService {
         );
         if (maybeDuplicate.isEmpty()) return Boolean.TRUE;
         User duplicate = maybeDuplicate.get();
-        return !duplicate.getId().equals(userId);
+        return duplicate.getId().equals(userId);
     }
 }
