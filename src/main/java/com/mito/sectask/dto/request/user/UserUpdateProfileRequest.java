@@ -47,6 +47,6 @@ public class UserUpdateProfileRequest {
     @SerializedName("fullName")
     private String fullName;
 
-    @SerializedName("imageSrc")
-    private String imageSrc;
+    @SerializedName("imageId")
+    private String imageId;
 }

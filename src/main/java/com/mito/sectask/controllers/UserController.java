@@ -1,15 +1,5 @@
 package com.mito.sectask.controllers;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.dto.request.user.UserUpdatePasswordRequest;
@@ -17,14 +7,27 @@ import com.mito.sectask.dto.request.user.UserUpdateProfileRequest;
 import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.dto.response.user.UserMeResponse;
 import com.mito.sectask.dto.response.user.UserUpdateProfileResponse;
+import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.encoder.PasswordEncocder;
+import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.services.user.UserService;
 import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.VALIDATION;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,10 +36,16 @@ public class UserController {
 
     private final UserService userService;
     private final PasswordEncocder encoder;
+    private final ImageService imageService;
 
     @Authenticated(true)
     @GetMapping(path = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     public Response<UserMeResponse> me(@Caller User caller) {
+        String imageSrc = null;
+        File image = caller.getImage();
+        if (image != null) {
+            imageSrc = imageService.getImageUrl(image.getId()).orElse(null);
+        }
         return new Response<UserMeResponse>(HttpStatus.OK)
             .setData(
                 new UserMeResponse()
@@ -44,15 +53,16 @@ public class UserController {
                     .setEmail(caller.getEmail())
                     .setTagName(caller.getTagName())
                     .setFullName(caller.getFullName())
-                    .setImageSrc(caller.getImageSrc())
+                    .setImageSrc(imageSrc)
             );
     }
 
-    @Authenticated(true)
     @PutMapping(
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @Transactional
+    @Authenticated(true)
     public Response<UserUpdateProfileResponse> updateProfile(
         @Valid @RequestBody UserUpdateProfileRequest request,
         @Caller User caller
@@ -89,17 +99,31 @@ public class UserController {
                 .setError(validationError);
         }
 
+        // Update user data
         caller.setEmail(request.getEmail());
         caller.setTagName(request.getTagName());
         caller.setFullName(request.getFullName());
-        caller.setImageSrc(request.getImageSrc());
-
         Optional<User> maybeUser = userService.updateUser(caller);
-
         if (maybeUser.isEmpty()) {
             throw new UnauthorizedHttpException();
         }
         User updatedUser = maybeUser.get();
+
+        // Updating user image
+        String profileSrc = null;
+        Long imageId = null;
+        try {
+            imageId = Long.valueOf(request.getImageId());
+        } catch (Exception e) {
+            imageId = null;
+        }
+        Optional<File> maybeImage = imageService.updateUserImage(
+            caller.getId(),
+            imageId
+        );
+        if (maybeImage.isPresent()) {
+            profileSrc = imageService.getImageUrl(imageId).orElse(null);
+        }
 
         return new Response<UserUpdateProfileResponse>(HttpStatus.OK)
             .setMessage(MESSAGES.UPDATE_SUCCESS)
@@ -109,7 +133,7 @@ public class UserController {
                     .setEmail(updatedUser.getEmail())
                     .setTagName(updatedUser.getTagName())
                     .setFullName(updatedUser.getFullName())
-                    .setImageSrc(updatedUser.getImageSrc())
+                    .setImageSrc(profileSrc)
             );
     }
 
