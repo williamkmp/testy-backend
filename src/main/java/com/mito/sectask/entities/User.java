@@ -8,7 +8,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,8 +46,9 @@ public class User {
     @Column(name = "refresh_token", nullable = true)
     private String refreshToken;
 
-    @Column(name = "image_src", nullable = true)
-    private String imageSrc;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = true)
+    private File image;
 
     @OneToMany(
         cascade = CascadeType.ALL,
