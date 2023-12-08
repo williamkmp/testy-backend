@@ -1,14 +1,14 @@
 package com.mito.sectask.seeder.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.stereotype.Component;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.seeder.Seeder;
 import com.mito.sectask.services.encoder.PasswordEncocder;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 /**
  * Seeder class for table 'users'
@@ -33,7 +33,6 @@ public class UserSeeder implements Seeder {
                 .setEmail("william@email.com")
                 .setTagName("william.kmp")
                 .setPassword(DEFAULT_APSSWORD)
-                .setImageSrc(generateRandomAvatarURL())
                 .setIsDeleted(false)
         );
 
@@ -43,7 +42,6 @@ public class UserSeeder implements Seeder {
                 .setEmail("andre@email.com")
                 .setTagName("andre.w")
                 .setPassword(DEFAULT_APSSWORD)
-                .setImageSrc(generateRandomAvatarURL())
                 .setIsDeleted(false)
         );
 
@@ -53,7 +51,6 @@ public class UserSeeder implements Seeder {
                 .setEmail("aisyah@email.com")
                 .setTagName("aisyah.poetri")
                 .setPassword(DEFAULT_APSSWORD)
-                .setImageSrc(generateRandomAvatarURL())
                 .setIsDeleted(false)
         );
 
@@ -63,7 +60,6 @@ public class UserSeeder implements Seeder {
                 .setEmail("calvin@email.com")
                 .setTagName("calvin.kmp")
                 .setPassword(DEFAULT_APSSWORD)
-                .setImageSrc(generateRandomAvatarURL())
                 .setIsDeleted(false)
         );
 
@@ -73,7 +69,6 @@ public class UserSeeder implements Seeder {
                 .setEmail("stefan@email.com")
                 .setTagName("stefan.km")
                 .setPassword(DEFAULT_APSSWORD)
-                .setImageSrc(generateRandomAvatarURL())
                 .setIsDeleted(false)
         );
 
@@ -83,7 +78,6 @@ public class UserSeeder implements Seeder {
                 .setEmail("filipus@email.com")
                 .setTagName("filipus.bm")
                 .setPassword(DEFAULT_APSSWORD)
-                .setImageSrc(generateRandomAvatarURL())
                 .setIsDeleted(false)
         );
 
@@ -93,7 +87,6 @@ public class UserSeeder implements Seeder {
                 .setEmail("owen@email.com")
                 .setTagName("guido.owen")
                 .setPassword(DEFAULT_APSSWORD)
-                .setImageSrc(generateRandomAvatarURL())
                 .setIsDeleted(false)
         );
 
@@ -103,7 +96,6 @@ public class UserSeeder implements Seeder {
                 .setEmail("josephine@email.com")
                 .setTagName("ipin")
                 .setPassword(DEFAULT_APSSWORD)
-                .setImageSrc(generateRandomAvatarURL())
                 .setIsDeleted(false)
         );
 
@@ -113,7 +105,6 @@ public class UserSeeder implements Seeder {
                 .setEmail("hendry@email.com")
                 .setTagName("igun")
                 .setPassword(DEFAULT_APSSWORD)
-                .setImageSrc(generateRandomAvatarURL())
                 .setIsDeleted(false)
         );
 
@@ -123,18 +114,9 @@ public class UserSeeder implements Seeder {
                 .setEmail("blisstine@email.com")
                 .setTagName("itin")
                 .setPassword(DEFAULT_APSSWORD)
-                .setImageSrc(generateRandomAvatarURL())
                 .setIsDeleted(false)
         );
 
         userRepository.saveAllAndFlush(users);
-    }
-
-    public int randomInt(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
-    }
-
-    private String generateRandomAvatarURL() {
-        return "https://i.pravatar.cc/300?img=" + randomInt(20, 60);
     }
 }
