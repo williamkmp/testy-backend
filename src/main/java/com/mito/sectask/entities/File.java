@@ -17,16 +17,19 @@ import org.hibernate.annotations.CreationTimestamp;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity
-@Table(name = "images")
-public class Image {
+@Table(name = "files")
+public class File {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Lob
-    @Column(name = "file")
-    private byte[] file;
+    @Column(name = "file", nullable = false)
+    private byte[] bytes;
+
+    @Column(name = "content_type", nullable = false)
+    private String contentType;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
