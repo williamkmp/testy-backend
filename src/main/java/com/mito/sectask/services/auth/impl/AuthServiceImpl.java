@@ -12,7 +12,6 @@ import com.google.gson.Gson;
 import com.mito.sectask.dto.dto.JwtPayload;
 import com.mito.sectask.dto.dto.TokenDto;
 import com.mito.sectask.dto.parameters.LoginParameter;
-import com.mito.sectask.dto.response.auth.AuthLoginResponse;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.auth.AuthService;
@@ -41,49 +40,18 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncocder password;
 
     @Override
-    public Optional<AuthLoginResponse> loginUser(
-        LoginParameter userCredential
-    ) {
+    public Optional<User> loginUser(LoginParameter userCredential) {
         Optional<User> maybeUser = userRepository.findByEmail(
             userCredential.getEmail()
         );
-
         if (maybeUser.isEmpty()) return Optional.empty();
-
         User registeredUser = maybeUser.get();
-        Optional<String> maybeAccessToken = generateAccessToken(
-            registeredUser.getId()
-        );
-        Optional<String> maybeRefreshToken = generateRefreshToken(
-            registeredUser.getId()
-        );
-
         Boolean isPasswordMatch = password.matches(
             userCredential.getPassword(),
             registeredUser.getPassword()
         );
-
-        if (
-            maybeAccessToken.isEmpty() ||
-            maybeRefreshToken.isEmpty() ||
-            Boolean.FALSE.equals(isPasswordMatch)
-        ) {
-            return Optional.empty();
-        }
-
-        return Optional.of(
-            new AuthLoginResponse()
-                .setId(registeredUser.getId().toString())
-                .setEmail(registeredUser.getEmail())
-                .setFullName(registeredUser.getFullName())
-                .setTagName(registeredUser.getTagName())
-                .setImageSrc(registeredUser.getImageSrc())
-                .setToken(
-                    new TokenDto()
-                        .setAccessToken(maybeAccessToken.get())
-                        .setRefreshToken(maybeRefreshToken.get())
-                )
-        );
+        if (Boolean.FALSE.equals(isPasswordMatch)) return Optional.empty();
+        return Optional.of(registeredUser);
     }
 
     @Override
@@ -117,9 +85,7 @@ public class AuthServiceImpl implements AuthService {
         if (maybePayload.isEmpty()) return Optional.empty();
         JwtPayload payload = maybePayload.get();
 
-        Optional<User> maybeUser = userRepository.findById(
-            payload.getId()
-        );
+        Optional<User> maybeUser = userRepository.findById(payload.getId());
 
         if (maybeUser.isEmpty()) return Optional.empty();
         User user = maybeUser.get();

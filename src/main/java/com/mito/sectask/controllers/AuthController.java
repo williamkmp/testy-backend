@@ -20,12 +20,15 @@ import com.mito.sectask.dto.request.auth.AuthRegisterRequest;
 import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.dto.response.auth.AuthLoginResponse;
 import com.mito.sectask.dto.response.auth.AuthRegisterResponse;
+import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.auth.AuthService;
+import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.services.user.UserService;
 import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.VALIDATION;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -36,29 +39,52 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
     private final AuthService authService;
-
     private final UserService userService;
+    private final ImageService imageService;
 
     @PostMapping(
         path = "/login",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @Transactional
     public Response<AuthLoginResponse> login(
         @RequestBody @Valid AuthLoginRequest request
     ) {
-        Optional<AuthLoginResponse> maybeResponse = authService.loginUser(
+        Optional<User> maybeUser = authService.loginUser(
             new LoginParameter()
                 .setEmail(request.getEmail())
                 .setPassword(request.getPassword())
         );
-
-        if (maybeResponse.isEmpty()) {
+        
+        if (maybeUser.isEmpty()) {
             return new Response<AuthLoginResponse>(HttpStatus.BAD_REQUEST)
-                .setRootError(VALIDATION.INVALID_CREDENTIAL);
+            .setRootError(VALIDATION.INVALID_CREDENTIAL);
         }
+
+        User registeredUser = maybeUser.get();
+        Optional<TokenDto> maybeToken = authService.generateTokens(registeredUser.getId());
+
+        if (maybeToken.isEmpty()) {
+            return new Response<AuthLoginResponse>(HttpStatus.INTERNAL_SERVER_ERROR)
+            .setMessage(MESSAGES.ERROR_INTERNAL_SERVER);
+        }
+
+        String imageSrc = null;
+        File image = registeredUser.getImage();
+        if(image != null) {
+            imageSrc = imageService.getImageUrl(image.getId()).orElse(null);
+        }
+        TokenDto token = maybeToken.get();
         return new Response<AuthLoginResponse>(HttpStatus.OK)
-            .setData(maybeResponse.get());
+            .setData(new AuthLoginResponse()
+                .setId(registeredUser.getId().toString())
+                .setEmail(registeredUser.getEmail())
+                .setTagName(registeredUser.getTagName())
+                .setFullName(registeredUser.getFullName())
+                .setImageSrc(imageSrc)
+                .setToken(token)
+            );
     }
 
     @PostMapping(

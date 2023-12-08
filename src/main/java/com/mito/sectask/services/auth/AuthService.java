@@ -4,6 +4,7 @@ import com.mito.sectask.dto.dto.JwtPayload;
 import com.mito.sectask.dto.dto.TokenDto;
 import com.mito.sectask.dto.parameters.LoginParameter;
 import com.mito.sectask.dto.response.auth.AuthLoginResponse;
+import com.mito.sectask.entities.User;
 import java.util.Optional;
 
 /**
@@ -18,11 +19,10 @@ public interface AuthService {
      * @param   userCredential {@link AuthLoginResponse}:
      *          credential needed for authentication
      *
-     * @return  {@link Optional}<{@link AuthLoginResponse}>
-     *          containing the response body if success,
-     *          else Optional.empty() if login fails.
+     * @return  {@link Optional}<{@link User}>
+     *          containing the lgged in user data 
      */
-    public Optional<AuthLoginResponse> loginUser(LoginParameter userCredential);
+    public Optional<User> loginUser(LoginParameter userCredential);
 
     /**
      * generate new refresh & access token for the
