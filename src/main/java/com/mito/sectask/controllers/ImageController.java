@@ -12,15 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.mito.sectask.annotations.Authenticated;
-import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.dto.response.image.ImageUploadResponse;
 import com.mito.sectask.entities.File;
-import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.ResourceNotFoundHttpException;
 import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.values.MESSAGES;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 
 @RestController
