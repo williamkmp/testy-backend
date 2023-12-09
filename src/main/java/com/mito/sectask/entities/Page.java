@@ -30,15 +30,6 @@ public class Page {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = true)
-    private String description;
-
-    @Column(name = "start_date", nullable = false)
-    private Date startDate;
-
-    @Column(name = "end_date", nullable = false)
-    private Date endDate;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
