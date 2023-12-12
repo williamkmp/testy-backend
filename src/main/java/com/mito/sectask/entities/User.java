@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Data
-@NoArgsConstructor
 @Accessors(chain = true)
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
