@@ -90,33 +90,6 @@ public class UserSeeder implements Seeder {
                 .setIsDeleted(false)
         );
 
-        users.add(
-            new User()
-                .setFullName("Josephine Gunawan")
-                .setEmail("josephine@email.com")
-                .setTagName("ipin")
-                .setPassword(DEFAULT_APSSWORD)
-                .setIsDeleted(false)
-        );
-
-        users.add(
-            new User()
-                .setFullName("Hendry Gunawan")
-                .setEmail("hendry@email.com")
-                .setTagName("igun")
-                .setPassword(DEFAULT_APSSWORD)
-                .setIsDeleted(false)
-        );
-
-        users.add(
-            new User()
-                .setFullName("Blisstina Merada")
-                .setEmail("blisstine@email.com")
-                .setTagName("itin")
-                .setPassword(DEFAULT_APSSWORD)
-                .setIsDeleted(false)
-        );
-
         userRepository.saveAllAndFlush(users);
     }
 }
