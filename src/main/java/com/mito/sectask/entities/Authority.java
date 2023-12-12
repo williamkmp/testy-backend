@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity
-@Table(name = "user_Project_roles")
+@Table(name = "authorities")
 public class Authority {
 
     @Id
