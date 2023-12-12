@@ -1,6 +1,7 @@
 package com.mito.sectask.seeder;
 
 import com.mito.sectask.seeder.impl.AuthoritySeeder;
+import com.mito.sectask.seeder.impl.PageSeeder;
 import com.mito.sectask.seeder.impl.RoleSeeder;
 import com.mito.sectask.seeder.impl.UserSeeder;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class SeedRunner implements CommandLineRunner {
     private Logger log = LoggerFactory.getLogger(SeedRunner.class);
     private final RoleSeeder roleSeeder;
     private final UserSeeder userSeeder;
+    private final PageSeeder pageSeeder;
     private final AuthoritySeeder authoritySeeder;
 
     @Override
@@ -29,13 +31,11 @@ public class SeedRunner implements CommandLineRunner {
             // Registering seeder
             seeders.add(roleSeeder);
             seeders.add(userSeeder);
+            seeders.add(pageSeeder);
             seeders.add(authoritySeeder);
 
             for (Seeder seeder : seeders) {
-                String seederName = seeder.getClass().getSimpleName();
-                log.info(String.format("    [%s]: Started", seederName));
                 seeder.seed();
-                log.info(String.format("    [%s]: Completed", seederName));
             }
         } catch (Exception e) {
             log.error("Error when seeding", e);
