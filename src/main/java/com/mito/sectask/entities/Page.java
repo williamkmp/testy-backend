@@ -34,9 +34,6 @@ public class Page {
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
-    @Column(name = "image_src", nullable = false)
-    private String imageSrc;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "page")
     private Set<Authority> authoritySet;
 }
