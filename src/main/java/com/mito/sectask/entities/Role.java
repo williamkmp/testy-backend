@@ -1,6 +1,6 @@
 package com.mito.sectask.entities;
 
-import java.util.Set;
+import java.util.List;
 import com.mito.sectask.values.USER_ROLE;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,5 +35,5 @@ public class Role {
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
-    private Set<Authority> authoritySet;
+    private List<Authority> authorities;
 }

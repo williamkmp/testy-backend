@@ -1,6 +1,6 @@
 package com.mito.sectask.entities;
 
-import java.util.Set;
+import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,5 +55,5 @@ public class User {
         mappedBy = "user",
         fetch = FetchType.LAZY
     )
-    private Set<Authority> authoritySet;
+    private List<Authority> authorities;
 }
