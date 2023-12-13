@@ -1,15 +1,17 @@
-package com.mito.sectask.dto.response.auth;
+package com.mito.sectask.dto.response.user;
 
-import com.mito.sectask.dto.dto.TokenDto;
 import io.micrometer.common.lang.NonNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * @endpoint {@link com.mito.sectask.controllers.UserController#updateProfile() updateProfile}
+ */
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
-public class AuthLoginResponse {
+public class UserData {
 
     @NonNull
     private String id;
@@ -24,9 +26,4 @@ public class AuthLoginResponse {
     private String fullName;
 
     private String imageSrc;
-
-    @NonNull
-    private TokenDto token;
-
-
 }

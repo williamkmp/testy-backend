@@ -3,7 +3,7 @@ package com.mito.sectask.services.auth;
 import com.mito.sectask.dto.dto.JwtPayload;
 import com.mito.sectask.dto.dto.TokenDto;
 import com.mito.sectask.dto.parameters.LoginParameter;
-import com.mito.sectask.dto.response.auth.AuthLoginResponse;
+import com.mito.sectask.dto.response.auth.LoginData;
 import com.mito.sectask.entities.User;
 import java.util.Optional;
 
@@ -16,7 +16,7 @@ public interface AuthService {
     /**
      * authenticate user based on credential
      *
-     * @param   userCredential {@link AuthLoginResponse}:
+     * @param   userCredential {@link LoginData}:
      *          credential needed for authentication
      *
      * @return  {@link Optional}<{@link User}>

@@ -1,12 +1,21 @@
 package com.mito.sectask.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.dto.request.user.UserUpdatePasswordRequest;
 import com.mito.sectask.dto.request.user.UserUpdateProfileRequest;
 import com.mito.sectask.dto.response.Response;
-import com.mito.sectask.dto.response.user.UserMeResponse;
-import com.mito.sectask.dto.response.user.UserUpdateProfileResponse;
+import com.mito.sectask.dto.response.user.UserData;
 import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
@@ -17,17 +26,7 @@ import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.VALIDATION;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,16 +39,16 @@ public class UserController {
 
     @Authenticated(true)
     @GetMapping(path = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response<UserMeResponse> me(@Caller User caller) {
+    public Response<UserData> me(@Caller User caller) {
         String imageSrc = null;
         File image = caller.getImage();
         if (image != null) {
             imageSrc = imageService.getImageUrl(image.getId()).orElse(null);
         }
-        return new Response<UserMeResponse>(HttpStatus.OK)
+        return new Response<UserData>(HttpStatus.OK)
             .setData(
-                new UserMeResponse()
-                    .setId(caller.getId())
+                new UserData()
+                    .setId(caller.getId().toString())
                     .setEmail(caller.getEmail())
                     .setTagName(caller.getTagName())
                     .setFullName(caller.getFullName())
@@ -63,7 +62,7 @@ public class UserController {
     )
     @Transactional
     @Authenticated(true)
-    public Response<UserUpdateProfileResponse> updateProfile(
+    public Response<UserData> updateProfile(
         @Valid @RequestBody UserUpdateProfileRequest request,
         @Caller User caller
     ) {
@@ -92,7 +91,7 @@ public class UserController {
                 !isEmailAvailable ? VALIDATION.UNIQUE : null
             );
 
-            return new Response<UserUpdateProfileResponse>(
+            return new Response<UserData>(
                 HttpStatus.BAD_REQUEST
             )
                 .setMessage(MESSAGES.UPDATE_FAIL)
@@ -125,10 +124,10 @@ public class UserController {
             profileSrc = imageService.getImageUrl(imageId).orElse(null);
         }
 
-        return new Response<UserUpdateProfileResponse>(HttpStatus.OK)
+        return new Response<UserData>(HttpStatus.OK)
             .setMessage(MESSAGES.UPDATE_SUCCESS)
             .setData(
-                new UserUpdateProfileResponse()
+                new UserData()
                     .setId(updatedUser.getId().toString())
                     .setEmail(updatedUser.getEmail())
                     .setTagName(updatedUser.getTagName())
@@ -139,7 +138,7 @@ public class UserController {
 
     @Authenticated(true)
     @PutMapping(path = "/password")
-    public Response<UserUpdateProfileResponse> updatePassword(
+    public Response<UserData> updatePassword(
         @RequestBody @Valid UserUpdatePasswordRequest request,
         @Caller User caller
     ) {
@@ -152,7 +151,7 @@ public class UserController {
             Map<String, String> validationError = new HashMap<>();
             validationError.put("oldPassword", VALIDATION.WRONG);
 
-            return new Response<UserUpdateProfileResponse>(
+            return new Response<UserData>(
                 HttpStatus.BAD_REQUEST
             )
                 .setMessage(MESSAGES.UPDATE_FAIL)
@@ -165,10 +164,10 @@ public class UserController {
             .updateUser(caller)
             .orElseThrow(UnauthorizedHttpException::new);
 
-        return new Response<UserUpdateProfileResponse>(HttpStatus.OK)
+        return new Response<UserData>(HttpStatus.OK)
             .setMessage(MESSAGES.UPDATE_SUCCESS)
             .setData(
-                new UserUpdateProfileResponse()
+                new UserData()
                     .setId(updatedUser.getId().toString())
                     .setEmail(updatedUser.getEmail())
                     .setTagName(updatedUser.getTagName())

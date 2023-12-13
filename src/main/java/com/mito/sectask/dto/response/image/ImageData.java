@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
-public class ImageUploadResponse {
+public class ImageData {
 
     private String id;
     private String src;
