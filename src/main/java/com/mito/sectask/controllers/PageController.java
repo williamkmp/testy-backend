@@ -1,13 +1,5 @@
 package com.mito.sectask.controllers;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.dto.response.Response;
@@ -18,7 +10,16 @@ import com.mito.sectask.entities.User;
 import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.values.MESSAGES;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/page")
@@ -28,11 +29,9 @@ public class PageController {
     private final PageService pageService;
     private final ImageService imageService;
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
-    public Response<PagePreview []> getUserRootPages(
-        @Caller User caller
-    ) {
+    public Response<PagePreview[]> getUserRootPages(@Caller User caller) {
         List<Page> userRootPages = pageService.getUserPages(caller.getId());
         PagePreview[] pagePreviews = userRootPages
             .stream()
@@ -44,11 +43,10 @@ public class PageController {
             .collect(Collectors.toList())
             .toArray(new PagePreview[0]);
 
-        return new Response<PagePreview[]>(HttpStatus.OK)
-            .setData(pagePreviews);
+        return new Response<PagePreview[]>(HttpStatus.OK).setData(pagePreviews);
     }
 
-    @GetMapping("/{pageId}")
+    @GetMapping(path = "/{pageId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
     public Response<PageData> getPageInformation(
         @PathVariable("pageId") Long pageId
@@ -73,7 +71,10 @@ public class PageController {
             );
     }
 
-    @GetMapping("/{pageId}/children")
+    @GetMapping(
+        path = "/{pageId}/children",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @Authenticated(true)
     public Response<PagePreview[]> getPageChildrens(
         @PathVariable("pageId") Long pageId
@@ -89,7 +90,6 @@ public class PageController {
             .collect(Collectors.toList())
             .toArray(new PagePreview[0]);
 
-        return new Response<PagePreview[]>(HttpStatus.OK)
-            .setData(pagePreviews);
+        return new Response<PagePreview[]>(HttpStatus.OK).setData(pagePreviews);
     }
 }
