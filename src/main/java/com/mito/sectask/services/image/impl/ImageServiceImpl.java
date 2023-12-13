@@ -45,6 +45,9 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public Optional<String> getImageUrl(Long imageId) {
+        if (imageId == null) {
+            return Optional.empty();
+        }
         final String GET_IMAGE_URL = "http://localhost:5000/image/";
         Optional<File> maybeFile = fileRepository.findById(imageId);
         if (maybeFile.isEmpty()) {

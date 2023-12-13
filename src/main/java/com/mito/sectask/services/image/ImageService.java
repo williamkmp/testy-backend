@@ -51,7 +51,8 @@ public interface ImageService {
      * @param   imageId {@link Long}
      *          image id
      * 
-     * @return  URL path, example "http://api.server/image/tqtwrqewqw" 
+     * @return  Image URL path, example 
+     *          "http://api.server/image/tqtwrqewqw" 
      */
     public Optional<String> getImageUrl(Long imageId);
 
