@@ -69,7 +69,7 @@ public class PageController {
                     .setTitle(createdPage.getName())
                     .setId(createdPage.getId().toString())
                     .setIconKey(createdPage.getIconKey())
-                    .setAccessType(USER_ROLE.FULL_ACCESS)
+                    .setAuthority(USER_ROLE.FULL_ACCESS)
                     .setImagePosition(createdPage.getImagePosition())
                     .setImageSrc(coverImageUrl)
             );
@@ -113,6 +113,7 @@ public class PageController {
             .setData(
                 new PageData()
                     .setId(page.getId().toString())
+                    .setIconKey(page.getIconKey())
                     .setTitle(page.getName())
                     .setImagePosition(page.getImagePosition())
                     .setImageSrc(imageSrc)
