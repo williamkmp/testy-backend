@@ -22,6 +22,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public Optional<File> findById(Long id) {
+        if(id == null) return Optional.empty();
         return fileRepository.findById(id);
     }
 

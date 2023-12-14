@@ -49,7 +49,7 @@ public interface ImageService {
      * get a registered image URL for client access
      *    
      * @param   imageId {@link Long}
-     *          image id
+     *          image id, can be null
      * 
      * @return  Image URL path, example 
      *          "http://api.server/image/tqtwrqewqw" 
