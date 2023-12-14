@@ -44,4 +44,16 @@ public interface PageService {
      *          if fails ofr not found
      */
     public Optional<Page> getPageById(Long pageId);
+
+    /**
+     * create a new page and register it to the database. 
+     * Returns the created Page data.
+     * 
+     * @param   page {@link Page}
+     *          the new page data.
+     * 
+     * @return  {@link Optional}<{@link Page}>
+     *          created page data
+     */
+    public Optional<Page> createPage(Page page, Long userId);
 }
