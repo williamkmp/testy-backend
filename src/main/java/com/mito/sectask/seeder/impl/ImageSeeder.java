@@ -1,10 +1,5 @@
 package com.mito.sectask.seeder.impl;
 
-import com.mito.sectask.entities.File;
-import com.mito.sectask.repositories.FileRepository;
-import com.mito.sectask.seeder.Seeder;
-import com.mito.sectask.utils.Util;
-import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,9 +7,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
+import com.mito.sectask.entities.File;
+import com.mito.sectask.repositories.FileRepository;
+import com.mito.sectask.seeder.Seeder;
+import com.mito.sectask.utils.Util;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

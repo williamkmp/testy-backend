@@ -27,6 +27,7 @@ public class PageSeeder implements Seeder {
             new Page()
                 .setName("Binusmaya Website")
                 .setImage(coverImage1) // assets/cover1.jpeg
+                .setIconKey("emoji-1180") // 🖥️
                 .setImagePosition(50f)
         );
 
