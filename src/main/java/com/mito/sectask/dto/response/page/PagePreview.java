@@ -9,5 +9,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class PagePreview {
     private String id;
+    private String iconKey;
     private String title;
 }
