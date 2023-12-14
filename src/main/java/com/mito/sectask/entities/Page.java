@@ -34,16 +34,15 @@ public class Page {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "icon_key", nullable = true)
+    private String iconKey;
+
     @Column(name = "image_position", nullable = false)
     private Float imagePosition = (float) 0;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = true)
     private File image;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
-    private Date createdAt;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Page> childrens; 
@@ -54,4 +53,8 @@ public class Page {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "page")
     private List<Authority> authorities;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt;
 }
