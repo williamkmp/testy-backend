@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 public class PageData {
     private String id;
     private String title;
-    private USER_ROLE accessType;
+    private USER_ROLE authority;
     private String iconKey; 
     private String imageSrc;
     private Float imagePosition;
