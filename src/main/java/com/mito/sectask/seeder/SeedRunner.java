@@ -1,6 +1,7 @@
 package com.mito.sectask.seeder;
 
 import com.mito.sectask.seeder.impl.AuthoritySeeder;
+import com.mito.sectask.seeder.impl.ImageSeeder;
 import com.mito.sectask.seeder.impl.PageSeeder;
 import com.mito.sectask.seeder.impl.RoleSeeder;
 import com.mito.sectask.seeder.impl.UserSeeder;
@@ -21,6 +22,7 @@ public class SeedRunner implements CommandLineRunner {
     private final UserSeeder userSeeder;
     private final PageSeeder pageSeeder;
     private final AuthoritySeeder authoritySeeder;
+    private final ImageSeeder imageSeeder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -29,6 +31,7 @@ public class SeedRunner implements CommandLineRunner {
             log.info("RUN SEEDER");
 
             // Registering seeder
+            seeders.add(imageSeeder);
             seeders.add(roleSeeder);
             seeders.add(userSeeder);
             seeders.add(pageSeeder);
