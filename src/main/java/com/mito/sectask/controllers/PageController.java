@@ -40,6 +40,7 @@ public class PageController {
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @Authenticated(true)
     public Response<PageData> createPage(
         @RequestBody PageCreateRequest request,
         @Caller User caller
@@ -59,9 +60,13 @@ public class PageController {
             .setImage(coverImagFile)
             .setParent(parentPage);
 
-        Page createdPage = pageService
-            .createPage(newPage, caller.getId())
-            .orElseThrow(InternalServerErrorHttpException::new);
+        Page createdPage = (parentPage == null)
+            ? pageService
+                .createRootPage(newPage, caller.getId(), request.getMembers())
+                .orElseThrow(InternalServerErrorHttpException::new)
+            : pageService
+                .createSubPage(newPage)
+                .orElseThrow(InternalServerErrorHttpException::new);
 
         return new Response<PageData>(HttpStatus.CREATED)
             .setData(

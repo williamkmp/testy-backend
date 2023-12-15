@@ -2,6 +2,7 @@ package com.mito.sectask.services.page;
 
 import java.util.List;
 import java.util.Optional;
+import com.mito.sectask.dto.dto.InviteDto;
 import com.mito.sectask.entities.Page;
 
 public interface PageService {
@@ -46,7 +47,19 @@ public interface PageService {
     public Optional<Page> getPageById(Long pageId);
 
     /**
-     * create a new page and register it to the database. 
+     * create a new root page and register it to the database. 
+     * Returns the created root Page data.
+     * 
+     * @param   page {@link Page}
+     *          the new page data.
+     * 
+     * @return  {@link Optional}<{@link Page}>
+     *          created page data
+     */
+    public Optional<Page> createRootPage(Page page, Long userId, List<InviteDto> inviteList);
+
+    /**
+     * create and register a sub pageit to the database. 
      * Returns the created Page data.
      * 
      * @param   page {@link Page}
@@ -55,5 +68,5 @@ public interface PageService {
      * @return  {@link Optional}<{@link Page}>
      *          created page data
      */
-    public Optional<Page> createPage(Page page, Long userId);
+    public Optional<Page> createSubPage(Page page);
 }

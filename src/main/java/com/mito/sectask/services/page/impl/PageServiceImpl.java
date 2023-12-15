@@ -1,5 +1,6 @@
 package com.mito.sectask.services.page.impl;
 
+import com.mito.sectask.dto.dto.InviteDto;
 import com.mito.sectask.entities.Authority;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.entities.QAuthority;
@@ -13,6 +14,7 @@ import com.mito.sectask.repositories.PageRepository;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.services.role.RoleService;
+import com.mito.sectask.utils.Util;
 import com.mito.sectask.values.USER_ROLE;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.transaction.Transactional;
@@ -79,7 +81,11 @@ public class PageServiceImpl implements PageService {
 
     @Override
     @Transactional
-    public Optional<Page> createPage(Page page, Long userId) {
+    public Optional<Page> createRootPage(
+        Page page,
+        Long userId,
+        List<InviteDto> inviteList
+    ) {
         Optional<User> maybeUser = userRepository.findById(userId);
         if (maybeUser.isEmpty()) {
             return Optional.empty();
@@ -97,5 +103,16 @@ public class PageServiceImpl implements PageService {
 
         authorityRepository.save(ownerAuthority);
         return Optional.of(createdPage);
+    }
+
+    @Override
+    public Optional<Page> createSubPage(Page page) {
+        Page createdPage = null;
+        try {
+            createdPage = pageRepository.save(page);
+        } catch (Exception e) {
+            Util.doNothing("createdPage is already null");
+        }
+        return Optional.ofNullable(createdPage);
     }
 }
