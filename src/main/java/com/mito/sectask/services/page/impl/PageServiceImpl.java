@@ -18,6 +18,7 @@ import com.mito.sectask.utils.Util;
 import com.mito.sectask.values.USER_ROLE;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -90,18 +91,31 @@ public class PageServiceImpl implements PageService {
         if (maybeUser.isEmpty()) {
             return Optional.empty();
         }
-
         User owner = maybeUser.get();
         Role fullAccessRole = roleService.getRole(USER_ROLE.FULL_ACCESS);
-
         Page createdPage = pageRepository.save(page);
+        
+        // Insert owner(full_access) authority
         Authority ownerAuthority = new Authority()
             .setUser(owner)
             .setPage(createdPage)
             .setRole(fullAccessRole)
             .setIsPending(false);
-
         authorityRepository.save(ownerAuthority);
+
+        // Inserting members
+        List<Authority> authorities = new ArrayList<>();
+        for(InviteDto invite : inviteList) {
+            Role memberRole = roleService.getRole(invite.getAuthority());
+            authorities.add(new Authority()
+                .setUser(owner)
+                .setPage(createdPage)
+                .setRole(memberRole)
+                .setIsPending(false)
+            );
+        }
+        authorityRepository.saveAll(authorities);
+
         return Optional.of(createdPage);
     }
 
