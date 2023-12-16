@@ -12,7 +12,7 @@ public class PageData {
     private String id;
     private String title;
     private USER_ROLE authority;
-    private String iconKey; 
-    private String imageSrc;
+    private String iconKey;
+    private String imageId;
     private Float imagePosition;
 }

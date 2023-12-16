@@ -1,15 +1,5 @@
 package com.mito.sectask.controllers;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.dto.request.user.UserUpdatePasswordRequest;
@@ -22,11 +12,22 @@ import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.encoder.PasswordEncocder;
 import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.services.user.UserService;
+import com.mito.sectask.utils.Util;
 import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.VALIDATION;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,11 +41,9 @@ public class UserController {
     @Authenticated(true)
     @GetMapping(path = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     public Response<UserData> me(@Caller User caller) {
-        String imageSrc = null;
-        File image = caller.getImage();
-        if (image != null) {
-            imageSrc = imageService.getImageUrl(image.getId()).orElse(null);
-        }
+        String imageId = (caller.getImage() != null)
+            ? caller.getImage().getId().toString()
+            : null;
         return new Response<UserData>(HttpStatus.OK)
             .setData(
                 new UserData()
@@ -52,7 +51,7 @@ public class UserController {
                     .setEmail(caller.getEmail())
                     .setTagName(caller.getTagName())
                     .setFullName(caller.getFullName())
-                    .setImageSrc(imageSrc)
+                    .setImageId(imageId)
             );
     }
 
@@ -91,9 +90,7 @@ public class UserController {
                 !isEmailAvailable ? VALIDATION.UNIQUE : null
             );
 
-            return new Response<UserData>(
-                HttpStatus.BAD_REQUEST
-            )
+            return new Response<UserData>(HttpStatus.BAD_REQUEST)
                 .setMessage(MESSAGES.UPDATE_FAIL)
                 .setError(validationError);
         }
@@ -109,20 +106,15 @@ public class UserController {
         User updatedUser = maybeUser.get();
 
         // Updating user image
-        String profileSrc = null;
-        Long imageId = null;
-        try {
-            imageId = Long.valueOf(request.getImageId());
-        } catch (Exception e) {
-            imageId = null;
-        }
+        Long newImageId = Util.String.toLong(request.getImageId()).orElse(null);
+
         Optional<File> maybeImage = imageService.updateUserImage(
             caller.getId(),
-            imageId
+            newImageId
         );
-        if (maybeImage.isPresent()) {
-            profileSrc = imageService.getImageUrl(imageId).orElse(null);
-        }
+        String imageId = maybeImage.isPresent()
+            ? maybeImage.get().getId().toString()
+            : null;
 
         return new Response<UserData>(HttpStatus.OK)
             .setMessage(MESSAGES.UPDATE_SUCCESS)
@@ -132,7 +124,7 @@ public class UserController {
                     .setEmail(updatedUser.getEmail())
                     .setTagName(updatedUser.getTagName())
                     .setFullName(updatedUser.getFullName())
-                    .setImageSrc(profileSrc)
+                    .setImageId(imageId)
             );
     }
 
@@ -151,9 +143,7 @@ public class UserController {
             Map<String, String> validationError = new HashMap<>();
             validationError.put("oldPassword", VALIDATION.WRONG);
 
-            return new Response<UserData>(
-                HttpStatus.BAD_REQUEST
-            )
+            return new Response<UserData>(HttpStatus.BAD_REQUEST)
                 .setMessage(MESSAGES.UPDATE_FAIL)
                 .setError(validationError);
         }
@@ -164,6 +154,10 @@ public class UserController {
             .updateUser(caller)
             .orElseThrow(UnauthorizedHttpException::new);
 
+        String imageId = caller.getImage() != null
+            ? caller.getImage().getId().toString()
+            : null;
+
         return new Response<UserData>(HttpStatus.OK)
             .setMessage(MESSAGES.UPDATE_SUCCESS)
             .setData(
@@ -172,6 +166,7 @@ public class UserController {
                     .setEmail(updatedUser.getEmail())
                     .setTagName(updatedUser.getTagName())
                     .setFullName(updatedUser.getFullName())
+                    .setImageId(imageId)
             );
     }
 }

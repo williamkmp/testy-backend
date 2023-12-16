@@ -20,11 +20,9 @@ import com.mito.sectask.dto.request.auth.AuthRegisterRequest;
 import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.dto.response.auth.LoginData;
 import com.mito.sectask.dto.response.auth.RegisterData;
-import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.auth.AuthService;
-import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.services.user.UserService;
 import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.VALIDATION;
@@ -40,7 +38,6 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
-    private final ImageService imageService;
 
     @PostMapping(
         path = "/login",
@@ -70,11 +67,10 @@ public class AuthController {
             .setMessage(MESSAGES.ERROR_INTERNAL_SERVER);
         }
 
-        String imageSrc = null;
-        File image = registeredUser.getImage();
-        if(image != null) {
-            imageSrc = imageService.getImageUrl(image.getId()).orElse(null);
-        }
+        String imageId = (registeredUser.getImage() != null )
+            ? registeredUser.getImage().getId().toString()
+            : null;
+        
         TokenDto token = maybeToken.get();
         return new Response<LoginData>(HttpStatus.OK)
             .setData(new LoginData()
@@ -82,7 +78,7 @@ public class AuthController {
                 .setEmail(registeredUser.getEmail())
                 .setTagName(registeredUser.getTagName())
                 .setFullName(registeredUser.getFullName())
-                .setImageSrc(imageSrc)
+                .setImageId(imageId)
                 .setToken(token)
             );
     }

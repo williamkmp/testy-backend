@@ -25,5 +25,5 @@ public class UserData {
     @NonNull
     private String fullName;
 
-    private String imageSrc;
+    private String imageId;
 }

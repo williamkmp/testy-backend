@@ -1,5 +1,16 @@
 package com.mito.sectask.controllers;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.dto.request.page.PageCreateRequest;
@@ -15,18 +26,8 @@ import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.utils.Util;
 import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.USER_ROLE;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequestMapping("/page")
@@ -45,19 +46,17 @@ public class PageController {
         @RequestBody PageCreateRequest request,
         @Caller User caller
     ) {
+        // Get parent and Image data
         Long parentId = Util.String.toLong(request.getParentId()).orElse(null);
         Long imageId = Util.String.toLong(request.getImageId()).orElse(null);
-
         Page parentPage = pageService.getPageById(parentId).orElse(null);
         File coverImagFile = imageService.findById(imageId).orElse(null);
-        String coverImageUrl = (coverImagFile != null)
-            ? imageService.getImageUrl(imageId).orElse(null)
-            : null;
 
         Page newPage = new Page()
             .setIconKey(request.getIconKey())
             .setName(request.getTitle())
             .setImage(coverImagFile)
+            .setImagePosition(request.getImagePosition())
             .setParent(parentPage);
 
         Page createdPage = (parentPage == null)
@@ -65,7 +64,7 @@ public class PageController {
                 .createRootPage(newPage, caller.getId(), request.getMembers())
                 .orElseThrow(InternalServerErrorHttpException::new)
             : pageService
-                .createSubPage(newPage)
+                .save(newPage)
                 .orElseThrow(InternalServerErrorHttpException::new);
 
         return new Response<PageData>(HttpStatus.CREATED)
@@ -75,8 +74,8 @@ public class PageController {
                     .setId(createdPage.getId().toString())
                     .setIconKey(createdPage.getIconKey())
                     .setAuthority(USER_ROLE.FULL_ACCESS)
+                    .setImageId(Util.String.valueOf(imageId).orElse(null))
                     .setImagePosition(createdPage.getImagePosition())
-                    .setImageSrc(coverImageUrl)
             );
     }
 
@@ -109,8 +108,8 @@ public class PageController {
                 .setMessage(MESSAGES.ERROR_RESOURCE_NOT_FOUND);
         }
         Page page = maybePage.get();
-        String imageSrc = (page.getImage() != null)
-            ? imageService.getImageUrl(page.getImage().getId()).orElse(null)
+        String imageId = (page.getImage() != null)
+            ? page.getImage().getId().toString()
             : null;
 
         //TODO: add user pages authority
@@ -121,7 +120,7 @@ public class PageController {
                     .setIconKey(page.getIconKey())
                     .setTitle(page.getName())
                     .setImagePosition(page.getImagePosition())
-                    .setImageSrc(imageSrc)
+                    .setImageId(imageId)
             );
     }
 

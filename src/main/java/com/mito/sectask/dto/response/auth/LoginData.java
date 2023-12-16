@@ -23,7 +23,7 @@ public class LoginData {
     @NonNull
     private String fullName;
 
-    private String imageSrc;
+    private String imageId;
 
     @NonNull
     private TokenDto token;
