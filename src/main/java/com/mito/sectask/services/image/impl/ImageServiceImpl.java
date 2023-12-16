@@ -73,7 +73,7 @@ public class ImageServiceImpl implements ImageService {
 
         // Delete previous image
         File previousImage = user.getImage();
-        if (previousImage != null) {
+        if (previousImage != null && !previousImage.getId().equals(imageId)) {
             fileRepository.delete(previousImage);
         }
 
@@ -101,7 +101,7 @@ public class ImageServiceImpl implements ImageService {
 
         // Delete previous image
         File previousImage = page.get().getImage();
-        if (previousImage != null) {
+        if (previousImage != null && previousImage.getId().equals(imageId)) {
             fileRepository.delete(previousImage);
         }
 
