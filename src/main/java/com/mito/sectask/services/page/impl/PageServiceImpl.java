@@ -1,5 +1,10 @@
 package com.mito.sectask.services.page.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.stereotype.Service;
 import com.mito.sectask.dto.dto.InviteDto;
 import com.mito.sectask.entities.Authority;
 import com.mito.sectask.entities.Page;
@@ -18,12 +23,7 @@ import com.mito.sectask.utils.Util;
 import com.mito.sectask.values.USER_ROLE;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -94,7 +94,7 @@ public class PageServiceImpl implements PageService {
         User owner = maybeUser.get();
         Role fullAccessRole = roleService.getRole(USER_ROLE.FULL_ACCESS);
         Page createdPage = pageRepository.save(page);
-        
+
         // Insert owner(full_access) authority
         Authority ownerAuthority = new Authority()
             .setUser(owner)
@@ -105,16 +105,18 @@ public class PageServiceImpl implements PageService {
 
         // Inserting members
         List<Authority> authorities = new ArrayList<>();
-        for(InviteDto invite : inviteList) {
+        for (InviteDto invite : inviteList) {
             Role memberRole = roleService.getRole(invite.getAuthority());
-            User member = userRepository.findByEmail(invite.getEmail()).orElse(null);
-            if(memberRole == null || member == null) 
-                continue;
-            authorities.add(new Authority()
-                .setUser(member)
-                .setPage(createdPage)
-                .setRole(memberRole)
-                .setIsPending(false)
+            User member = userRepository
+                .findByEmail(invite.getEmail())
+                .orElse(null);
+            if (memberRole == null || member == null) continue;
+            authorities.add(
+                new Authority()
+                    .setUser(member)
+                    .setPage(createdPage)
+                    .setRole(memberRole)
+                    .setIsPending(false)
             );
         }
         authorityRepository.saveAll(authorities);
@@ -123,7 +125,8 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
-    public Optional<Page> createSubPage(Page page) {
+    @Transactional
+    public Optional<Page> save(Page page) {
         Page createdPage = null;
         try {
             createdPage = pageRepository.save(page);

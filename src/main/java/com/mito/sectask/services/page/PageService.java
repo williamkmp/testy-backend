@@ -59,14 +59,15 @@ public interface PageService {
     public Optional<Page> createRootPage(Page page, Long userId, List<InviteDto> inviteList);
 
     /**
-     * create and register a sub pageit to the database. 
-     * Returns the created Page data.
+     * save a page data to the database, can be used 
+     * to create a new page or update an existing one
      * 
      * @param   page {@link Page}
-     *          the new page data.
-     * 
+     *          page data, set <i>id</i> to <code>null</code> 
+     *          to create new page
+     *  
      * @return  {@link Optional}<{@link Page}>
-     *          created page data
+     *          operated page page
      */
-    public Optional<Page> createSubPage(Page page);
+    public Optional<Page> save(Page page);
 }
