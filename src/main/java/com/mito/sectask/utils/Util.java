@@ -11,6 +11,7 @@ import java.util.Optional;
  */
 public class Util {
     
+    private Util () {}
     /**
      * method to do nothing, usually to be used inside
      * a try catch block when the exception is handled
@@ -20,7 +21,6 @@ public class Util {
      */
     public static void doNothing(java.lang.String reason) {
         // do nothing
-        return;
     }
 
 
@@ -40,6 +40,20 @@ public class Util {
                 doNothing("longVal is alredy null");
             }
             return Optional.ofNullable(longVal);
+        }
+
+        public static Optional<java.lang.String> valueOf(Long number) {
+            java.lang.String str = null;
+
+            if(number == null) 
+                return Optional.empty();
+
+            try {
+                str = Long.toString(number);
+            } catch (NumberFormatException e) {
+                doNothing("str is alredy null");
+            }
+            return Optional.ofNullable(str);
         }
         
     }
