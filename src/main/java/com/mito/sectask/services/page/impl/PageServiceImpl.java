@@ -107,8 +107,11 @@ public class PageServiceImpl implements PageService {
         List<Authority> authorities = new ArrayList<>();
         for(InviteDto invite : inviteList) {
             Role memberRole = roleService.getRole(invite.getAuthority());
+            User member = userRepository.findByEmail(invite.getEmail()).orElse(null);
+            if(memberRole == null || member == null) 
+                continue;
             authorities.add(new Authority()
-                .setUser(owner)
+                .setUser(member)
                 .setPage(createdPage)
                 .setRole(memberRole)
                 .setIsPending(false)
