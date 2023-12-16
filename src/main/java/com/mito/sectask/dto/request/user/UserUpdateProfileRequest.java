@@ -1,6 +1,5 @@
 package com.mito.sectask.dto.request.user;
 
-import com.google.gson.annotations.SerializedName;
 import com.mito.sectask.values.PATTERN;
 import com.mito.sectask.values.VALIDATION;
 import jakarta.validation.constraints.Email;
@@ -22,7 +21,6 @@ public class UserUpdateProfileRequest {
         message = VALIDATION.STRING_LENGTH + 0 + "," + 100
     )
     @Email(message = VALIDATION.STRING_EMAIL)
-    @SerializedName("email")
     private String email;
 
     @NotBlank(message = VALIDATION.REQUIRED)
@@ -35,7 +33,6 @@ public class UserUpdateProfileRequest {
         max = 30,
         message = VALIDATION.STRING_LENGTH + 0 + "," + 30
     )
-    @SerializedName("tagName")
     private String tagName;
 
     @NotBlank(message = VALIDATION.REQUIRED)
@@ -44,9 +41,7 @@ public class UserUpdateProfileRequest {
         max = 100,
         message = VALIDATION.STRING_LENGTH + 0 + "," + 100
     )
-    @SerializedName("fullName")
     private String fullName;
 
-    @SerializedName("imageId")
     private String imageId;
 }
