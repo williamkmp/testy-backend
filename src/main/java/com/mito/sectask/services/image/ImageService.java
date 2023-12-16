@@ -36,7 +36,7 @@ public interface ImageService {
      *          user id
      * 
      * @param   imageId {@link Long}
-     *          image id, leave blank if want to delete 
+     *          image id, leave <code>null</code> to delete 
      *          user profile picture
      * 
      * @return  {@link Optional}<{@link FIle}>
@@ -44,6 +44,22 @@ public interface ImageService {
      *          delete 
      */
     public Optional<File> updateUserImage(Long userId, Long imageId);
+
+    /**
+     * Update or delete page cover image background 
+     * 
+     * @param   userId {@link Long}
+     *          user id
+     * 
+     * @param   imageId {@link Long}
+     *          image id, leave <code>null</code> to delete 
+     *          page cover image
+     * 
+     * @return  {@link Optional}<{@link FIle}>
+     *          page cover image data, empty if 
+     *          delete 
+     */
+    public Optional<File> updatePageCoverImage(Long userId, Long imageId);
 
     /**
      * get a registered image URL for client access
