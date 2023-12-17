@@ -8,10 +8,6 @@ import org.springframework.stereotype.Service;
 import com.mito.sectask.dto.dto.InviteDto;
 import com.mito.sectask.entities.Authority;
 import com.mito.sectask.entities.Page;
-import com.mito.sectask.entities.QAuthority;
-import com.mito.sectask.entities.QPage;
-import com.mito.sectask.entities.QRole;
-import com.mito.sectask.entities.QUser;
 import com.mito.sectask.entities.Role;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.repositories.AuthorityRepository;
@@ -21,7 +17,6 @@ import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.services.role.RoleService;
 import com.mito.sectask.utils.Util;
 import com.mito.sectask.values.USER_ROLE;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -33,24 +28,10 @@ public class PageServiceImpl implements PageService {
     private final RoleService roleService;
     private final AuthorityRepository authorityRepository;
     private final UserRepository userRepository;
-    private final JPAQueryFactory query;
 
     @Override
     public List<Page> getUserPages(Long userId) {
-        QPage pageTable = QPage.page;
-        QUser userTable = QUser.user;
-        QAuthority authorityTable = QAuthority.authority;
-        QRole roleTable = QRole.role;
-
-        return query
-            .selectFrom(pageTable)
-            .innerJoin(pageTable.authorities, authorityTable)
-            .innerJoin(authorityTable.role, roleTable)
-            .innerJoin(authorityTable.user, userTable)
-            .where(authorityTable.isPending.eq(Boolean.FALSE))
-            .where(userTable.isDeleted.eq(Boolean.FALSE))
-            .where(userTable.id.eq(userId))
-            .fetch();
+        return pageRepository.getUserPages(userId);
     }
 
     @Override
