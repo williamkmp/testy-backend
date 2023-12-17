@@ -23,6 +23,14 @@ public class PageSeeder implements Seeder {
         File coverImage2 = fileRepository.findById(2L).orElse(null);
         File coverImage3 = fileRepository.findById(3L).orElse(null);
 
+        Page testyPageRoot = pageRepository.saveAndFlush(
+            new Page()
+                .setImagePosition(50f)
+                .setImage(coverImage3) // assets/cover3.jpeg
+                .setIconKey("emoji-69") // 😎
+                .setName("Testy")
+        );
+
         Page binusMayaRootPage = pageRepository.saveAndFlush(
             new Page()
                 .setName("Binusmaya Website")
@@ -38,15 +46,6 @@ public class PageSeeder implements Seeder {
                 .setIconKey("emoji-1170") // 📱
                 .setName("Binus Mobile")
         );
-
-        Page testyPageRoot = pageRepository.saveAndFlush(
-            new Page()
-                .setImagePosition(50f)
-                .setImage(coverImage3) // assets/cover3.jpeg
-                .setIconKey("emoji-69") // 😎
-                .setName("Testy")
-        );
-
 
         pageRepository.saveAndFlush(
             new Page()
