@@ -1,19 +1,9 @@
 package com.mito.sectask.controllers;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.dto.request.page.PageCreateRequest;
+import com.mito.sectask.dto.request.page.PageUpdateRequest;
 import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.dto.response.page.PageData;
 import com.mito.sectask.dto.response.page.PagePreview;
@@ -22,14 +12,27 @@ import com.mito.sectask.entities.Page;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.ForbiddenHttpException;
 import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpException;
+import com.mito.sectask.exceptions.httpexceptions.ResourceNotFoundHttpException;
 import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.services.role.RoleService;
 import com.mito.sectask.utils.Util;
 import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.USER_ROLE;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/page")
@@ -82,6 +85,59 @@ public class PageController {
             );
     }
 
+    @PutMapping(
+        path = "/{pageId}",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Authenticated(true)
+    public Response<PageData> putMethodName(
+        @PathVariable("pageId") Long pageId,
+        @RequestBody PageUpdateRequest request,
+        @Caller User caller
+    ) {
+        // Checking user's Role
+        final USER_ROLE[] allowedAuthority = {
+            USER_ROLE.COLLABORATORS,
+            USER_ROLE.FULL_ACCESS,
+        };
+        USER_ROLE authority = roleService
+            .getPageAuthorityOfUser(caller.getId(), pageId)
+            .orElseThrow(ForbiddenHttpException::new);
+        if (!Arrays.asList(allowedAuthority).contains(authority)) {
+            throw new ForbiddenHttpException();
+        }
+
+        Long imageId = Util.String.toLong(request.getImageId()).orElse(null);
+        imageService.updatePageCoverImage(pageId, imageId);
+        Page page = pageService
+            .getPageById(pageId)
+            .orElseThrow(ResourceNotFoundHttpException::new);
+        Float imagePosition = Optional
+            .ofNullable(request.getImagePosition())
+            .orElse(50f);
+        page.setIconKey(request.getIconKey());
+        page.setImagePosition(imagePosition);
+        Page updatedPage = pageService
+            .save(page)
+            .orElseThrow(ResourceNotFoundHttpException::new);
+        String updatedImageId = updatedPage.getImage() != null
+            ? updatedPage.getImage().getId().toString()
+            : null;
+
+
+        return new Response<PageData>(HttpStatus.OK)
+            .setData(
+                new PageData()
+                    .setId(updatedPage.getId().toString())
+                    .setTitle(updatedPage.getName())
+                    .setAuthority(authority)
+                    .setIconKey(updatedPage.getIconKey())
+                    .setImagePosition(updatedPage.getImagePosition())
+                    .setImageId(updatedImageId)
+            );
+    }
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
     public Response<PagePreview[]> getUserRootPages(@Caller User caller) {
@@ -107,10 +163,10 @@ public class PageController {
         @Caller User caller
     ) {
         Optional<USER_ROLE> authority = roleService.getPageAuthorityOfUser(
-            caller.getId(), 
+            caller.getId(),
             pageId
         );
-        if(authority.isEmpty()) {
+        if (authority.isEmpty()) {
             throw new ForbiddenHttpException();
         }
 
