@@ -20,9 +20,11 @@ import com.mito.sectask.dto.response.page.PagePreview;
 import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.entities.User;
+import com.mito.sectask.exceptions.httpexceptions.ForbiddenHttpException;
 import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpException;
 import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.services.page.PageService;
+import com.mito.sectask.services.role.RoleService;
 import com.mito.sectask.utils.Util;
 import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.USER_ROLE;
@@ -36,6 +38,7 @@ public class PageController {
 
     private final PageService pageService;
     private final ImageService imageService;
+    private final RoleService roleService;
 
     @PostMapping(
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -100,8 +103,17 @@ public class PageController {
     @GetMapping(path = "/{pageId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
     public Response<PageData> getPageInformation(
-        @PathVariable("pageId") Long pageId
+        @PathVariable("pageId") Long pageId,
+        @Caller User caller
     ) {
+        Optional<USER_ROLE> authority = roleService.getPageAuthorityOfUser(
+            caller.getId(), 
+            pageId
+        );
+        if(authority.isEmpty()) {
+            throw new ForbiddenHttpException();
+        }
+
         Optional<Page> maybePage = pageService.getPageById(pageId);
         if (maybePage.isEmpty()) {
             return new Response<PageData>(HttpStatus.BAD_REQUEST)
@@ -112,7 +124,6 @@ public class PageController {
             ? page.getImage().getId().toString()
             : null;
 
-        //TODO: add user pages authority
         return new Response<PageData>(HttpStatus.OK)
             .setData(
                 new PageData()
@@ -121,6 +132,7 @@ public class PageController {
                     .setTitle(page.getName())
                     .setImagePosition(page.getImagePosition())
                     .setImageId(imageId)
+                    .setAuthority(authority.get())
             );
     }
 
