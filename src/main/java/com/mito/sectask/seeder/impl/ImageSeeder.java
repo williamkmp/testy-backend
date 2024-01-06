@@ -35,7 +35,8 @@ public class ImageSeeder implements Seeder {
 
     private List<File> constructImages(String[] imageNames) {
         List<File> files = new ArrayList<>();
-        final String assetDirectoryPath = new FileSystemResource("").getFile().getAbsolutePath() + "\\src\\main\\java\\com\\mito\\sectask\\seeder\\assets";
+        final String projectDirectoryPath = new FileSystemResource("").getFile().getAbsolutePath();
+        final String assetDirectoryPath = Paths.get(projectDirectoryPath, "src", "main", "java", "com", "mito", "sectask", "seeder", "assets").toString();
         for (String imageName : imageNames) {
             Path imagePath = Paths.get(assetDirectoryPath, imageName);
             try {
