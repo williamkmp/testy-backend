@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity
-@Table(name = "`blocks")
+@Table(name = "blocks")
 public class Block {
 
     @Id
