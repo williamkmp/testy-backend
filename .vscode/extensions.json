@@ -1,0 +1,25 @@
+{
+    "recommendations": [
+        "chouzz.vscode-better-align",
+        "aaron-bond.better-comments",
+        "vscjava.vscode-java-debug",
+        "vscjava.vscode-java-pack",
+        "roonie007.hide-files",
+        "mwpb.java-prettier-formatter",
+        "redhat.java",
+        "vscjava.vscode-lombok",
+        "pkief.material-icon-theme",
+        "vscjava.vscode-maven",
+        "christian-kohler.path-intellisense",
+        "esbenp.prettier-vscode",
+        "vscjava.vscode-java-dependency",
+        "redhat.fabric8-analytics",
+        "sonarsource.sonarlint-vscode",
+        "vscjava.vscode-spring-boot-dashboard",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-spring-initializr",
+        "vscjava.vscode-java-test",
+        "gruntfuggly.todo-tree",
+        "redhat.vscode-xml"
+    ]
+}

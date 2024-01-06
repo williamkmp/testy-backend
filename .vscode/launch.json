@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SectaskApplication<sectask>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.mito.sectask.SectaskApplication",
+            "projectName": "sectask"
+        }
+    ]
+}
