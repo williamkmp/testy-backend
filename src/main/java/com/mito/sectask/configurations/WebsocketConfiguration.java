@@ -43,8 +43,11 @@ public class WebsocketConfiguration
     public boolean configureMessageConverters(
         List<MessageConverter> messageConverters
     ) {
-        GsonMessageConverter messageConverter = new GsonMessageConverter(gson);
+        GsonMessageConverter messageConverter =
+            new GsonMessageConverter(gson);
         messageConverters.add(messageConverter);
         return false;
     }
+    
+    
 }

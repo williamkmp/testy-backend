@@ -1,5 +1,9 @@
 package com.mito.sectask.seeder.impl;
 
+import com.mito.sectask.entities.File;
+import com.mito.sectask.repositories.FileRepository;
+import com.mito.sectask.seeder.Seeder;
+import com.mito.sectask.utils.Util;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,13 +11,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
-import com.mito.sectask.entities.File;
-import com.mito.sectask.repositories.FileRepository;
-import com.mito.sectask.seeder.Seeder;
-import com.mito.sectask.utils.Util;
-import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -35,14 +35,27 @@ public class ImageSeeder implements Seeder {
 
     private List<File> constructImages(String[] imageNames) {
         List<File> files = new ArrayList<>();
-        final String projectDirectoryPath = new FileSystemResource("").getFile().getAbsolutePath();
-        final String assetDirectoryPath = Paths.get(projectDirectoryPath, "src", "main", "java", "com", "mito", "sectask", "seeder", "assets").toString();
+        final String projectDirectoryPath = new FileSystemResource("")
+            .getFile()
+            .getAbsolutePath();
+        final String assetDirectoryPath = Paths
+            .get(
+                projectDirectoryPath,
+                "src",
+                "main",
+                "java",
+                "com",
+                "mito",
+                "sectask",
+                "seeder",
+                "assets"
+            )
+            .toString();
         for (String imageName : imageNames) {
             Path imagePath = Paths.get(assetDirectoryPath, imageName);
             try {
                 byte[] imageBytes = Files.readAllBytes(imagePath);
-                String contentType =
-                    "image/" + getFileExtension(imageName);
+                String contentType = "image/" + getFileExtension(imageName);
                 files.add(
                     new File()
                         .setBytes(imageBytes)

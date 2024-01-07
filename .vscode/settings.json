@@ -6,25 +6,12 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        ".prettierrc": true,
-        ".gitignore": true,
-        "target": true,
-        "README.md": true,
-        "mvnw.cmd": true,
-        ".mvn": true,
-        "src/main/resources/META-INF": true,
-        ".vscode": true
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
     },
-    "hide-files.files": [
-        ".prettierrc",
-        ".gitignore",
-        "target",
-        "README.md",
-        "mvnw.cmd",
-        ".mvn",
-        "src/main/resources/META-INF",
-        ".vscode"
-    ],
+    "hide-files.files": [],
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.format.settings.url": ".vscode/eclipse-java-google-style.xml",
     "maven.view": "hierarchical",
@@ -32,7 +19,7 @@
     "java.debug.settings.onBuildFailureProceed": true,
     "java.dependency.packagePresentation": "hierarchical",
     "[java]": {
-        "editor.defaultFormatter": "mwpb.java-prettier-formatter"
+        "editor.defaultFormatter": "mwpb.java-prettier-formatter",
     },
     "java.inlayHints.parameterNames.enabled": "none",
     "prettier.printWidth": 60,

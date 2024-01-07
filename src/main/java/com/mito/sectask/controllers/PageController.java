@@ -1,9 +1,29 @@
 package com.mito.sectask.controllers;
 
+import com.mito.sectask.annotations.Authenticated;
+import com.mito.sectask.annotations.caller.Caller;
+import com.mito.sectask.dto.request.block.CreateBlockRequest;
+import com.mito.sectask.dto.request.page.PageCreateRequest;
+import com.mito.sectask.dto.request.page.PageUpdateRequest;
+import com.mito.sectask.dto.response.Response;
+import com.mito.sectask.dto.response.page.PageData;
+import com.mito.sectask.dto.response.page.PagePreview;
+import com.mito.sectask.entities.Page;
+import com.mito.sectask.entities.User;
+import com.mito.sectask.exceptions.httpexceptions.ForbiddenHttpException;
+import com.mito.sectask.exceptions.httpexceptions.ResourceNotFoundHttpException;
+import com.mito.sectask.services.image.ImageService;
+import com.mito.sectask.services.page.PageService;
+import com.mito.sectask.services.role.RoleService;
+import com.mito.sectask.utils.Util;
+import com.mito.sectask.values.MESSAGES;
+import com.mito.sectask.values.USER_ROLE;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -15,28 +35,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.mito.sectask.annotations.Authenticated;
-import com.mito.sectask.annotations.caller.Caller;
-import com.mito.sectask.dto.request.block.CreateBlockRequest;
-import com.mito.sectask.dto.request.page.PageCreateRequest;
-import com.mito.sectask.dto.request.page.PageUpdateRequest;
-import com.mito.sectask.dto.response.Response;
-import com.mito.sectask.dto.response.page.PageData;
-import com.mito.sectask.dto.response.page.PagePreview;
-import com.mito.sectask.entities.File;
-import com.mito.sectask.entities.Page;
-import com.mito.sectask.entities.User;
-import com.mito.sectask.exceptions.httpexceptions.ForbiddenHttpException;
-import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpException;
-import com.mito.sectask.exceptions.httpexceptions.ResourceNotFoundHttpException;
-import com.mito.sectask.services.image.ImageService;
-import com.mito.sectask.services.page.PageService;
-import com.mito.sectask.services.role.RoleService;
-import com.mito.sectask.utils.Util;
-import com.mito.sectask.values.MESSAGES;
-import com.mito.sectask.values.USER_ROLE;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -58,35 +56,35 @@ public class PageController {
         @Caller User caller
     ) {
         // Get parent and Image data
-        Long parentId = Util.String.toLong(request.getParentId()).orElse(null);
-        Long imageId = Util.String.toLong(request.getImageId()).orElse(null);
-        Page parentPage = pageService.getPageById(parentId).orElse(null);
-        File coverImagFile = imageService.findById(imageId).orElse(null);
+        // Long parentId = Util.String.toLong(request.getParentId()).orElse(null);
+        // Long imageId = Util.String.toLong(request.getImageId()).orElse(null);
+        // Page parentPage = pageService.getPageById(parentId).orElse(null);
+        // File coverImagFile = imageService.findById(imageId).orElse(null);
 
-        Page newPage = new Page()
-            .setIconKey(request.getIconKey())
-            .setName(request.getTitle())
-            .setImage(coverImagFile)
-            .setImagePosition(request.getImagePosition())
-            .setParent(parentPage);
+        // Page newPage = new Page()
+        //     .setIconKey(request.getIconKey())
+        //     .setName(request.getTitle())
+        //     .setImage(coverImagFile)
+        //     .setImagePosition(request.getImagePosition());
+        //     // .setParent(parentPage);
 
-        Page createdPage = (parentPage == null)
-            ? pageService
-                .createRootPage(newPage, caller.getId(), request.getMembers())
-                .orElseThrow(InternalServerErrorHttpException::new)
-            : pageService
-                .save(newPage)
-                .orElseThrow(InternalServerErrorHttpException::new);
+        // Page createdPage = (parentPage == null)
+        //     ? pageService
+        //         .createRootPage(newPage, caller.getId(), request.getMembers())
+        //         .orElseThrow(InternalServerErrorHttpException::new)
+        //     : pageService
+        //         .save(newPage)
+        //         .orElseThrow(InternalServerErrorHttpException::new);
 
         return new Response<PageData>(HttpStatus.CREATED)
             .setData(
                 new PageData()
-                    .setTitle(createdPage.getName())
-                    .setId(createdPage.getId().toString())
-                    .setIconKey(createdPage.getIconKey())
-                    .setAuthority(USER_ROLE.FULL_ACCESS)
-                    .setImageId(Util.String.valueOf(imageId).orElse(null))
-                    .setImagePosition(createdPage.getImagePosition())
+                // .setTitle(createdPage.getName())
+                // .setId(createdPage.getId().toString())
+                // .setIconKey(createdPage.getIconKey())
+                // .setAuthority(USER_ROLE.FULL_ACCESS)
+                // .setImageId(Util.String.valueOf(imageId).orElse(null))
+                // .setImagePosition(createdPage.getImagePosition())
             );
     }
 
@@ -129,7 +127,6 @@ public class PageController {
         String updatedImageId = updatedPage.getImage() != null
             ? updatedPage.getImage().getId().toString()
             : null;
-
 
         return new Response<PageData>(HttpStatus.OK)
             .setData(
@@ -205,6 +202,8 @@ public class PageController {
     public Response<PagePreview[]> getPageChildrens(
         @PathVariable("pageId") Long pageId
     ) {
+        //TODO: change return
+        //TODO: add new block children (Controller Baru)
         List<Page> pageChildrens = pageService.getChildren(pageId);
         PagePreview[] pagePreviews = pageChildrens
             .stream()
@@ -221,9 +220,7 @@ public class PageController {
     }
 
     @MessageMapping("/page/{pageId}/block.new")
-    public CreateBlockRequest addBlock(
-        @Payload CreateBlockRequest request
-    ) {
+    public CreateBlockRequest addBlock(@Payload CreateBlockRequest request) {
         // TODO: imeplement add block method
         log.info("received new block" + request.toString());
         return request;
