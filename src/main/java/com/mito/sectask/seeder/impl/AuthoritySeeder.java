@@ -3,20 +3,12 @@ package com.mito.sectask.seeder.impl;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import org.springframework.stereotype.Component;
 import com.mito.sectask.entities.Authority;
-import com.mito.sectask.entities.Page;
-import com.mito.sectask.entities.QPage;
-import com.mito.sectask.entities.QUser;
-import com.mito.sectask.entities.Role;
-import com.mito.sectask.entities.User;
 import com.mito.sectask.repositories.AuthorityRepository;
 import com.mito.sectask.seeder.Seeder;
 import com.mito.sectask.services.role.RoleService;
-import com.mito.sectask.values.USER_ROLE;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,7 +21,6 @@ public class AuthoritySeeder implements Seeder {
 
     private final AuthorityRepository authorityRepository;
     private final RoleService roleService;
-    private final JPAQueryFactory database;
 
     @Override
     @Transactional
@@ -61,59 +52,60 @@ public class AuthoritySeeder implements Seeder {
     }
 
     private List<Authority> getAuthorities(ProjectConfiguration configuration) {
-        final QUser userTable = QUser.user;
-        final QPage pageTable = QPage.page;
-        final Role FULL_ACCESS = roleService.getRole(USER_ROLE.FULL_ACCESS);
-        final Role COLLABORATORS = roleService.getRole(USER_ROLE.COLLABORATORS);
+        // final QUser userTable = QUser.user;
+        // final QPage pageTable = QPage.page;
+        // final Role FULL_ACCESS = roleService.getRole(USER_ROLE.FULL_ACCESS);
+        // final Role COLLABORATORS = roleService.getRole(USER_ROLE.COLLABORATORS);
 
         List<Authority> authorities = new ArrayList<>();
+        //TODO: remove querydsl dependencies
 
-        // Get owner
-        User owner = Optional
-            .ofNullable(
-                database
-                    .selectFrom(userTable)
-                    .where(
-                        userTable.email.equalsIgnoreCase(
-                            configuration.getOwnerEmail()
-                        )
-                    )
-                    .fetchOne()
-            )
-            .orElseThrow();
+        // // Get owner
+        // User owner = Optional
+        //     .ofNullable(
+        //         database
+        //             .selectFrom(userTable)
+        //             .where(
+        //                 userTable.email.equalsIgnoreCase(
+        //                     configuration.getOwnerEmail()
+        //                 )
+        //             )
+        //             .fetchOne()
+        //     )
+        //     .orElseThrow();
 
-        // Get Page
-        Page page = Optional
-            .ofNullable(
-                database
-                    .selectFrom(pageTable)
-                    .where(pageTable.id.eq(configuration.getProjectId()))
-                    .fetchOne()
-            )
-            .orElseThrow();
+        // // Get Page
+        // Page page = Optional
+        //     .ofNullable(
+        //         database
+        //             .selectFrom(pageTable)
+        //             .where(pageTable.id.eq(configuration.getProjectId()))
+        //             .fetchOne()
+        //     )
+        //     .orElseThrow();
 
-        List<User> members = database
-            .selectFrom(userTable)
-            .where(userTable.email.in(configuration.getMemberEmail()))
-            .fetch();
+        // List<User> members = database
+        //     .selectFrom(userTable)
+        //     .where(userTable.email.in(configuration.getMemberEmail()))
+        //     .fetch();
 
-        authorities.add(
-            new Authority()
-                .setUser(owner)
-                .setPage(page)
-                .setRole(FULL_ACCESS)
-                .setIsPending(false)
-        );
+        // authorities.add(
+        //     new Authority()
+        //         .setUser(owner)
+        //         .setPage(page)
+        //         .setRole(FULL_ACCESS)
+        //         .setIsPending(false)
+        // );
 
-        for (User member : members) {
-            authorities.add(
-                new Authority()
-                    .setUser(member)
-                    .setPage(page)
-                    .setRole(COLLABORATORS)
-                    .setIsPending(false)
-            );
-        }
+        // for (User member : members) {
+        //     authorities.add(
+        //         new Authority()
+        //             .setUser(member)
+        //             .setPage(page)
+        //             .setRole(COLLABORATORS)
+        //             .setIsPending(false)
+        //     );
+        // }
 
         return authorities;
     }
