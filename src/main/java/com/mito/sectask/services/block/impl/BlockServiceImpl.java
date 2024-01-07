@@ -15,6 +15,7 @@ public class BlockServiceImpl implements BlockService{
 
     @Override
     public Optional<Block> findById(String blockId) {
+        if(blockId == null) return Optional.empty();
         return blockRepository.findById(blockId);
     }
     
