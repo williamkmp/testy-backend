@@ -18,11 +18,9 @@ import org.springframework.stereotype.Component;
 public class SeedRunner implements CommandLineRunner {
 
     private Logger log = LoggerFactory.getLogger(SeedRunner.class);
-    // private final RoleSeeder roleSeeder;
-    // private final UserSeeder userSeeder;
-    // private final PageSeeder pageSeeder;
-    // private final AuthoritySeeder authoritySeeder;
-    // private final ImageSeeder imageSeeder;
+    private final RoleSeeder roleSeeder;
+    private final UserSeeder userSeeder;
+    private final ImageSeeder imageSeeder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -31,15 +29,13 @@ public class SeedRunner implements CommandLineRunner {
             log.info("RUN SEEDER");
 
             // Registering seeder
-            // seeders.add(imageSeeder);
-            // seeders.add(roleSeeder);
-            // seeders.add(userSeeder);
-            // seeders.add(pageSeeder);
-            // seeders.add(authoritySeeder);
+            seeders.add(imageSeeder);
+            seeders.add(roleSeeder);
+            seeders.add(userSeeder);
 
-            // for (Seeder seeder : seeders) {
-            //     seeder.seed();
-            // }
+            for (Seeder seeder : seeders) {
+                seeder.seed();
+            }
         } catch (Exception e) {
             log.error("Error when seeding", e);
         }
