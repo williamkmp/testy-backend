@@ -1,5 +1,6 @@
 package com.mito.sectask.entities;
 
+import java.util.List;
 import com.mito.sectask.values.BLOCK_TYPE;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -7,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -29,11 +31,33 @@ public class Block {
     @Column(name = "content", nullable = true)
     private String content;
 
+    @Column(name = "icon_key", nullable = true)
+    private String iconKey;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "file_id", referencedColumnName = "id", nullable = true)
     private File file;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "page_id", referencedColumnName = "id", nullable = false)
-    private Page page;
+    private List<Page> page;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(
+        name = "prev_uuid",
+        referencedColumnName = "uuid",
+        nullable = true
+    )
+    private Block prev;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(
+        name = "next_uuid",
+        referencedColumnName = "uuid",
+        nullable = true
+    )
+    private Block next;
+
+    @Column(name = "width", nullable = true)
+    private Integer width;
 }
