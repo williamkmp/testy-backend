@@ -57,7 +57,7 @@ public class PageServiceImpl implements PageService {
             return Optional.empty();
         }
         Page page = maybePage.get();
-        page.getParent();
+        // page.getParent();
         // page.getChildrens();
         page.getImage();
         return Optional.of(page);
