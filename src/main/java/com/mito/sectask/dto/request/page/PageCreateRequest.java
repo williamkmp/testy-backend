@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 public class PageCreateRequest {
 
-    private String parentId;
+    private String collectionId;
 
     private String title;
     
