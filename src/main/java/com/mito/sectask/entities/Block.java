@@ -40,7 +40,7 @@ public class Block {
     private File file;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = true)
     private List<Page> pages;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
