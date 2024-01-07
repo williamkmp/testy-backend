@@ -37,18 +37,20 @@ public class PageServiceImpl implements PageService {
     @Override
     @Transactional
     public List<Page> getChildren(Long pageId) {
+        // TODO: fix me
         Optional<Page> maybePage = pageRepository.findById(pageId);
         if (maybePage.isEmpty()) {
             return Collections.emptyList();
         }
         Page page = maybePage.get();
-        page.getChildrens();
-        return page.getChildrens();
+        // page.getChildrens();
+        return Collections.emptyList();
     }
 
     @Override
     @Transactional
     public Optional<Page> getPageById(Long pageId) {
+        // TODO: fix me
         if (pageId == null) return Optional.empty();
         Optional<Page> maybePage = pageRepository.findById(pageId);
         if (maybePage.isEmpty()) {
@@ -56,7 +58,7 @@ public class PageServiceImpl implements PageService {
         }
         Page page = maybePage.get();
         page.getParent();
-        page.getChildrens();
+        // page.getChildrens();
         page.getImage();
         return Optional.of(page);
     }
