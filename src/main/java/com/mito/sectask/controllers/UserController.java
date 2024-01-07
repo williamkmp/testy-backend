@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,8 +39,8 @@ public class UserController {
     private final PasswordEncocder encoder;
     private final ImageService imageService;
 
-    @Authenticated(true)
     @GetMapping(path = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Authenticated(true)
     public Response<UserData> me(@Caller User caller) {
         String imageId = (caller.getImage() != null)
             ? caller.getImage().getId().toString()
@@ -51,6 +52,32 @@ public class UserController {
                     .setEmail(caller.getEmail())
                     .setTagName(caller.getTagName())
                     .setFullName(caller.getFullName())
+                    .setImageId(imageId)
+            );
+    }
+
+    @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Authenticated(true)
+    public Response<UserData> getUser(@PathVariable("userId") Long userId) {
+        Optional<User> maybeUser = userService.findById(userId); 
+
+        if(maybeUser.isEmpty()) {
+            return new Response<UserData>(HttpStatus.BAD_REQUEST)
+                .setMessage(MESSAGES.ERROR_RESOURCE_NOT_FOUND);
+        }
+
+        User user = maybeUser.get();
+        String imageId = (user.getImage() != null)
+            ? user.getImage().getId().toString()
+            : null;
+
+        return new Response<UserData>(HttpStatus.OK)
+            .setData(
+                new UserData()
+                    .setId(user.getId().toString())
+                    .setEmail(user.getEmail())
+                    .setTagName(user.getTagName())
+                    .setFullName(user.getFullName())
                     .setImageId(imageId)
             );
     }
