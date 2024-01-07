@@ -1,17 +1,15 @@
 package com.mito.sectask.seeder;
 
-import com.mito.sectask.seeder.impl.AuthoritySeeder;
-import com.mito.sectask.seeder.impl.ImageSeeder;
-import com.mito.sectask.seeder.impl.PageSeeder;
-import com.mito.sectask.seeder.impl.RoleSeeder;
-import com.mito.sectask.seeder.impl.UserSeeder;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import com.mito.sectask.seeder.impl.ImageSeeder;
+import com.mito.sectask.seeder.impl.RoleSeeder;
+import com.mito.sectask.seeder.impl.UserSeeder;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
