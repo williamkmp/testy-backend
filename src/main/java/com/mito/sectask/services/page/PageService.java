@@ -59,15 +59,28 @@ public interface PageService {
     public Optional<Page> createRootPage(Page page, Long userId, List<InviteDto> inviteList);
 
     /**
-     * save a page data to the database, can be used 
-     * to create a new page or update an existing one
+     * create a page that bleongs to a certain collection
      * 
      * @param   page {@link Page}
-     *          page data, set <i>id</i> to <code>null</code> 
-     *          to create new page
+     *          new page data
+     * 
+     * @param   collectionId {@link String}
+     *          Block uuid with type COLLECTION which the 
+     *          created page belongs to
      *  
      * @return  {@link Optional}<{@link Page}>
-     *          operated page page
+     *          created page data  
      */
-    public Optional<Page> save(Page page);
+    public Optional<Page> createSubPage(Page page, String collectionId);
+
+    /**
+     * update an existing page data
+     *  
+     * @param   page {@link Page} 
+     *          new page data, <code>id</code> must bot be null
+     *  
+     * @return  {@link Optional}<{@link Page}>
+     *          updated page data 
+     */
+    public Optional<Page> update(Page page);
 }

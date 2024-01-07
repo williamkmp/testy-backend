@@ -108,14 +108,21 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
+    public Optional<Page> createSubPage(Page page,
+        String collectionId) {
+        // TODO implement craete subPage
+        throw new UnsupportedOperationException("Unimplemented method 'createSubPage'");
+    }
+
+    @Override
     @Transactional
-    public Optional<Page> save(Page page) {
-        Page createdPage = null;
+    public Optional<Page> update(Page page) {
+        Page newPageData = null;
         try {
-            createdPage = pageRepository.save(page);
+            newPageData = pageRepository.save(page);
         } catch (Exception e) {
             Util.doNothing("createdPage is already null");
         }
-        return Optional.ofNullable(createdPage);
+        return Optional.ofNullable(newPageData);
     }
 }
