@@ -8,10 +8,14 @@ import com.mito.sectask.dto.request.page.PageUpdateRequest;
 import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.dto.response.page.PageData;
 import com.mito.sectask.dto.response.page.PagePreview;
+import com.mito.sectask.entities.Block;
+import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.ForbiddenHttpException;
+import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpException;
 import com.mito.sectask.exceptions.httpexceptions.ResourceNotFoundHttpException;
+import com.mito.sectask.services.block.BlockService;
 import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.services.role.RoleService;
@@ -45,6 +49,7 @@ public class PageController {
     private final PageService pageService;
     private final ImageService imageService;
     private final RoleService roleService;
+    private final BlockService blockService;
 
     @PostMapping(
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -56,35 +61,34 @@ public class PageController {
         @Caller User caller
     ) {
         // Get parent and Image data
-        // Long parentId = Util.String.toLong(request.getParentId()).orElse(null);
-        // Long imageId = Util.String.toLong(request.getImageId()).orElse(null);
-        // Page parentPage = pageService.getPageById(parentId).orElse(null);
-        // File coverImagFile = imageService.findById(imageId).orElse(null);
+        String collectionId = request.getCollectionId();
+        Long imageId = Util.String.toLong(request.getImageId()).orElse(null);
+        Block collection = blockService.findById(collectionId).orElse(null);
+        File coverImagFile = imageService.findById(imageId).orElse(null);
 
-        // Page newPage = new Page()
-        //     .setIconKey(request.getIconKey())
-        //     .setName(request.getTitle())
-        //     .setImage(coverImagFile)
-        //     .setImagePosition(request.getImagePosition());
-        //     // .setParent(parentPage);
+        Page newPage = new Page()
+            .setIconKey(request.getIconKey())
+            .setName(request.getTitle())
+            .setImage(coverImagFile)
+            .setImagePosition(request.getImagePosition());
 
-        // Page createdPage = (parentPage == null)
-        //     ? pageService
-        //         .createRootPage(newPage, caller.getId(), request.getMembers())
-        //         .orElseThrow(InternalServerErrorHttpException::new)
-        //     : pageService
-        //         .save(newPage)
-        //         .orElseThrow(InternalServerErrorHttpException::new);
+        Page createdPage = (collection == null)
+            ? pageService
+                .createRootPage(newPage, caller.getId(), request.getMembers())
+                .orElseThrow(InternalServerErrorHttpException::new)
+            : pageService
+                .createSubPage(newPage, collectionId)
+                .orElseThrow(InternalServerErrorHttpException::new);
 
         return new Response<PageData>(HttpStatus.CREATED)
             .setData(
                 new PageData()
-                // .setTitle(createdPage.getName())
-                // .setId(createdPage.getId().toString())
-                // .setIconKey(createdPage.getIconKey())
-                // .setAuthority(USER_ROLE.FULL_ACCESS)
-                // .setImageId(Util.String.valueOf(imageId).orElse(null))
-                // .setImagePosition(createdPage.getImagePosition())
+                .setTitle(createdPage.getName())
+                .setId(createdPage.getId().toString())
+                .setIconKey(createdPage.getIconKey())
+                .setAuthority(USER_ROLE.FULL_ACCESS)
+                .setImageId(Util.String.valueOf(imageId).orElse(null))
+                .setImagePosition(createdPage.getImagePosition())
             );
     }
 
@@ -122,7 +126,7 @@ public class PageController {
         page.setIconKey(request.getIconKey());
         page.setImagePosition(imagePosition);
         Page updatedPage = pageService
-            .save(page)
+            .update(page)
             .orElseThrow(ResourceNotFoundHttpException::new);
         String updatedImageId = updatedPage.getImage() != null
             ? updatedPage.getImage().getId().toString()
