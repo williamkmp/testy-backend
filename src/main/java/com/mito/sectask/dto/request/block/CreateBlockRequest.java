@@ -6,8 +6,8 @@ import lombok.Value;
 @Value
 public class CreateBlockRequest {
     private Long pageId;
-    private String uuid;
-    private String previousUuid;
+    private String id;
+    private String previousId;
     private BLOCK_TYPE blockType;
     private String content;
 }

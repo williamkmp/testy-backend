@@ -39,7 +39,7 @@ public class CollectionHeader {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(
         name = "block_id",
-        referencedColumnName = "uuid",
+        referencedColumnName = "id",
         nullable = false
     )
     private Block block;

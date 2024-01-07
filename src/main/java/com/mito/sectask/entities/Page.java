@@ -47,7 +47,7 @@ public class Page {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(
         name = "parent_id",
-        referencedColumnName = "uuid",
+        referencedColumnName = "id",
         nullable = true
     )
     private Block parent;

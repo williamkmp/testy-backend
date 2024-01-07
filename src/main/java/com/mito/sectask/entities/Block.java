@@ -23,7 +23,8 @@ import lombok.experimental.Accessors;
 public class Block {
 
     @Id
-    private String uuid;
+    @Column(name = "id")
+    private String id;
 
     @Column(name = "block_type", nullable = false)
     private BLOCK_TYPE blockType;
@@ -44,16 +45,16 @@ public class Block {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "prev_uuid",
-        referencedColumnName = "uuid",
+        name = "prev_id",
+        referencedColumnName = "id",
         nullable = true
     )
     private Block prev;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "next_uuid",
-        referencedColumnName = "uuid",
+        name = "next_id",
+        referencedColumnName = "id",
         nullable = true
     )
     private Block next;
