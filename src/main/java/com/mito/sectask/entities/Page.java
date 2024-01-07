@@ -1,8 +1,5 @@
 package com.mito.sectask.entities;
 
-import java.util.Date;
-import java.util.List;
-import org.hibernate.annotations.CreationTimestamp;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,9 +11,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Date;
+import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Data
 @NoArgsConstructor
@@ -44,11 +44,7 @@ public class Page {
     private File image;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(
-        name = "page_id",
-        referencedColumnName = "id",
-        nullable = true
-    )
+    @JoinColumn(name = "page_id", referencedColumnName = "id", nullable = false)
     private List<Block> blocks;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "page")
