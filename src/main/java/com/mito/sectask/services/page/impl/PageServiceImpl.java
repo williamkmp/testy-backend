@@ -1,7 +1,6 @@
 package com.mito.sectask.services.page.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -36,29 +35,14 @@ public class PageServiceImpl implements PageService {
 
     @Override
     @Transactional
-    public List<Page> getChildren(Long pageId) {
-        // TODO: fix me
-        Optional<Page> maybePage = pageRepository.findById(pageId);
-        if (maybePage.isEmpty()) {
-            return Collections.emptyList();
-        }
-        Page page = maybePage.get();
-        // page.getChildrens();
-        return Collections.emptyList();
-    }
-
-    @Override
-    @Transactional
     public Optional<Page> getPageById(Long pageId) {
-        // TODO: fix me
-        if (pageId == null) return Optional.empty();
+        if (pageId == null) 
+            return Optional.empty();
         Optional<Page> maybePage = pageRepository.findById(pageId);
         if (maybePage.isEmpty()) {
             return Optional.empty();
         }
         Page page = maybePage.get();
-        // page.getParent();
-        // page.getChildrens();
         page.getImage();
         return Optional.of(page);
     }
@@ -108,10 +92,11 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
-    public Optional<Page> createSubPage(Page page,
-        String collectionId) {
+    public Optional<Page> createSubPage(Page page, String collectionId) {
         // TODO implement craete subPage
-        throw new UnsupportedOperationException("Unimplemented method 'createSubPage'");
+        throw new UnsupportedOperationException(
+            "Unimplemented method 'createSubPage'"
+        );
     }
 
     @Override

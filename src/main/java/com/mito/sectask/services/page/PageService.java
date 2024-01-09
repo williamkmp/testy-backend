@@ -22,19 +22,6 @@ public interface PageService {
     public List<Page> getUserPages(Long userId);
 
     /**
-     * get the children of a given Page. 
-     * the returned list of children doesn't contain the 
-     * parent-children relationship
-     * 
-     * @param   pageId {@link Long}
-     *          page id
-     * 
-     * @return  {@link List}<{@link Page}>
-     *          list of page's childrens
-     */
-    public List<Page> getChildren(Long pageId);
-
-    /**
      * get page data by id
      * 
      * @param   pageId {@link Long}
