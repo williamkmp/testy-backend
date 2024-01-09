@@ -1,13 +1,25 @@
 package com.mito.sectask.controllers;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
-import com.mito.sectask.dto.request.block.CreateBlockRequest;
+import com.mito.sectask.dto.dto.MenuPreviewDto;
 import com.mito.sectask.dto.request.page.PageCreateRequest;
 import com.mito.sectask.dto.request.page.PageUpdateRequest;
 import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.dto.response.page.PageData;
-import com.mito.sectask.dto.response.page.PagePreview;
 import com.mito.sectask.entities.Block;
 import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.Page;
@@ -22,25 +34,8 @@ import com.mito.sectask.services.role.RoleService;
 import com.mito.sectask.utils.Util;
 import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.USER_ROLE;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RestController
 @RequestMapping("/page")
 @RequiredArgsConstructor
@@ -146,20 +141,20 @@ public class PageController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
-    public Response<PagePreview[]> getUserRootPages(@Caller User caller) {
+    public Response<MenuPreviewDto[]> getUserRootPages(@Caller User caller) {
         List<Page> userRootPages = pageService.getUserPages(caller.getId());
-        PagePreview[] pagePreviews = userRootPages
+        MenuPreviewDto[] pagePreviews = userRootPages
             .stream()
             .map(page ->
-                new PagePreview()
+                new MenuPreviewDto()
                     .setId(page.getId().toString())
                     .setIconKey(page.getIconKey())
                     .setTitle(page.getName())
             )
             .collect(Collectors.toList())
-            .toArray(new PagePreview[0]);
+            .toArray(new MenuPreviewDto[0]);
 
-        return new Response<PagePreview[]>(HttpStatus.OK).setData(pagePreviews);
+        return new Response<MenuPreviewDto[]>(HttpStatus.OK).setData(pagePreviews);
     }
 
     @GetMapping(path = "/{pageId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -196,37 +191,5 @@ public class PageController {
                     .setImageId(imageId)
                     .setAuthority(authority.get())
             );
-    }
-
-    @GetMapping(
-        path = "/{pageId}/children",
-        produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @Authenticated(true)
-    public Response<PagePreview[]> getPageChildrens(
-        @PathVariable("pageId") Long pageId
-    ) {
-        //TODO: change return
-        //TODO: add new block children (Controller Baru)
-        List<Page> pageChildrens = pageService.getChildren(pageId);
-        PagePreview[] pagePreviews = pageChildrens
-            .stream()
-            .map(page ->
-                new PagePreview()
-                    .setIconKey(page.getIconKey())
-                    .setId(page.getId().toString())
-                    .setTitle(page.getName())
-            )
-            .collect(Collectors.toList())
-            .toArray(new PagePreview[0]);
-
-        return new Response<PagePreview[]>(HttpStatus.OK).setData(pagePreviews);
-    }
-
-    @MessageMapping("/page/{pageId}/block.new")
-    public CreateBlockRequest addBlock(@Payload CreateBlockRequest request) {
-        // TODO: imeplement add block method
-        log.info("received new block" + request.toString());
-        return request;
     }
 }
