@@ -1,13 +1,15 @@
-package com.mito.sectask.dto.response.page;
+package com.mito.sectask.dto.dto;
 
+import com.mito.sectask.values.MENU_PREVIEW;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Data
-@NoArgsConstructor
 @Accessors(chain = true)
-public class PagePreview {
+@NoArgsConstructor
+public class MenuPreviewDto {
+    private MENU_PREVIEW type;
     private String id;
     private String iconKey;
     private String title;
