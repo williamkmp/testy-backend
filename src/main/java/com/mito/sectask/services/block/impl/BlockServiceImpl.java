@@ -9,14 +9,13 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class BlockServiceImpl implements BlockService{
+public class BlockServiceImpl implements BlockService {
 
     private final BlockRepository blockRepository;
 
     @Override
     public Optional<Block> findById(String blockId) {
-        if(blockId == null) return Optional.empty();
+        if (blockId == null) return Optional.empty();
         return blockRepository.findById(blockId);
     }
-    
 }
