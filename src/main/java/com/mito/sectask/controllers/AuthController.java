@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.dto.dto.JwtPayload;
+import com.mito.sectask.dto.dto.LoginDto;
+import com.mito.sectask.dto.dto.RegisterDto;
 import com.mito.sectask.dto.dto.TokenDto;
 import com.mito.sectask.dto.parameters.LoginParameter;
 import com.mito.sectask.dto.parameters.RegisterUserParameter;
@@ -18,8 +20,6 @@ import com.mito.sectask.dto.request.auth.AuthLoginRequest;
 import com.mito.sectask.dto.request.auth.AuthRefreshTokenRequest;
 import com.mito.sectask.dto.request.auth.AuthRegisterRequest;
 import com.mito.sectask.dto.response.Response;
-import com.mito.sectask.dto.response.auth.LoginData;
-import com.mito.sectask.dto.response.auth.RegisterData;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.auth.AuthService;
@@ -45,7 +45,7 @@ public class AuthController {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Transactional
-    public Response<LoginData> login(
+    public Response<LoginDto> login(
         @RequestBody @Valid AuthLoginRequest request
     ) {
         Optional<User> maybeUser = authService.loginUser(
@@ -55,7 +55,7 @@ public class AuthController {
         );
         
         if (maybeUser.isEmpty()) {
-            return new Response<LoginData>(HttpStatus.BAD_REQUEST)
+            return new Response<LoginDto>(HttpStatus.BAD_REQUEST)
             .setRootError(VALIDATION.INVALID_CREDENTIAL);
         }
 
@@ -63,7 +63,7 @@ public class AuthController {
         Optional<TokenDto> maybeToken = authService.generateTokens(registeredUser.getId());
 
         if (maybeToken.isEmpty()) {
-            return new Response<LoginData>(HttpStatus.INTERNAL_SERVER_ERROR)
+            return new Response<LoginDto>(HttpStatus.INTERNAL_SERVER_ERROR)
             .setMessage(MESSAGES.ERROR_INTERNAL_SERVER);
         }
 
@@ -72,8 +72,8 @@ public class AuthController {
             : null;
         
         TokenDto token = maybeToken.get();
-        return new Response<LoginData>(HttpStatus.OK)
-            .setData(new LoginData()
+        return new Response<LoginDto>(HttpStatus.OK)
+            .setData(new LoginDto()
                 .setId(registeredUser.getId().toString())
                 .setEmail(registeredUser.getEmail())
                 .setTagName(registeredUser.getTagName())
@@ -88,7 +88,7 @@ public class AuthController {
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Response<RegisterData> register(
+    public Response<RegisterDto> register(
         @RequestBody @Valid AuthRegisterRequest request
     ) {
         boolean isEmailAvailable = Boolean.TRUE.equals(
@@ -110,7 +110,7 @@ public class AuthController {
                 !isTagNameAvailable ? VALIDATION.UNIQUE : null
             );
 
-            return new Response<RegisterData>(HttpStatus.BAD_REQUEST)
+            return new Response<RegisterDto>(HttpStatus.BAD_REQUEST)
                 .setError(validationError);
         }
 
@@ -124,7 +124,7 @@ public class AuthController {
                 );
 
         if (maybeUser.isEmpty()) {
-            return new Response<RegisterData>(
+            return new Response<RegisterDto>(
                 HttpStatus.INTERNAL_SERVER_ERROR
             )
                 .setMessage(MESSAGES.ERROR_INTERNAL_SERVER);
@@ -132,9 +132,9 @@ public class AuthController {
 
         User createdUser = maybeUser.get();
 
-        return new Response<RegisterData>(HttpStatus.CREATED)
+        return new Response<RegisterDto>(HttpStatus.CREATED)
             .setData(
-                new RegisterData()
+                new RegisterDto()
                     .setId(createdUser.getId().toString())
                     .setEmail(createdUser.getEmail())
                     .setTagName(createdUser.getTagName())

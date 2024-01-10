@@ -2,10 +2,10 @@ package com.mito.sectask.controllers;
 
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
+import com.mito.sectask.dto.dto.UserDto;
 import com.mito.sectask.dto.request.user.UserUpdatePasswordRequest;
 import com.mito.sectask.dto.request.user.UserUpdateProfileRequest;
 import com.mito.sectask.dto.response.Response;
-import com.mito.sectask.dto.response.user.UserData;
 import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
@@ -41,13 +41,13 @@ public class UserController {
 
     @GetMapping(path = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
-    public Response<UserData> me(@Caller User caller) {
+    public Response<UserDto> me(@Caller User caller) {
         String imageId = (caller.getImage() != null)
             ? caller.getImage().getId().toString()
             : null;
-        return new Response<UserData>(HttpStatus.OK)
+        return new Response<UserDto>(HttpStatus.OK)
             .setData(
-                new UserData()
+                new UserDto()
                     .setId(caller.getId().toString())
                     .setEmail(caller.getEmail())
                     .setTagName(caller.getTagName())
@@ -58,11 +58,11 @@ public class UserController {
 
     @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
-    public Response<UserData> getUser(@PathVariable("userId") Long userId) {
+    public Response<UserDto> getUser(@PathVariable("userId") Long userId) {
         Optional<User> maybeUser = userService.findById(userId); 
 
         if(maybeUser.isEmpty()) {
-            return new Response<UserData>(HttpStatus.BAD_REQUEST)
+            return new Response<UserDto>(HttpStatus.BAD_REQUEST)
                 .setMessage(MESSAGES.ERROR_RESOURCE_NOT_FOUND);
         }
 
@@ -71,9 +71,9 @@ public class UserController {
             ? user.getImage().getId().toString()
             : null;
 
-        return new Response<UserData>(HttpStatus.OK)
+        return new Response<UserDto>(HttpStatus.OK)
             .setData(
-                new UserData()
+                new UserDto()
                     .setId(user.getId().toString())
                     .setEmail(user.getEmail())
                     .setTagName(user.getTagName())
@@ -88,7 +88,7 @@ public class UserController {
     )
     @Transactional
     @Authenticated(true)
-    public Response<UserData> updateProfile(
+    public Response<UserDto> updateProfile(
         @Valid @RequestBody UserUpdateProfileRequest request,
         @Caller User caller
     ) {
@@ -117,7 +117,7 @@ public class UserController {
                 !isEmailAvailable ? VALIDATION.UNIQUE : null
             );
 
-            return new Response<UserData>(HttpStatus.BAD_REQUEST)
+            return new Response<UserDto>(HttpStatus.BAD_REQUEST)
                 .setMessage(MESSAGES.UPDATE_FAIL)
                 .setError(validationError);
         }
@@ -143,10 +143,10 @@ public class UserController {
             ? maybeImage.get().getId().toString()
             : null;
 
-        return new Response<UserData>(HttpStatus.OK)
+        return new Response<UserDto>(HttpStatus.OK)
             .setMessage(MESSAGES.UPDATE_SUCCESS)
             .setData(
-                new UserData()
+                new UserDto()
                     .setId(updatedUser.getId().toString())
                     .setEmail(updatedUser.getEmail())
                     .setTagName(updatedUser.getTagName())
@@ -157,7 +157,7 @@ public class UserController {
 
     @Authenticated(true)
     @PutMapping(path = "/password")
-    public Response<UserData> updatePassword(
+    public Response<UserDto> updatePassword(
         @RequestBody @Valid UserUpdatePasswordRequest request,
         @Caller User caller
     ) {
@@ -170,7 +170,7 @@ public class UserController {
             Map<String, String> validationError = new HashMap<>();
             validationError.put("oldPassword", VALIDATION.WRONG);
 
-            return new Response<UserData>(HttpStatus.BAD_REQUEST)
+            return new Response<UserDto>(HttpStatus.BAD_REQUEST)
                 .setMessage(MESSAGES.UPDATE_FAIL)
                 .setError(validationError);
         }
@@ -185,10 +185,10 @@ public class UserController {
             ? caller.getImage().getId().toString()
             : null;
 
-        return new Response<UserData>(HttpStatus.OK)
+        return new Response<UserDto>(HttpStatus.OK)
             .setMessage(MESSAGES.UPDATE_SUCCESS)
             .setData(
-                new UserData()
+                new UserDto()
                     .setId(updatedUser.getId().toString())
                     .setEmail(updatedUser.getEmail())
                     .setTagName(updatedUser.getTagName())

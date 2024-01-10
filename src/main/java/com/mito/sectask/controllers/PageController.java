@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.dto.dto.MenuPreviewDto;
+import com.mito.sectask.dto.dto.PageDto;
 import com.mito.sectask.dto.request.page.PageCreateRequest;
 import com.mito.sectask.dto.request.page.PageUpdateRequest;
 import com.mito.sectask.dto.response.Response;
-import com.mito.sectask.dto.response.page.PageData;
 import com.mito.sectask.entities.Block;
 import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.Page;
@@ -51,7 +51,7 @@ public class PageController {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Authenticated(true)
-    public Response<PageData> createPage(
+    public Response<PageDto> createPage(
         @RequestBody PageCreateRequest request,
         @Caller User caller
     ) {
@@ -75,9 +75,9 @@ public class PageController {
                 .createSubPage(newPage, collectionId)
                 .orElseThrow(InternalServerErrorHttpException::new);
 
-        return new Response<PageData>(HttpStatus.CREATED)
+        return new Response<PageDto>(HttpStatus.CREATED)
             .setData(
-                new PageData()
+                new PageDto()
                 .setTitle(createdPage.getName())
                 .setId(createdPage.getId().toString())
                 .setIconKey(createdPage.getIconKey())
@@ -93,7 +93,7 @@ public class PageController {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Authenticated(true)
-    public Response<PageData> putMethodName(
+    public Response<PageDto> putMethodName(
         @PathVariable("pageId") Long pageId,
         @RequestBody PageUpdateRequest request,
         @Caller User caller
@@ -127,9 +127,9 @@ public class PageController {
             ? updatedPage.getImage().getId().toString()
             : null;
 
-        return new Response<PageData>(HttpStatus.OK)
+        return new Response<PageDto>(HttpStatus.OK)
             .setData(
-                new PageData()
+                new PageDto()
                     .setId(updatedPage.getId().toString())
                     .setTitle(updatedPage.getName())
                     .setAuthority(authority)
@@ -159,7 +159,7 @@ public class PageController {
 
     @GetMapping(path = "/{pageId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
-    public Response<PageData> getPageInformation(
+    public Response<PageDto> getPageInformation(
         @PathVariable("pageId") Long pageId,
         @Caller User caller
     ) {
@@ -173,7 +173,7 @@ public class PageController {
 
         Optional<Page> maybePage = pageService.getPageById(pageId);
         if (maybePage.isEmpty()) {
-            return new Response<PageData>(HttpStatus.BAD_REQUEST)
+            return new Response<PageDto>(HttpStatus.BAD_REQUEST)
                 .setMessage(MESSAGES.ERROR_RESOURCE_NOT_FOUND);
         }
         Page page = maybePage.get();
@@ -181,9 +181,9 @@ public class PageController {
             ? page.getImage().getId().toString()
             : null;
 
-        return new Response<PageData>(HttpStatus.OK)
+        return new Response<PageDto>(HttpStatus.OK)
             .setData(
-                new PageData()
+                new PageDto()
                     .setId(page.getId().toString())
                     .setIconKey(page.getIconKey())
                     .setTitle(page.getName())

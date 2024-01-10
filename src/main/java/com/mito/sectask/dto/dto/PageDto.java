@@ -1,4 +1,4 @@
-package com.mito.sectask.dto.response.page;
+package com.mito.sectask.dto.dto;
 
 import com.mito.sectask.values.USER_ROLE;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
-public class PageData {
+public class PageDto {
     private String id;
     private String title;
     private USER_ROLE authority;

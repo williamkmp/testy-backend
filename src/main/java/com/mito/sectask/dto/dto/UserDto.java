@@ -1,4 +1,4 @@
-package com.mito.sectask.dto.response.user;
+package com.mito.sectask.dto.dto;
 
 import io.micrometer.common.lang.NonNull;
 import lombok.Data;
@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
-public class UserData {
+public class UserDto {
 
     @NonNull
     private String id;

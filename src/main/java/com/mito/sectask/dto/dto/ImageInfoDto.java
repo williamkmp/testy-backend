@@ -1,4 +1,4 @@
-package com.mito.sectask.dto.response.image;
+package com.mito.sectask.dto.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
-public class ImageData {
+public class ImageInfoDto {
 
     private String id;
     private String src;

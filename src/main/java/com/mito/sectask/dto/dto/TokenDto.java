@@ -1,5 +1,6 @@
 package com.mito.sectask.dto.dto;
 
+import io.micrometer.common.lang.NonNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -8,6 +9,10 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class TokenDto {
-    private String refreshToken;
+
+    @NonNull
     private String accessToken;
+    
+    @NonNull
+    private String refreshToken;
 }
