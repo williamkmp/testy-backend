@@ -6,6 +6,7 @@ import com.mito.sectask.entities.Page;
 import com.mito.sectask.repositories.FileRepository;
 import com.mito.sectask.repositories.PageRepository;
 import com.mito.sectask.seeder.Seeder;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -16,6 +17,7 @@ public class PageSeeder implements Seeder {
     private final PageRepository pageRepository; 
 
     @Override
+    @Transactional
     public void seed() throws Exception {
         File coverImage1 = fileRepository.findById(1L).orElse(null);
         File coverImage2 = fileRepository.findById(2L).orElse(null);
