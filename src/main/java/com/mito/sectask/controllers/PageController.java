@@ -93,19 +93,21 @@ public class PageController {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Authenticated(true)
-    public Response<PageDto> putMethodName(
+    public Response<PageDto> updatePage(
         @PathVariable("pageId") Long pageId,
         @RequestBody PageUpdateRequest request,
         @Caller User caller
     ) {
         // Checking user's Role
+        USER_ROLE authority = roleService
+            .getUserPageAuthority(caller.getId(), pageId)
+            .orElseThrow(ForbiddenHttpException::new);
+        
         final USER_ROLE[] allowedAuthority = {
             USER_ROLE.COLLABORATORS,
             USER_ROLE.FULL_ACCESS,
         };
-        USER_ROLE authority = roleService
-            .getPageAuthorityOfUser(caller.getId(), pageId)
-            .orElseThrow(ForbiddenHttpException::new);
+        
         if (!Arrays.asList(allowedAuthority).contains(authority)) {
             throw new ForbiddenHttpException();
         }
@@ -163,7 +165,7 @@ public class PageController {
         @PathVariable("pageId") Long pageId,
         @Caller User caller
     ) {
-        Optional<USER_ROLE> authority = roleService.getPageAuthorityOfUser(
+        Optional<USER_ROLE> authority = roleService.getUserPageAuthority(
             caller.getId(),
             pageId
         );

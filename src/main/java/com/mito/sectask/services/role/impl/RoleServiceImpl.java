@@ -1,12 +1,12 @@
 package com.mito.sectask.services.role.impl;
 
-import java.util.Optional;
-import org.springframework.stereotype.Service;
 import com.mito.sectask.entities.Role;
 import com.mito.sectask.repositories.RoleRepository;
 import com.mito.sectask.services.role.RoleService;
 import com.mito.sectask.values.USER_ROLE;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -24,15 +24,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Optional<USER_ROLE> getPageAuthorityOfUser(
-        Long userId,
-        Long pageId
-    ) {
-        //TODO: fix me for nested page interaction
-        Optional<Role> role = roleRepository.getPageAuthority(pageId, userId);
-        if(role.isEmpty())
-            return Optional.empty();
-        else
-            return Optional.of(role.get().getName()); 
+    public Optional<USER_ROLE> getUserPageAuthority(Long userId, Long pageId) {
+        //TODO: implement me
+        return Optional.empty();
     }
 }
