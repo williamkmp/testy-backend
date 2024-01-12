@@ -27,6 +27,7 @@ public class ImageSeeder implements Seeder {
             "cover1.jpeg",
             "cover2.jpeg",
             "cover3.jpeg",
+            "block1.jpg"
         };
 
         List<File> images = constructImages(imageNames);
