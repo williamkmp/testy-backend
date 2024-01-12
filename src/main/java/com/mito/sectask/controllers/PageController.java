@@ -115,7 +115,7 @@ public class PageController {
         Long imageId = Util.String.toLong(request.getImageId()).orElse(null);
         imageService.updatePageCoverImage(pageId, imageId);
         Page page = pageService
-            .getPageById(pageId)
+            .findById(pageId)
             .orElseThrow(ResourceNotFoundHttpException::new);
         Float imagePosition = Optional
             .ofNullable(request.getImagePosition())
@@ -173,7 +173,7 @@ public class PageController {
             throw new ForbiddenHttpException();
         }
 
-        Optional<Page> maybePage = pageService.getPageById(pageId);
+        Optional<Page> maybePage = pageService.findById(pageId);
         if (maybePage.isEmpty()) {
             return new Response<PageDto>(HttpStatus.BAD_REQUEST)
                 .setMessage(MESSAGES.ERROR_RESOURCE_NOT_FOUND);

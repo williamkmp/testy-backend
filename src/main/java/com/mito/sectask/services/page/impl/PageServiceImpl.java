@@ -35,7 +35,7 @@ public class PageServiceImpl implements PageService {
 
     @Override
     @Transactional
-    public Optional<Page> getPageById(Long pageId) {
+    public Optional<Page> findById(Long pageId) {
         if (pageId == null) 
             return Optional.empty();
         Optional<Page> maybePage = pageRepository.findById(pageId);

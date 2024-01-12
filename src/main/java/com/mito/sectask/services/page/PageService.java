@@ -31,7 +31,7 @@ public interface PageService {
      *          containing Page, else Optional.empty()
      *          if fails ofr not found
      */
-    public Optional<Page> getPageById(Long pageId);
+    public Optional<Page> findById(Long pageId);
 
     /**
      * create a new root page and register it to the database. 
