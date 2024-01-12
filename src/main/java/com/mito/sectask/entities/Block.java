@@ -60,5 +60,5 @@ public class Block {
     private Block next;
 
     @Column(name = "width", nullable = true)
-    private Integer width;
+    private Float width;
 }
