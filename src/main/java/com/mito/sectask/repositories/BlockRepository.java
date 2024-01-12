@@ -1,9 +1,8 @@
 package com.mito.sectask.repositories;
 
-import com.mito.sectask.entities.Block;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import com.mito.sectask.entities.Block;
 
 @Repository
-public interface BlockRepository
-    extends JpaRepository<Block, String> {}
+public interface BlockRepository extends JpaRepository<Block, String> {}
