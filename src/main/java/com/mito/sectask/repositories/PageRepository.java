@@ -10,18 +10,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PageRepository extends JpaRepository<Page, Long> {
     @Query(
-        nativeQuery = true,
-        value = """
+        """ 
             SELECT 
-                p.* 
+                p
             FROM 
-                pages AS p 
-                JOIN authorities AS a ON p.id = a.page_id
-                JOIN users AS u ON a.user_id = u.id
+                Page p 
+                JOIN p.authorities a 
+                JOIN a.user u
             WHERE
                 u.id = :userId
-                AND a.is_pending = false
-            """
+                AND a.isPending = false
+        """
     )
     public List<Page> getUserPages(@Param("userId") Long userId);
 }
