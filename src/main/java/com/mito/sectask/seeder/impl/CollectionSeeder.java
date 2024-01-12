@@ -13,7 +13,7 @@ public class CollectionSeeder implements Seeder{
 
     @Override
     public void seed() throws Exception {
-        // TODO: implement me
+        // TODO: implement collectionseeder.seed()
     }
 
 }
