@@ -11,17 +11,10 @@
         "**/.settings": true,
         "**/.factorypath": true
     },
-    "hide-files.files": [],
     "java.configuration.updateBuildConfiguration": "automatic",
-    "java.format.settings.url": ".vscode/eclipse-java-google-style.xml",
     "maven.view": "hierarchical",
     "java.compile.nullAnalysis.mode": "disabled",
     "java.debug.settings.onBuildFailureProceed": true,
     "java.dependency.packagePresentation": "hierarchical",
-    "[java]": {
-        "editor.defaultFormatter": "mwpb.java-prettier-formatter",
-    },
     "java.inlayHints.parameterNames.enabled": "none",
-    "prettier.printWidth": 60,
-    "prettier.tabWidth": 4,
 }
