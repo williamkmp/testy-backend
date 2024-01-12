@@ -2,6 +2,7 @@ package com.mito.sectask.services.user;
 
 import com.mito.sectask.dto.parameters.RegisterUserParameter;
 import com.mito.sectask.entities.User;
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -37,10 +38,33 @@ public interface UserService {
      *          user id
      *
      * @return  {@link Optional}<{@link User}>
-     *          containing searcher user data,
+     *          containing user data,
      *          otherwise Optional.empty() if not found.
      */
     public Optional<User> findById(Long userId);
+
+    /**
+     * find user by email
+     *
+     * @param   email {@link String}
+     *          user email
+     *
+     * @return  {@link Optional}<{@link User}>
+     *          containing user data,
+     *          otherwise Optional.empty() if not found.
+     */
+    public Optional<User> findByEmail(String email);
+
+    /**
+     * find all user by email
+     *
+     * @param   emails {@link List}<{@link User}>
+     *          user email
+     *
+     * @return  {@link List}<{@link User}>
+     *          list of all user with the email, not sorted
+     */
+    public List<User> findAllByEmails(List<String> emails);
 
     /**
      * check if no other user has this email

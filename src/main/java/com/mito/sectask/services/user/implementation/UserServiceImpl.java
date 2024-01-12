@@ -6,6 +6,7 @@ import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.encoder.PasswordEncocder;
 import com.mito.sectask.services.user.UserService;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findById(Long userId) {
+        if (userId == null) 
+            return Optional.empty();
         return userRepository.findById(userId);
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        if (email == null) 
+            return Optional.empty();
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public List<User> findAllByEmails(List<String> emails) {
+        return userRepository.findByEmails(emails);
     }
 
     @Override
