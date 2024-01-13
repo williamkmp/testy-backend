@@ -10,6 +10,7 @@ import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.entities.Block;
 import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.Page;
+import com.mito.sectask.entities.Role;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.httpexceptions.ForbiddenHttpException;
 import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpException;
@@ -85,8 +86,8 @@ public class PageController {
     public Response<PageDto> updatePage(
             @PathVariable("pageId") Long pageId, @RequestBody PageUpdateRequest request, @Caller User caller) {
         // Checking user's Role
-        USER_ROLE authority =
-                roleService.getUserPageAuthority(caller.getId(), pageId).orElseThrow(ForbiddenHttpException::new);
+        Role userRole = roleService.getUserPageAuthority(caller.getId(), pageId).orElseThrow(ForbiddenHttpException::new);
+        USER_ROLE authority = userRole.getName();
 
         final USER_ROLE[] allowedAuthority = {
             USER_ROLE.COLLABORATORS, USER_ROLE.FULL_ACCESS,
@@ -134,10 +135,8 @@ public class PageController {
     @GetMapping(path = "/{pageId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
     public Response<PageDto> getPageInformation(@PathVariable("pageId") Long pageId, @Caller User caller) {
-        Optional<USER_ROLE> authority = roleService.getUserPageAuthority(caller.getId(), pageId);
-        if (authority.isEmpty()) {
-            throw new ForbiddenHttpException();
-        }
+        Role userRole = roleService.getUserPageAuthority(caller.getId(), pageId).orElseThrow(ForbiddenHttpException::new);
+        USER_ROLE authority = userRole.getName();
 
         Optional<Page> maybePage = pageService.findById(pageId);
         if (maybePage.isEmpty()) {
@@ -153,6 +152,6 @@ public class PageController {
                         .setTitle(page.getName())
                         .setImagePosition(page.getImagePosition())
                         .setImageId(imageId)
-                        .setAuthority(authority.get()));
+                        .setAuthority(authority));
     }
 }
