@@ -21,7 +21,7 @@ public interface PageService {
      * get page data by id
      *
      * @param pageId {@link Long} page id
-     * @return {@link Optional}<{@link Page}> containing Page, else Optional.empty() if fails ofr not
+     * @return {@link Optional}<{@link Page}> containing Page, else Optional.empty() if fails or not
      *     found
      */
     public Optional<Page> findById(Long pageId);
@@ -51,4 +51,15 @@ public interface PageService {
      * @return {@link Optional}<{@link Page}> updated page data
      */
     public Optional<Page> update(Page page);
+
+    /**
+     * get root page of a certain sub page, if a given page is already a root page then return 
+     * the page. This method will traverse the Page - COllection relationship to serach the 
+     * root page (page that is not contained inside a collecation, standalone page) 
+     * 
+     * @param pageId {@link Long} page id 
+     * @return {@link Optional}<{@link Page}> cotaining root Page, else Optional.empty() 
+     *      if error or not found
+     */
+    public Optional<Page> getRootOfPage(Long pageId); 
 }
