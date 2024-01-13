@@ -12,7 +12,8 @@ public interface BlockRepository extends JpaRepository<Block, String> {
 
     @Query(
             nativeQuery = true,
-            value ="""
+            value =
+                    """
 			WITH RECURSIVE cte AS
 			(
 				SELECT * FROM blocks AS b WHERE b.page_id = 1 AND b.prev_id is null
@@ -20,7 +21,6 @@ public interface BlockRepository extends JpaRepository<Block, String> {
 				SELECT blocks.* FROM cte JOIN blocks ON cte.id = blocks.prev_id
 			)
 			SELECT * FROM cte AS blocks
-			"""
-	)
+			""")
     public List<Block> findAllByPageId(@Param("pageId") Long pageId);
 }
