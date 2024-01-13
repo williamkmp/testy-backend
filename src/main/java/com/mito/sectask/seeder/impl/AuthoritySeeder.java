@@ -1,34 +1,37 @@
 package com.mito.sectask.seeder.impl;
 
-import com.mito.sectask.entities.Authority;
-import com.mito.sectask.entities.Page;
-import com.mito.sectask.entities.Role;
-import com.mito.sectask.entities.User;
-import com.mito.sectask.repositories.AuthorityRepository;
-import com.mito.sectask.seeder.Seeder;
-import com.mito.sectask.services.page.PageService;
-import com.mito.sectask.services.role.RoleService;
-import com.mito.sectask.services.user.UserService;
-import com.mito.sectask.values.USER_ROLE;
-import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
+
+import org.springframework.stereotype.Component;
+
+import com.mito.sectask.entities.Authority;
+import com.mito.sectask.entities.Page;
+import com.mito.sectask.entities.Role;
+import com.mito.sectask.entities.User;
+import com.mito.sectask.repositories.AuthorityRepository;
+import com.mito.sectask.repositories.RoleRepository;
+import com.mito.sectask.seeder.Seeder;
+import com.mito.sectask.services.page.PageService;
+import com.mito.sectask.services.user.UserService;
+import com.mito.sectask.values.USER_ROLE;
+
+import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
-import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class AuthoritySeeder implements Seeder {
 
     private final AuthorityRepository authorityRepository;
-    private final RoleService roleService;
+    private final RoleRepository roleRepository;
     private final PageService pageService;
     private final UserService userService;
 
@@ -65,8 +68,8 @@ public class AuthoritySeeder implements Seeder {
 
     private List<Authority> construcAuthorities(ProjectConfiguration configuration) {
         List<Authority> authorities = new ArrayList<>();
-        final Role OWNER_ROLE = roleService.getRole(USER_ROLE.FULL_ACCESS);
-        final Role MEMBER_ROLE = roleService.getRole(USER_ROLE.COLLABORATORS);
+        final Role OWNER_ROLE = roleRepository.findByName(USER_ROLE.FULL_ACCESS);
+        final Role MEMBER_ROLE = roleRepository.findByName(USER_ROLE.COLLABORATORS);
 
         // Getting the page
         Long pageId = configuration.getPageId();
