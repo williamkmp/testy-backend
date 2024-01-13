@@ -4,6 +4,8 @@ import com.mito.sectask.values.BLOCK_TYPE;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -27,6 +29,7 @@ public class Block {
     @Column(name = "id")
     private String id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "block_type", nullable = false)
     private BLOCK_TYPE blockType;
 
