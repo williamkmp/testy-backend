@@ -1,20 +1,17 @@
 package com.mito.sectask.seeder.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.stereotype.Component;
-
 import com.mito.sectask.entities.Block;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.repositories.BlockRepository;
 import com.mito.sectask.seeder.Seeder;
 import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.values.BLOCK_TYPE;
-
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -100,10 +97,10 @@ public class BlockSeeder implements Seeder {
 
         // Save blocks to repository
         for (int i = 0; i < blocks.size(); i++) {
-            Block block = blocks.get(i);    
+            Block block = blocks.get(i);
             block.setId(UUID.randomUUID().toString());
             block.setPage(page);
-            Block savedBlock = blockRepository.save(block);  
+            Block savedBlock = blockRepository.save(block);
             blocks.set(i, savedBlock);
         }
 

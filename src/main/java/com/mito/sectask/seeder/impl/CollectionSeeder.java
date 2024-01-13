@@ -1,20 +1,17 @@
 package com.mito.sectask.seeder.impl;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.stereotype.Component;
-
 import com.mito.sectask.entities.Block;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.repositories.BlockRepository;
 import com.mito.sectask.repositories.PageRepository;
 import com.mito.sectask.seeder.Seeder;
 import com.mito.sectask.values.BLOCK_TYPE;
-
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -27,17 +24,11 @@ public class CollectionSeeder implements Seeder {
     @Override
     @Transactional
     public void seed() throws Exception {
-        Page testyPage = pageRepository
-                .findById(1L)
-                .orElseThrow(() -> new Exception("Page not found"));
+        Page testyPage = pageRepository.findById(1L).orElseThrow(() -> new Exception("Page not found"));
 
-        Page bimayPage = pageRepository
-                .findById(2L)
-                .orElseThrow(() -> new Exception("Page not found"));
-        
-        Page bimobPage = pageRepository
-                .findById(3L)
-                .orElseThrow(() -> new Exception("Page not found"));
+        Page bimayPage = pageRepository.findById(2L).orElseThrow(() -> new Exception("Page not found"));
+
+        Page bimobPage = pageRepository.findById(3L).orElseThrow(() -> new Exception("Page not found"));
 
         Block testyFinding = new Block()
                 .setId(UUID.randomUUID().toString())
@@ -50,7 +41,7 @@ public class CollectionSeeder implements Seeder {
                 .setIconKey("emoji-883") // 🌐
                 .setBlockType(BLOCK_TYPE.COLLECTION)
                 .setContent("<p>Binusmaya Website Findings</p>");
-                
+
         Block bimobFinding = new Block()
                 .setId(UUID.randomUUID().toString())
                 .setIconKey("emoji-1170") // 📱
@@ -67,7 +58,8 @@ public class CollectionSeeder implements Seeder {
         block.setPage(page);
         Block collection = blockRepository.saveAndFlush(block);
         List<Block> pageBlocks = blockRepository.findAllByPageId(page.getId());
-        log.atInfo().setMessage("adding collection '{}' to block '{}'")
+        log.atInfo()
+                .setMessage("adding collection '{}' to block '{}'")
                 .addArgument(block.getContent())
                 .addArgument(page.getName())
                 .log();
