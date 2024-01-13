@@ -1,19 +1,20 @@
 package com.mito.sectask.seeder.impl;
 
-import com.mito.sectask.entities.Block;
-import com.mito.sectask.entities.File;
-import com.mito.sectask.entities.Page;
-import com.mito.sectask.repositories.BlockRepository;
-import com.mito.sectask.seeder.Seeder;
-import com.mito.sectask.services.image.ImageService;
-import com.mito.sectask.services.page.PageService;
-import com.mito.sectask.values.BLOCK_TYPE;
-import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
+
+import com.mito.sectask.entities.Block;
+import com.mito.sectask.entities.Page;
+import com.mito.sectask.repositories.BlockRepository;
+import com.mito.sectask.seeder.Seeder;
+import com.mito.sectask.services.page.PageService;
+import com.mito.sectask.values.BLOCK_TYPE;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -21,19 +22,21 @@ public class BlockSeeder implements Seeder {
 
     private final BlockRepository blockRepository;
     private final PageService pageService;
-    private final ImageService imageService;
 
     @Override
     @Transactional
     public void seed() throws Exception {
-        List<Block> article = generateArticle();
         Page testyRootPage = pageService.findById(1L).orElseThrow(() -> new Exception("Page with id [1] is not found"));
-        saveBlockListToPage(testyRootPage, article);
+        Page bimayRootPage = pageService.findById(2L).orElseThrow(() -> new Exception("Page with id [2] is not found"));
+        Page bimobRootPage = pageService.findById(3L).orElseThrow(() -> new Exception("Page with id [3] is not found"));
+
+        saveBlockListToPage(testyRootPage, generateBlockList());
+        saveBlockListToPage(bimayRootPage, generateBlockList());
+        saveBlockListToPage(bimobRootPage, generateBlockList());
     }
 
-    private List<Block> generateArticle() throws Exception {
+    private List<Block> generateBlockList() {
         List<Block> blocks = new ArrayList<>();
-        File block1Image = imageService.findById(4L).orElseThrow(() -> new Exception("Image not found")); // block1.jpeg
 
         blocks.add(new Block()
                 .setBlockType(BLOCK_TYPE.HEADING_1)
@@ -42,11 +45,6 @@ public class BlockSeeder implements Seeder {
         blocks.add(new Block()
                 .setBlockType(BLOCK_TYPE.PARAGRAPH)
                 .setContent("<p>Are you still using field injection?</p>"));
-        blocks.add(new Block()
-                .setBlockType(BLOCK_TYPE.HEADING_1)
-                .setContent("<p>Please Stop Using Autowired Field Injection in the Spring</p>"));
-        blocks.add(
-                new Block().setBlockType(BLOCK_TYPE.IMAGE).setFile(block1Image).setWidth(100F));
         blocks.add(
                 new Block()
                         .setBlockType(BLOCK_TYPE.PARAGRAPH)
@@ -100,11 +98,13 @@ public class BlockSeeder implements Seeder {
 
     private void saveBlockListToPage(Page page, List<Block> blocks) {
 
-        // Save index to repository
-        for (Block block : blocks) {
+        // Save blocks to repository
+        for (int i = 0; i < blocks.size(); i++) {
+            Block block = blocks.get(i);    
             block.setId(UUID.randomUUID().toString());
             block.setPage(page);
-            block = blockRepository.save(block);
+            Block savedBlock = blockRepository.save(block);  
+            blocks.set(i, savedBlock);
         }
 
         // Setting the prev/next relationship
