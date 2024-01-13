@@ -14,26 +14,12 @@ import lombok.Value;
 public class UserUpdatePasswordRequest {
 
     @NotBlank(message = VALIDATION.REQUIRED)
-    @Size(
-        min = 0,
-        max = 100,
-        message = VALIDATION.STRING_LENGTH + 0 + "," + 100
-    )
-    @Pattern(
-        regexp = PATTERN.ALPHANUM,
-        message = VALIDATION.STRING_ALPHANUM
-    )
+    @Size(min = 0, max = 100, message = VALIDATION.STRING_LENGTH + 0 + "," + 100)
+    @Pattern(regexp = PATTERN.ALPHANUM, message = VALIDATION.STRING_ALPHANUM)
     private String oldPassword;
 
     @NotBlank(message = VALIDATION.REQUIRED)
-    @Size(
-        min = 0,
-        max = 100,
-        message = VALIDATION.STRING_LENGTH + 0 + "," + 100
-    )
-    @Pattern(
-        regexp = PATTERN.ALPHANUM,
-        message = VALIDATION.STRING_ALPHANUM
-    )
+    @Size(min = 0, max = 100, message = VALIDATION.STRING_LENGTH + 0 + "," + 100)
+    @Pattern(regexp = PATTERN.ALPHANUM, message = VALIDATION.STRING_ALPHANUM)
     private String newPassword;
 }

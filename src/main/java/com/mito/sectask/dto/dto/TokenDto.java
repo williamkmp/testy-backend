@@ -10,9 +10,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class TokenDto {
 
-    @NonNull
-    private String accessToken;
-    
-    @NonNull
-    private String refreshToken;
+    @NonNull private String accessToken;
+
+    @NonNull private String refreshToken;
 }

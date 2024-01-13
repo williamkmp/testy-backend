@@ -25,7 +25,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Optional<USER_ROLE> getUserPageAuthority(Long userId, Long pageId) {
-        //TODO: implement me
-        return Optional.empty();
+        // TODO: implement me
+        throw new UnsupportedOperationException("unimplemented method getUserPageAuthority()");
     }
 }

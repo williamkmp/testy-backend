@@ -14,9 +14,7 @@ public class AnnotationResoverConfiguration implements WebMvcConfigurer {
     private CallerResolver callerAnnotationResolver;
 
     @Override
-    public void addArgumentResolvers(
-        List<HandlerMethodArgumentResolver> resolvers
-    ) {
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(callerAnnotationResolver);
     }
 }

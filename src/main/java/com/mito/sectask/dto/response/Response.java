@@ -1,11 +1,11 @@
 package com.mito.sectask.dto.response;
 
+import com.mito.sectask.values.KEY;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import com.mito.sectask.values.KEY;
-import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 public class Response<T> extends ResponseEntity<StandardResponse<T>> {
@@ -45,9 +45,7 @@ public class Response<T> extends ResponseEntity<StandardResponse<T>> {
         if (this.responseBody.getError() == null) {
             this.responseBody.setError(new HashMap<>());
         }
-        this.responseBody.getError()
-            .put(KEY.RESPONSE_ROOT_FORM_ERROR, errorCode);
+        this.responseBody.getError().put(KEY.RESPONSE_ROOT_FORM_ERROR, errorCode);
         return this;
     }
-    
 }

@@ -1,6 +1,14 @@
 package com.mito.sectask.controllers;
 
+import com.mito.sectask.annotations.Authenticated;
+import com.mito.sectask.dto.dto.ImageInfoDto;
+import com.mito.sectask.dto.response.Response;
+import com.mito.sectask.entities.File;
+import com.mito.sectask.exceptions.httpexceptions.ResourceNotFoundHttpException;
+import com.mito.sectask.services.image.ImageService;
+import com.mito.sectask.values.MESSAGES;
 import java.util.Optional;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,14 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.mito.sectask.annotations.Authenticated;
-import com.mito.sectask.dto.dto.ImageInfoDto;
-import com.mito.sectask.dto.response.Response;
-import com.mito.sectask.entities.File;
-import com.mito.sectask.exceptions.httpexceptions.ResourceNotFoundHttpException;
-import com.mito.sectask.services.image.ImageService;
-import com.mito.sectask.values.MESSAGES;
-import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping(path = "/image")
@@ -36,41 +36,29 @@ public class ImageController {
         }
 
         File image = maybeImage.get();
-        return ResponseEntity
-            .ok()
-            .header("Content-Type", image.getContentType())
-            .body(image.getBytes());
+        return ResponseEntity.ok()
+                .header("Content-Type", image.getContentType())
+                .body(image.getBytes());
     }
 
-    @PostMapping(
-        consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
-    public Response<ImageInfoDto> uploadImage(
-        @RequestParam("image") MultipartFile file
-    ) {
+    public Response<ImageInfoDto> uploadImage(@RequestParam("image") MultipartFile file) {
         String[] paths = file.getOriginalFilename().split("\\.");
         String imageExtension = paths[paths.length - 1];
 
         try {
-            File savedImage = imageService
-                .saveImage(file.getBytes(), imageExtension)
-                .orElseThrow(Exception::new);
+            File savedImage =
+                    imageService.saveImage(file.getBytes(), imageExtension).orElseThrow(Exception::new);
 
-            String imageSrc = imageService
-                .getImageUrl(savedImage.getId())
-                .orElseThrow(Exception::new);
+            String imageSrc = imageService.getImageUrl(savedImage.getId()).orElseThrow(Exception::new);
             return new Response<ImageInfoDto>(HttpStatus.CREATED)
-                .setMessage(MESSAGES.UPLOAD_SUCCESS)
-                .setData(
-                    new ImageInfoDto()
-                        .setId(savedImage.getId().toString())
-                        .setSrc(imageSrc)
-                );
+                    .setMessage(MESSAGES.UPLOAD_SUCCESS)
+                    .setData(new ImageInfoDto()
+                            .setId(savedImage.getId().toString())
+                            .setSrc(imageSrc));
         } catch (Exception e) {
-            return new Response<ImageInfoDto>(HttpStatus.BAD_REQUEST)
-                .setMessage(MESSAGES.UPLOAD_FAIL);
+            return new Response<ImageInfoDto>(HttpStatus.BAD_REQUEST).setMessage(MESSAGES.UPLOAD_FAIL);
         }
     }
 }

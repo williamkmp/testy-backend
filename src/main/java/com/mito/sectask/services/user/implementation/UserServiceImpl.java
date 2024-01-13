@@ -20,20 +20,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Optional<User> registerUser(
-        RegisterUserParameter newUserData
-    ) {
+    public Optional<User> registerUser(RegisterUserParameter newUserData) {
         Optional<User> maybeUser;
 
-        String encryptedPassword = passwordEncoder.encode(
-            newUserData.getPassword()
-        );
+        String encryptedPassword = passwordEncoder.encode(newUserData.getPassword());
         User newUser = new User()
-            .setEmail(newUserData.getEmail())
-            .setTagName(newUserData.getTagName())
-            .setFullName(newUserData.getFullName())
-            .setPassword(encryptedPassword)
-            .setIsDeleted(false);
+                .setEmail(newUserData.getEmail())
+                .setTagName(newUserData.getTagName())
+                .setFullName(newUserData.getFullName())
+                .setPassword(encryptedPassword)
+                .setIsDeleted(false);
 
         try {
             newUser = userRepository.save(newUser);
@@ -46,15 +42,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findById(Long userId) {
-        if (userId == null) 
-            return Optional.empty();
+        if (userId == null) return Optional.empty();
         return userRepository.findById(userId);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        if (email == null) 
-            return Optional.empty();
+        if (email == null) return Optional.empty();
         return userRepository.findByEmail(email);
     }
 
@@ -78,9 +72,7 @@ public class UserServiceImpl implements UserService {
             return Boolean.FALSE;
         }
         User registeredUser = maybeUser.get();
-        return Boolean.valueOf(
-            passwordEncoder.matches(password, registeredUser.getPassword())
-        );
+        return Boolean.valueOf(passwordEncoder.matches(password, registeredUser.getPassword()));
     }
 
     @Override
@@ -99,17 +91,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean checkTagNameIsAvailable(String tagName) {
-        Optional<User> maybeDuplicate = userRepository.findByTagName(
-            tagName
-        );
+        Optional<User> maybeDuplicate = userRepository.findByTagName(tagName);
         return Boolean.valueOf(maybeDuplicate.isEmpty());
     }
 
     @Override
     public Boolean checkTagNameIsAvailable(String tagName, Long userId) {
-        Optional<User> maybeDuplicate = userRepository.findByTagName(
-            tagName
-        );
+        Optional<User> maybeDuplicate = userRepository.findByTagName(tagName);
         if (maybeDuplicate.isEmpty()) return Boolean.TRUE;
         User duplicate = maybeDuplicate.get();
         return duplicate.getId().equals(userId);

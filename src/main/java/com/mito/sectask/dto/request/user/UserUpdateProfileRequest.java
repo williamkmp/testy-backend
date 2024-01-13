@@ -15,32 +15,17 @@ import lombok.Value;
 public class UserUpdateProfileRequest {
 
     @NotBlank(message = VALIDATION.REQUIRED)
-    @Size(
-        min = 0,
-        max = 100,
-        message = VALIDATION.STRING_LENGTH + 0 + "," + 100
-    )
+    @Size(min = 0, max = 100, message = VALIDATION.STRING_LENGTH + 0 + "," + 100)
     @Email(message = VALIDATION.STRING_EMAIL)
     private String email;
 
     @NotBlank(message = VALIDATION.REQUIRED)
-    @Pattern(
-        regexp = PATTERN.TAGNAME,
-        message = VALIDATION.STRING_ALPHANUM
-    )
-    @Size(
-        min = 0,
-        max = 30,
-        message = VALIDATION.STRING_LENGTH + 0 + "," + 30
-    )
+    @Pattern(regexp = PATTERN.TAGNAME, message = VALIDATION.STRING_ALPHANUM)
+    @Size(min = 0, max = 30, message = VALIDATION.STRING_LENGTH + 0 + "," + 30)
     private String tagName;
 
     @NotBlank(message = VALIDATION.REQUIRED)
-    @Size(
-        min = 0,
-        max = 100,
-        message = VALIDATION.STRING_LENGTH + 0 + "," + 100
-    )
+    @Size(min = 0, max = 100, message = VALIDATION.STRING_LENGTH + 0 + "," + 100)
     private String fullName;
 
     private String imageId;

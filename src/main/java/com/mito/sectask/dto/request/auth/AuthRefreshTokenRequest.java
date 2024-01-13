@@ -5,7 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Value;
 
 /**
- * @endpoint {@link com.mito.sectask.controllers.AuthController#refresh() AuthController.refreshToken}
+ * @endpoint {@link com.mito.sectask.controllers.AuthController#refresh()
+ *     AuthController.refreshToken}
  */
 @Value
 public class AuthRefreshTokenRequest {

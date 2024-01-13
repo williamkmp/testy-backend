@@ -1,5 +1,6 @@
 package com.mito.sectask.controllers;
 
+import com.mito.sectask.dto.response.Response;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.mito.sectask.dto.response.Response;
 
 @RestController
 public class IndexController {
@@ -31,7 +31,6 @@ public class IndexController {
         responseBody.put("engine-version", "Spring_Boot-" + SpringVersion.getVersion());
         responseBody.put("dateTime", new Date());
 
-        return new Response<Object>(HttpStatus.OK)
-            .setData(responseBody);
+        return new Response<Object>(HttpStatus.OK).setData(responseBody);
     }
 }

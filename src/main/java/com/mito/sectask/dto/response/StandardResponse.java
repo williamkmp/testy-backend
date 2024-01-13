@@ -1,7 +1,7 @@
 package com.mito.sectask.dto.response;
 
-import java.util.Map;
 import io.micrometer.common.lang.NonNull;
+import java.util.Map;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -11,8 +11,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class StandardResponse<T> {
 
-    @NonNull
-    private Integer status;
+    @NonNull private Integer status;
 
     private T data;
     private String message;

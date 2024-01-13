@@ -1,8 +1,5 @@
 package com.mito.sectask.services.image.impl;
 
-import java.util.Date;
-import java.util.Optional;
-import org.springframework.stereotype.Service;
 import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.entities.User;
@@ -11,8 +8,11 @@ import com.mito.sectask.repositories.PageRepository;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.image.ImageService;
 import jakarta.transaction.Transactional;
+import java.util.Date;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -33,9 +33,9 @@ public class ImageServiceImpl implements ImageService {
     @Transactional
     public Optional<File> saveImage(byte[] imageBinary, String extension) {
         File newImage = new File()
-            .setBytes(imageBinary)
-            .setContentType("image/" + extension)
-            .setCreatedAt(new Date());
+                .setBytes(imageBinary)
+                .setContentType("image/" + extension)
+                .setCreatedAt(new Date());
 
         try {
             newImage = fileRepository.save(newImage);
@@ -106,10 +106,9 @@ public class ImageServiceImpl implements ImageService {
         }
 
         // Updating page image relation
-        if(imageId == null) {
+        if (imageId == null) {
             page.get().setImage(null);
-        }
-        else {
+        } else {
             File newImage = fileRepository.findById(imageId).orElse(null);
             page.get().setImage(newImage);
         }

@@ -1,6 +1,5 @@
 package com.mito.sectask.entities;
 
-import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -50,10 +50,6 @@ public class User {
     @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = true)
     private File image;
 
-    @OneToMany(
-        cascade = CascadeType.ALL,
-        mappedBy = "user",
-        fetch = FetchType.LAZY
-    )
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     private List<Authority> authorities;
 }

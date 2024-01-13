@@ -9,15 +9,11 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class RegisterDto {
-    @NonNull
-    private String id;
-    
-    @NonNull
-    private String email;
-    
-    @NonNull
-    private String tagName;
+    @NonNull private String id;
 
-    @NonNull
-    private String fullName;
+    @NonNull private String email;
+
+    @NonNull private String tagName;
+
+    @NonNull private String fullName;
 }

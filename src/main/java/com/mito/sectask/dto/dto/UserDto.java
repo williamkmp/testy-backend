@@ -13,17 +13,13 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class UserDto {
 
-    @NonNull
-    private String id;
+    @NonNull private String id;
 
-    @NonNull
-    private String email;
+    @NonNull private String email;
 
-    @NonNull
-    private String tagName;
+    @NonNull private String tagName;
 
-    @NonNull
-    private String fullName;
+    @NonNull private String fullName;
 
     private String imageId;
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-/** 
+/**
  * @see {@link com.mito.sectask.services.auth.AuthService#registerUser }
  */
 @Data
@@ -13,15 +13,11 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 public class RegisterUserParameter {
 
-    @NonNull
-    private String email;
+    @NonNull private String email;
 
-    @NonNull
-    private String password;
+    @NonNull private String password;
 
-    @NonNull
-    private String tagName;
+    @NonNull private String tagName;
 
-    @NonNull
-    private String fullName;
+    @NonNull private String fullName;
 }

@@ -1,6 +1,5 @@
 package com.mito.sectask.entities;
 
-import java.util.List;
 import com.mito.sectask.values.USER_ROLE;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -12,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;

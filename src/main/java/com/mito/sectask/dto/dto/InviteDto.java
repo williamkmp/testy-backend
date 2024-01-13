@@ -10,5 +10,5 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 public class InviteDto {
     private String email;
-    private USER_ROLE authority;   
+    private USER_ROLE authority;
 }

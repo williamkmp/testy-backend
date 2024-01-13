@@ -23,12 +23,7 @@ public class ImageSeeder implements Seeder {
 
     @Override
     public void seed() throws Exception {
-        String[] imageNames = new String[] {
-            "cover1.jpeg",
-            "cover2.jpeg",
-            "cover3.jpeg",
-            "block1.jpg"
-        };
+        String[] imageNames = new String[] {"cover1.jpeg", "cover2.jpeg", "cover3.jpeg", "block1.jpg"};
 
         List<File> images = constructImages(imageNames);
         fileRepository.saveAllAndFlush(images);
@@ -36,33 +31,19 @@ public class ImageSeeder implements Seeder {
 
     private List<File> constructImages(String[] imageNames) {
         List<File> files = new ArrayList<>();
-        final String projectDirectoryPath = new FileSystemResource("")
-            .getFile()
-            .getAbsolutePath();
-        final String assetDirectoryPath = Paths
-            .get(
-                projectDirectoryPath,
-                "src",
-                "main",
-                "java",
-                "com",
-                "mito",
-                "sectask",
-                "seeder",
-                "assets"
-            )
-            .toString();
+        final String projectDirectoryPath = new FileSystemResource("").getFile().getAbsolutePath();
+        final String assetDirectoryPath = Paths.get(
+                        projectDirectoryPath, "src", "main", "java", "com", "mito", "sectask", "seeder", "assets")
+                .toString();
         for (String imageName : imageNames) {
             Path imagePath = Paths.get(assetDirectoryPath, imageName);
             try {
                 byte[] imageBytes = Files.readAllBytes(imagePath);
                 String contentType = "image/" + getFileExtension(imageName);
-                files.add(
-                    new File()
+                files.add(new File()
                         .setBytes(imageBytes)
                         .setContentType(contentType)
-                        .setCreatedAt(new Date())
-                );
+                        .setCreatedAt(new Date()));
             } catch (IOException e) {
                 e.printStackTrace();
                 Util.doNothing("continue loop don't create file");

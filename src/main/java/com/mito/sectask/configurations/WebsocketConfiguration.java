@@ -14,8 +14,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
-public class WebsocketConfiguration
-    implements WebSocketMessageBrokerConfigurer {
+public class WebsocketConfiguration implements WebSocketMessageBrokerConfigurer {
 
     private final Gson gson;
 
@@ -26,28 +25,16 @@ public class WebsocketConfiguration
     }
 
     @Override
-    public void registerStompEndpoints(
-        StompEndpointRegistry stompEndpointRegistry
-    ) {
-        stompEndpointRegistry
-            .addEndpoint("/ws")
-            .setAllowedOriginPatterns("*");
+    public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
+        stompEndpointRegistry.addEndpoint("/ws").setAllowedOriginPatterns("*");
 
-        stompEndpointRegistry
-            .addEndpoint("/ws")
-            .setAllowedOriginPatterns("*")
-            .withSockJS();
+        stompEndpointRegistry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
     }
 
     @Override
-    public boolean configureMessageConverters(
-        List<MessageConverter> messageConverters
-    ) {
-        GsonMessageConverter messageConverter =
-            new GsonMessageConverter(gson);
+    public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
+        GsonMessageConverter messageConverter = new GsonMessageConverter(gson);
         messageConverters.add(messageConverter);
         return false;
     }
-    
-    
 }

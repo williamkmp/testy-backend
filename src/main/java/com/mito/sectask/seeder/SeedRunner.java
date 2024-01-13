@@ -12,12 +12,12 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SeedRunner implements CommandLineRunner {
@@ -25,7 +25,6 @@ public class SeedRunner implements CommandLineRunner {
     @Value("${app.database.seed:true}")
     private Boolean IS_RUN_SEEDER = true;
 
-    private Logger log = LoggerFactory.getLogger(SeedRunner.class);
     private final RoleSeeder roleSeeder;
     private final UserSeeder userSeeder;
     private final ImageSeeder imageSeeder;
@@ -58,12 +57,11 @@ public class SeedRunner implements CommandLineRunner {
                 Instant finish = Instant.now();
                 long elapsedTime = Duration.between(start, finish).toMillis();
 
-                log
-                    .atInfo()
-                    .setMessage("Seeder Done [{}]: {}ms")
-                    .addArgument(seederName)
-                    .addArgument(elapsedTime)
-                    .log();
+                log.atInfo()
+                        .setMessage("Seeder Done [{}]: {}ms")
+                        .addArgument(seederName)
+                        .addArgument(elapsedTime)
+                        .log();
             }
 
             log.info("RUN SEEDER");

@@ -1,9 +1,5 @@
 package com.mito.sectask.interceptors;
 
-import java.util.Optional;
-import org.springframework.stereotype.Component;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.HandlerInterceptor;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.dto.dto.JwtPayload;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
@@ -11,7 +7,11 @@ import com.mito.sectask.services.auth.AuthService;
 import com.mito.sectask.values.KEY;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 @RequiredArgsConstructor
@@ -20,12 +20,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     private final AuthService authService;
 
     @Override
-    public boolean preHandle(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        Object handler
-    ) throws Exception {
-        if(!(handler instanceof HandlerMethod)) return true;
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
+        if (!(handler instanceof HandlerMethod)) return true;
 
         if (!isHandlerProtected((HandlerMethod) handler)) {
             return true;
@@ -37,9 +34,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
         String accessToken = maybeToken.get();
 
-        Optional<JwtPayload> maybePayload = authService.verifyAccessToken(
-            accessToken
-        );
+        Optional<JwtPayload> maybePayload = authService.verifyAccessToken(accessToken);
 
         if (maybePayload.isEmpty()) {
             throw new UnauthorizedHttpException();
@@ -53,22 +48,15 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     /**
      * extract access token from an incomig request
      *
-     * @param   request {@link HttpsServletRequest}
-     *          the incoming request object with Authorization
-     *          header containing bearer token
-     *
-     * @return  {@link Optional}<{@link String}>
-     *          containing the access token, else
-     *          Optional.empty() if no beare token
-     *          detected
+     * @param request {@link HttpsServletRequest} the incoming request object with Authorization
+     *     header containing bearer token
+     * @return {@link Optional}<{@link String}> containing the access token, else Optional.empty() if
+     *     no beare token detected
      */
     private Optional<String> extractAccessToken(HttpServletRequest request) {
         final String BEARER = "Bearer ";
         String authorizationHeader = request.getHeader("Authorization");
-        if (
-            authorizationHeader == null ||
-            !authorizationHeader.startsWith(BEARER)
-        ) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER)) {
             return Optional.empty();
         }
         String accessToken = authorizationHeader.substring(BEARER.length());
@@ -76,36 +64,24 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * check for the presence of Authenticated annotation
-     * for a certaion handler. Returns the value of
+     * check for the presence of Authenticated annotation for a certaion handler. Returns the value of
      * the Authenticated value.
      *
-     * @param   handler {@link MethodHandler}
-     *          the route handler
-     *
-     * @return  true if the handler need
-     *          authentication, else false
+     * @param handler {@link MethodHandler} the route handler
+     * @return true if the handler need authentication, else false
      */
     private boolean isHandlerProtected(HandlerMethod handler) {
         boolean isNeedAuth = false;
-        boolean classIsAnnotated = handler
-            .getBeanType()
-            .isAnnotationPresent(Authenticated.class);
-        boolean methodIsAnnotated = handler
-            .getMethod()
-            .isAnnotationPresent(Authenticated.class);
+        boolean classIsAnnotated = handler.getBeanType().isAnnotationPresent(Authenticated.class);
+        boolean methodIsAnnotated = handler.getMethod().isAnnotationPresent(Authenticated.class);
 
         if (classIsAnnotated) {
             isNeedAuth =
-                handler
-                    .getBeanType()
-                    .getAnnotation(Authenticated.class)
-                    .value();
+                    handler.getBeanType().getAnnotation(Authenticated.class).value();
         }
 
         if (methodIsAnnotated) {
-            isNeedAuth =
-                handler.getMethod().getAnnotation(Authenticated.class).value();
+            isNeedAuth = handler.getMethod().getAnnotation(Authenticated.class).value();
         }
 
         return isNeedAuth;
