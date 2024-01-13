@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -43,12 +44,12 @@ public class Page {
     @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = true)
     private File image;
 
-    @OneToMany(
-        fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL,
-        mappedBy = "page"
-    )
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "page")
     private List<Block> blocks;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = true)
+    private Block collection;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "page")
     private List<Authority> authorities;
