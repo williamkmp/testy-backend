@@ -6,6 +6,7 @@ import com.mito.sectask.seeder.impl.CollectionSeeder;
 import com.mito.sectask.seeder.impl.ImageSeeder;
 import com.mito.sectask.seeder.impl.PageSeeder;
 import com.mito.sectask.seeder.impl.RoleSeeder;
+import com.mito.sectask.seeder.impl.SubPageSeeder;
 import com.mito.sectask.seeder.impl.UserSeeder;
 import java.time.Duration;
 import java.time.Instant;
@@ -32,6 +33,7 @@ public class SeedRunner implements CommandLineRunner {
     private final BlockSeeder blockSeeder;
     private final CollectionSeeder collectionSeeder;
     private final AuthoritySeeder authoritySeeder;
+    private final SubPageSeeder subPageSeeder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -48,6 +50,7 @@ public class SeedRunner implements CommandLineRunner {
             seeders.add(authoritySeeder);
             seeders.add(blockSeeder);
             seeders.add(collectionSeeder);
+            seeders.add(subPageSeeder);
 
             // Running seeder
             for (Seeder seeder : seeders) {
