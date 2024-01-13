@@ -1,50 +1,82 @@
 package com.mito.sectask.seeder.impl;
 
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.stereotype.Component;
+
 import com.mito.sectask.entities.Block;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.repositories.BlockRepository;
+import com.mito.sectask.repositories.PageRepository;
 import com.mito.sectask.seeder.Seeder;
-import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.values.BLOCK_TYPE;
-import jakarta.transaction.Transactional;
-import java.util.List;
-import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CollectionSeeder implements Seeder {
 
     private final BlockRepository blockRepository;
-    private final PageService pageService;
+    private final PageRepository pageRepository;
 
     @Override
     @Transactional
     public void seed() throws Exception {
-        final Long pageId = 1l;
-        Page page = pageService
-                .findById(pageId)
-                .orElseThrow(() -> new Exception("Page wiith id [" + pageId + "] not found"));
+        Page testyPage = pageRepository
+                .findById(1L)
+                .orElseThrow(() -> new Exception("Page not found"));
 
-        Block collection = new Block()
+        Page bimayPage = pageRepository
+                .findById(2L)
+                .orElseThrow(() -> new Exception("Page not found"));
+        
+        Page bimobPage = pageRepository
+                .findById(3L)
+                .orElseThrow(() -> new Exception("Page not found"));
+
+        Block testyFinding = new Block()
                 .setId(UUID.randomUUID().toString())
                 .setIconKey("emoji-1265") // 📋
                 .setBlockType(BLOCK_TYPE.COLLECTION)
-                .setContent("<p>Error Findings</p>");
+                .setContent("<p>Application Findings</p>");
 
-        appendCollectionToPage(collection, page);
+        Block bimayFinding = new Block()
+                .setId(UUID.randomUUID().toString())
+                .setIconKey("emoji-883") // 🌐
+                .setBlockType(BLOCK_TYPE.COLLECTION)
+                .setContent("<p>Binusmaya Website Findings</p>");
+                
+        Block bimobFinding = new Block()
+                .setId(UUID.randomUUID().toString())
+                .setIconKey("emoji-1170") // 📱
+                .setBlockType(BLOCK_TYPE.COLLECTION)
+                .setContent("<p>Binus Mobile Findings</p>");
+
+        appendCollectionToPage(testyFinding, testyPage);
+        appendCollectionToPage(bimayFinding, bimayPage);
+        appendCollectionToPage(bimobFinding, bimobPage);
     }
 
+    @Transactional
     private void appendCollectionToPage(Block block, Page page) {
-        Block collection = blockRepository.save(block);
+        block.setPage(page);
+        Block collection = blockRepository.saveAndFlush(block);
         List<Block> pageBlocks = blockRepository.findAllByPageId(page.getId());
+        log.atInfo().setMessage("adding collection '{}' to block '{}'")
+                .addArgument(block.getContent())
+                .addArgument(page.getName())
+                .log();
         Block tailBlock = pageBlocks.get(pageBlocks.size() - 1);
 
         tailBlock.setNext(collection);
         collection.setPrev(tailBlock);
 
-        blockRepository.save(tailBlock);
-        blockRepository.save(collection);
+        blockRepository.saveAndFlush(tailBlock);
+        blockRepository.saveAndFlush(collection);
     }
 }
