@@ -4,6 +4,9 @@ import com.mito.sectask.entities.Role;
 import com.mito.sectask.repositories.RoleRepository;
 import com.mito.sectask.seeder.Seeder;
 import com.mito.sectask.values.USER_ROLE;
+
+import jakarta.transaction.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ public class RoleSeeder implements Seeder {
     private final RoleRepository roleRepository;
 
     @Override
+    @Transactional
     public void seed() {
         List<Role> roles = new ArrayList<>();
 

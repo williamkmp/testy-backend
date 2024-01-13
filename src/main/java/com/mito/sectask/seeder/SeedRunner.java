@@ -38,7 +38,7 @@ public class SeedRunner implements CommandLineRunner {
         if (Boolean.FALSE.equals(IS_RUN_SEEDER)) return;
         try {
             final List<Seeder> seeders = new ArrayList<>();
-            log.info("RUN SEEDER");
+            log.info("Start seeding");
 
             // Registering seeder
             seeders.add(imageSeeder);
@@ -52,19 +52,19 @@ public class SeedRunner implements CommandLineRunner {
             // Running seeder
             for (Seeder seeder : seeders) {
                 Instant start = Instant.now();
-                String seederName = seeder.getClass().getSimpleName();
+                String seederName = seeder.getClass().getSimpleName().split("\\$\\$")[0];
                 seeder.seed();
                 Instant finish = Instant.now();
                 long elapsedTime = Duration.between(start, finish).toMillis();
 
                 log.atInfo()
-                        .setMessage("Seeder Done [{}]: {}ms")
+                        .setMessage("Execute [{}]: {}ms")
                         .addArgument(seederName)
                         .addArgument(elapsedTime)
                         .log();
             }
 
-            log.info("RUN SEEDER");
+            log.info("Done seeding");
         } catch (Exception e) {
             log.error("Error when seeding", e);
         }

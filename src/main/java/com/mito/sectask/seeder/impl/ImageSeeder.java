@@ -4,6 +4,9 @@ import com.mito.sectask.entities.File;
 import com.mito.sectask.repositories.FileRepository;
 import com.mito.sectask.seeder.Seeder;
 import com.mito.sectask.utils.Util;
+
+import jakarta.transaction.Transactional;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,6 +25,7 @@ public class ImageSeeder implements Seeder {
     private final FileRepository fileRepository;
 
     @Override
+    @Transactional
     public void seed() throws Exception {
         String[] imageNames = new String[] {"cover1.jpeg", "cover2.jpeg", "cover3.jpeg", "block1.jpg"};
 
