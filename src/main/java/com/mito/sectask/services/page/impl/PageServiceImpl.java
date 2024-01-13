@@ -1,11 +1,5 @@
 package com.mito.sectask.services.page.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.mito.sectask.dto.dto.InviteDto;
 import com.mito.sectask.entities.Authority;
 import com.mito.sectask.entities.Block;
@@ -19,9 +13,12 @@ import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.utils.Util;
 import com.mito.sectask.values.USER_ROLE;
-
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -40,8 +37,7 @@ public class PageServiceImpl implements PageService {
     @Override
     @Transactional
     public Optional<Page> findById(Long pageId) {
-        if (pageId == null)
-            return Optional.empty();
+        if (pageId == null) return Optional.empty();
         Optional<Page> maybePage = pageRepository.findById(pageId);
         if (maybePage.isEmpty()) {
             return Optional.empty();
@@ -58,7 +54,7 @@ public class PageServiceImpl implements PageService {
         if (maybeUser.isEmpty()) {
             return Optional.empty();
         }
-        User owner = maybeUser.get(); 
+        User owner = maybeUser.get();
         Role fullAccessRole = roleRepository.findByName(USER_ROLE.FULL_ACCESS);
         Page createdPage = pageRepository.save(page);
 
@@ -75,8 +71,7 @@ public class PageServiceImpl implements PageService {
         for (InviteDto invite : inviteList) {
             Role memberRole = roleRepository.findByName(invite.getAuthority());
             User member = userRepository.findByEmail(invite.getEmail()).orElse(null);
-            if (member == null)
-                continue;
+            if (member == null) continue;
             authorities.add(new Authority()
                     .setUser(member)
                     .setPage(createdPage)
@@ -110,10 +105,9 @@ public class PageServiceImpl implements PageService {
     @Transactional
     public Optional<Page> getRootOfPage(Long pageId) {
         Optional<Page> maybePage = pageRepository.findById(pageId);
-        
-        if(maybePage.isEmpty()) 
-            return Optional.empty();
-        
+
+        if (maybePage.isEmpty()) return Optional.empty();
+
         Page page = maybePage.get();
         while (page.getCollection() != null) {
             Block collection = page.getCollection();

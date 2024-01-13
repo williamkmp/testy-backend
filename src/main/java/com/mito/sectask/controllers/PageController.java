@@ -86,7 +86,8 @@ public class PageController {
     public Response<PageDto> updatePage(
             @PathVariable("pageId") Long pageId, @RequestBody PageUpdateRequest request, @Caller User caller) {
         // Checking user's Role
-        Role userRole = roleService.getUserPageAuthority(caller.getId(), pageId).orElseThrow(ForbiddenHttpException::new);
+        Role userRole =
+                roleService.getUserPageAuthority(caller.getId(), pageId).orElseThrow(ForbiddenHttpException::new);
         USER_ROLE authority = userRole.getName();
 
         final USER_ROLE[] allowedAuthority = {
@@ -135,7 +136,8 @@ public class PageController {
     @GetMapping(path = "/{pageId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
     public Response<PageDto> getPageInformation(@PathVariable("pageId") Long pageId, @Caller User caller) {
-        Role userRole = roleService.getUserPageAuthority(caller.getId(), pageId).orElseThrow(ForbiddenHttpException::new);
+        Role userRole =
+                roleService.getUserPageAuthority(caller.getId(), pageId).orElseThrow(ForbiddenHttpException::new);
         USER_ROLE authority = userRole.getName();
 
         Optional<Page> maybePage = pageService.findById(pageId);

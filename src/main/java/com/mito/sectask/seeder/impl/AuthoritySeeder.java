@@ -1,14 +1,5 @@
 package com.mito.sectask.seeder.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import org.springframework.stereotype.Component;
-
 import com.mito.sectask.entities.Authority;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.entities.Role;
@@ -19,12 +10,18 @@ import com.mito.sectask.seeder.Seeder;
 import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.services.user.UserService;
 import com.mito.sectask.values.USER_ROLE;
-
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor

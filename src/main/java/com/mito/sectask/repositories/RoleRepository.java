@@ -19,17 +19,18 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     public Role findByName(USER_ROLE name);
 
     /**
-     * get User role for a certain 
-     * 
+     * get User role for a certain
+     *
      * @param rootPageId {@link Long} must be a root page id
      * @param userId {@link Long} user id
      * @return {@link Optional}<{@link Role}> conatining user role for a certain page, else Optional.empty()
      */
-    @Query("""
+    @Query(
+            """
             SELECT
                 r
-            FROM 
-                Role r 
+            FROM
+                Role r
                 JOIN FETCH r.authorities a
                 JOIN FETCH a.page p
                 JOIN FETCH a.user u
@@ -37,8 +38,5 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
                 p.id = :rootPageId
                 AND u.id = :userId
             """)
-    public Optional<Role> findByRootPageId(
-        @Param("rootPageId") long rootPageId,
-        @Param("userId") long userId
-    );
+    public Optional<Role> findByRootPageId(@Param("rootPageId") long rootPageId, @Param("userId") long userId);
 }

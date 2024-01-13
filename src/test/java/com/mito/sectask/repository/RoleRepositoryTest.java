@@ -1,14 +1,13 @@
 package com.mito.sectask.repository;
 
+import com.mito.sectask.entities.Role;
+import com.mito.sectask.repositories.RoleRepository;
+import com.mito.sectask.values.USER_ROLE;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import com.mito.sectask.entities.Role;
-import com.mito.sectask.repositories.RoleRepository;
-import com.mito.sectask.values.USER_ROLE;
 
 @SpringBootTest
 class RoleRepositoryTest {
@@ -39,22 +38,30 @@ class RoleRepositoryTest {
         Long bimayPageId = 2l; // Page: Testy
         Long williamId = 1L; // User: william.kmp
         Long aisyahId = 3L; // User: aisyah
-        
-        Role williamTestyRole = roleRepository.findByRootPageId(testyPageId, williamId).orElse(null);
+
+        Role williamTestyRole =
+                roleRepository.findByRootPageId(testyPageId, williamId).orElse(null);
         Assertions.assertThat(williamTestyRole).as("User role is present").isNotNull();
-        Assertions.assertThat(williamTestyRole.getName()).as("User role is correct").isEqualTo(USER_ROLE.COLLABORATORS);
+        Assertions.assertThat(williamTestyRole.getName())
+                .as("User role is correct")
+                .isEqualTo(USER_ROLE.COLLABORATORS);
 
-        Role williamBimayRole = roleRepository.findByRootPageId(bimayPageId, williamId).orElse(null);
+        Role williamBimayRole =
+                roleRepository.findByRootPageId(bimayPageId, williamId).orElse(null);
         Assertions.assertThat(williamBimayRole).as("User role is present").isNotNull();
-        Assertions.assertThat(williamBimayRole.getName()).as("User role is correct").isEqualTo(USER_ROLE.FULL_ACCESS);
+        Assertions.assertThat(williamBimayRole.getName())
+                .as("User role is correct")
+                .isEqualTo(USER_ROLE.FULL_ACCESS);
 
-        Role aisyahTestyRole = roleRepository.findByRootPageId(testyPageId, aisyahId).orElse(null);
+        Role aisyahTestyRole =
+                roleRepository.findByRootPageId(testyPageId, aisyahId).orElse(null);
         Assertions.assertThat(aisyahTestyRole).as("User role is present").isNotNull();
-        Assertions.assertThat(aisyahTestyRole.getName()).as("User role is correct").isEqualTo(USER_ROLE.FULL_ACCESS);
+        Assertions.assertThat(aisyahTestyRole.getName())
+                .as("User role is correct")
+                .isEqualTo(USER_ROLE.FULL_ACCESS);
 
-        Role aisyahBimayRole = roleRepository.findByRootPageId(bimayPageId, aisyahId).orElse(null);
+        Role aisyahBimayRole =
+                roleRepository.findByRootPageId(bimayPageId, aisyahId).orElse(null);
         Assertions.assertThat(aisyahBimayRole).as("User role is not present").isNull();
     }
-
-
 }
