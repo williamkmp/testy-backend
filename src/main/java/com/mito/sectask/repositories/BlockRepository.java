@@ -10,10 +10,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BlockRepository extends JpaRepository<Block, String> {
 
-    @Query(
-            nativeQuery = true,
-            value =
-                    """
+	/**
+	 * get list of block from a given page
+	 * 
+	 * @param pageId {@link Long} page id
+	 * @return {@link List}<{@link Block}> blockList of a given page
+	 */
+	@Query(nativeQuery = true, value = """
 			WITH RECURSIVE cte AS
 			(
 				SELECT * FROM blocks AS b WHERE b.page_id = 1 AND b.prev_id is null
@@ -22,5 +25,6 @@ public interface BlockRepository extends JpaRepository<Block, String> {
 			)
 			SELECT * FROM cte AS blocks
 			""")
-    public List<Block> findAllByPageId(@Param("pageId") Long pageId);
+	public List<Block> findAllByPageId(@Param("pageId") Long pageId);
+
 }
