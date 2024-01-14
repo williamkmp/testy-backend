@@ -15,7 +15,7 @@ public interface PageService {
      * @return {@link List}<{@link Page}> associated with the user (user have authority over these
      *     pages)
      */
-    public List<Page> getUserPages(Long userId);
+    public List<Page> getRootPages(Long userId);
 
     /**
      * get page data by id

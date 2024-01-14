@@ -30,8 +30,8 @@ public class PageServiceImpl implements PageService {
     private final UserRepository userRepository;
 
     @Override
-    public List<Page> getUserPages(Long userId) {
-        return pageRepository.getUserPages(userId);
+    public List<Page> getRootPages(Long userId) {
+        return pageRepository.findAllByUserId(userId);
     }
 
     @Override

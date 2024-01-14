@@ -121,7 +121,7 @@ public class PageController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
     public Response<MenuPreviewDto[]> getUserRootPages(@Caller User caller) {
-        List<Page> userRootPages = pageService.getUserPages(caller.getId());
+        List<Page> userRootPages = pageService.getRootPages(caller.getId());
         MenuPreviewDto[] pagePreviews = userRootPages.stream()
                 .map(page -> new MenuPreviewDto()
                         .setId(page.getId().toString())
