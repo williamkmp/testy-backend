@@ -24,7 +24,7 @@ public interface BlockRepository extends JpaRepository<Block, String> {
 			(
 				SELECT * FROM blocks AS b WHERE b.page_id = :pageId AND b.prev_id is null
 				UNION
-				SELECT blocks.* FROM cte JOIN blocks ON cte.id = blocks.prev_id AND blocks.page_id = :pageId
+				SELECT blocks.* FROM cte JOIN blocks ON cte.id = blocks.prev_id WHERE blocks.page_id = :pageId
 			)
 			SELECT * FROM cte AS blocks
 			""")
