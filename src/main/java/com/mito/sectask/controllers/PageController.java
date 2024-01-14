@@ -12,6 +12,8 @@ import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.entities.Role;
 import com.mito.sectask.entities.User;
+import com.mito.sectask.exceptions.exceptions.ForbiddenException;
+import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
 import com.mito.sectask.exceptions.httpexceptions.ForbiddenHttpException;
 import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpException;
 import com.mito.sectask.exceptions.httpexceptions.ResourceNotFoundHttpException;
@@ -118,9 +120,9 @@ public class PageController {
                         .setImageId(updatedImageId));
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/preview", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
-    public Response<MenuPreviewDto[]> getUserRootPages(@Caller User caller) {
+    public Response<MenuPreviewDto[]> getUserRootPagePreviews(@Caller User caller) {
         List<Page> userRootPages = pageService.getRootPages(caller.getId());
         MenuPreviewDto[] pagePreviews = userRootPages.stream()
                 .map(page -> new MenuPreviewDto()
@@ -131,6 +133,30 @@ public class PageController {
                 .toArray(new MenuPreviewDto[0]);
 
         return new Response<MenuPreviewDto[]>(HttpStatus.OK).setData(pagePreviews);
+    }
+
+    @GetMapping(path = "/{pageId}/collection/preview")
+    @Authenticated(true)
+    public Response<MenuPreviewDto[]> getCollectionPreviewOfPage(
+            @PathVariable("pageId") Long pageId, @Caller User caller) {
+        try {
+            roleService.getUserPageAuthority(caller.getId(), pageId).orElseThrow(ForbiddenException::new);
+            List<Block> colelctions = blockService.findAllCollectionByPageId(pageId);
+            List<MenuPreviewDto> colletionPreviews = colelctions.stream()
+                    .map(collection -> new MenuPreviewDto()
+                            .setIconKey(collection.getIconKey())
+                            .setId(collection.getId())
+                            .setTitle(collection.getContent()))
+                    .collect(Collectors.toList());
+            MenuPreviewDto[] responseBody = colletionPreviews.toArray(new MenuPreviewDto[0]);
+            return new Response<MenuPreviewDto[]>(HttpStatus.OK).setData(responseBody);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundHttpException();
+        } catch (ForbiddenException e) {
+            throw new ForbiddenHttpException();
+        } catch (Exception e) {
+            throw new InternalServerErrorHttpException();
+        }
     }
 
     @GetMapping(path = "/{pageId}", produces = MediaType.APPLICATION_JSON_VALUE)
