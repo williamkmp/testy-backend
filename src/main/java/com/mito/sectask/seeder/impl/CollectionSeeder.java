@@ -24,7 +24,7 @@ public class CollectionSeeder implements Seeder {
     @Override
     @Transactional
     public void seed() throws Exception {
-        
+
         Page testyPage = pageRepository.findById(1L).orElseThrow(() -> new Exception("Page not found"));
         Page bimayPage = pageRepository.findById(2L).orElseThrow(() -> new Exception("Page not found"));
         Page bimobPage = pageRepository.findById(3L).orElseThrow(() -> new Exception("Page not found"));
