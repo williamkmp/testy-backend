@@ -9,6 +9,13 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PageRepository extends JpaRepository<Page, Long> {
+
+    /**
+     * get list of root pages by user id
+     *
+     * @param userId {@link Long} user id
+     * @return {@link List}<{@link Page}> containing root pages with the given user access
+     */
     @Query(
             """
 			SELECT
@@ -21,5 +28,5 @@ public interface PageRepository extends JpaRepository<Page, Long> {
 				u.id = :userId
 				AND a.isPending = false
 		""")
-    public List<Page> getUserPages(@Param("userId") Long userId);
+    public List<Page> findAllByUserId(@Param("userId") Long userId);
 }
