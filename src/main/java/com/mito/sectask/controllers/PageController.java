@@ -14,9 +14,11 @@ import com.mito.sectask.entities.Role;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.exceptions.ForbiddenException;
 import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
+import com.mito.sectask.exceptions.exceptions.UserNotFoundException;
 import com.mito.sectask.exceptions.httpexceptions.ForbiddenHttpException;
 import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpException;
 import com.mito.sectask.exceptions.httpexceptions.ResourceNotFoundHttpException;
+import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.block.BlockService;
 import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.services.page.PageService;
@@ -154,7 +156,9 @@ public class PageController {
             throw new ResourceNotFoundHttpException();
         } catch (ForbiddenException e) {
             throw new ForbiddenHttpException();
-        } catch (Exception e) {
+        } catch (UserNotFoundException e) {
+            throw new UnauthorizedHttpException();
+        }catch (Exception e) {
             throw new InternalServerErrorHttpException();
         }
     }
