@@ -32,7 +32,7 @@ public class BlockController {
     private final BlockService blockService;
     private final RoleService roleService;
 
-    @GetMapping("/collection/{collectionId}/page/previews")
+    @GetMapping("/collection/{collectionId}/page/preview")
     @Authenticated(true)
     public Response<MenuPreviewDto[]> getPagePreviewByCollection(
             @PathVariable("collectionId") String collectionId, @Caller User caller) {
