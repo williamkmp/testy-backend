@@ -10,10 +10,8 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CollectionSeeder implements Seeder {
@@ -33,19 +31,19 @@ public class CollectionSeeder implements Seeder {
                 .setId(UUID.randomUUID().toString())
                 .setIconKey("emoji-1265") // 📋
                 .setBlockType(BLOCK_TYPE.COLLECTION)
-                .setContent("<p>Application Findings</p>");
+                .setContent("Application Findings");
 
         Block bimayFinding = new Block()
                 .setId(UUID.randomUUID().toString())
                 .setIconKey("emoji-883") // 🌐
                 .setBlockType(BLOCK_TYPE.COLLECTION)
-                .setContent("<p>Binusmaya Website Findings</p>");
+                .setContent("Binusmaya Website Findings");
 
         Block bimobFinding = new Block()
                 .setId(UUID.randomUUID().toString())
                 .setIconKey("emoji-1170") // 📱
                 .setBlockType(BLOCK_TYPE.COLLECTION)
-                .setContent("<p>Binus Mobile Findings</p>");
+                .setContent("Binus Mobile Findings");
 
         appendCollectionToPage(testyFinding, testyPage);
         appendCollectionToPage(bimayFinding, bimayPage);
@@ -57,11 +55,6 @@ public class CollectionSeeder implements Seeder {
         block.setPage(page);
         Block collection = blockRepository.saveAndFlush(block);
         List<Block> pageBlocks = blockRepository.findAllByPageId(page.getId());
-        log.atInfo()
-                .setMessage("adding collection '{}' to block '{}'")
-                .addArgument(block.getContent())
-                .addArgument(page.getName())
-                .log();
         Block tailBlock = pageBlocks.get(pageBlocks.size() - 1);
 
         tailBlock.setNext(collection);
