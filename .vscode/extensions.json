@@ -7,7 +7,6 @@
         "vscjava.vscode-maven",
         "christian-kohler.path-intellisense",
         "vscjava.vscode-java-dependency",
-        "redhat.fabric8-analytics",
         "sonarsource.sonarlint-vscode",
         "vscjava.vscode-spring-boot-dashboard",
         "vmware.vscode-spring-boot",
