@@ -3,7 +3,6 @@ package com.mito.sectask.services.role;
 import com.mito.sectask.entities.Role;
 import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
 import com.mito.sectask.exceptions.exceptions.UserNotFoundException;
-
 import java.util.Optional;
 
 public interface RoleService {
@@ -18,7 +17,8 @@ public interface RoleService {
      * @return {@link Optional}<{@link Role}> role of a user to a given page, else
      *     Optional.empty() if the user has no access
      * @throws UserNotFoundException if the used id not found
-     * @throws ResourceNotFoundException if the page with given page id is not found 
+     * @throws ResourceNotFoundException if the page with given page id is not found
      */
-    public Optional<Role> getUserPageAuthority(Long userId, Long pageId) throws UserNotFoundException, ResourceNotFoundException;
+    public Optional<Role> getUserPageAuthority(Long userId, Long pageId)
+            throws UserNotFoundException, ResourceNotFoundException;
 }

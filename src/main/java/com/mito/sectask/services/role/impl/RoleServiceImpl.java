@@ -24,7 +24,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional
-    public Optional<Role> getUserPageAuthority(Long userId, Long pageId) throws UserNotFoundException, ResourceNotFoundException {
+    public Optional<Role> getUserPageAuthority(Long userId, Long pageId)
+            throws UserNotFoundException, ResourceNotFoundException {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Page rootPage = pageService.getRootOfPage(pageId).orElseThrow(ResourceNotFoundException::new);
         return roleRepository.findByRootPageId(rootPage.getId(), user.getId());

@@ -158,7 +158,7 @@ public class PageController {
             throw new ForbiddenHttpException();
         } catch (UserNotFoundException e) {
             throw new UnauthorizedHttpException();
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new InternalServerErrorHttpException();
         }
     }
