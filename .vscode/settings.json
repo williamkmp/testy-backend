@@ -9,7 +9,12 @@
         "**/.classpath": true,
         "**/.project": true,
         "**/.settings": true,
-        "**/.factorypath": true
+        "**/.factorypath": true,
+        ".mvn": true,
+        "target": true,
+        ".vscode": true,
+        "mvnw": true,
+        "mvnw.cmd": true,
     },
     "java.configuration.updateBuildConfiguration": "automatic",
     "maven.view": "hierarchical",
