@@ -3,6 +3,8 @@ package com.mito.sectask.services.role.impl;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.entities.Role;
 import com.mito.sectask.entities.User;
+import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
+import com.mito.sectask.exceptions.exceptions.UserNotFoundException;
 import com.mito.sectask.repositories.RoleRepository;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.page.PageService;
@@ -22,15 +24,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional
-    public Optional<Role> getUserPageAuthority(Long userId, Long pageId) {
-        Optional<User> maybeUser = userRepository.findById(userId);
-        Optional<Page> maybePage = pageService.getRootOfPage(pageId);
-        if (maybePage.isEmpty() || maybeUser.isEmpty()) {
-            return Optional.empty();
-        }
-
-        User user = maybeUser.get();
-        Page rootPage = maybePage.get();
+    public Optional<Role> getUserPageAuthority(Long userId, Long pageId) throws UserNotFoundException, ResourceNotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Page rootPage = pageService.getRootOfPage(pageId).orElseThrow(ResourceNotFoundException::new);
         return roleRepository.findByRootPageId(rootPage.getId(), user.getId());
     }
 }
