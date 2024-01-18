@@ -34,4 +34,10 @@ public class BlockServiceImpl implements BlockService {
                 .filter(block -> block.getBlockType().equals(BLOCK_TYPE.COLLECTION))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<Block> findAllByPageId(Long pageId) throws ResourceNotFoundException {
+        Page page = pageRepository.findById(pageId).orElseThrow(ResourceNotFoundException::new);
+        return blockRepository.findAllByPageId(page.getId());
+    }
 }

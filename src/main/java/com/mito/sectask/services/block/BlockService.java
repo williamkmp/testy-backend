@@ -20,7 +20,16 @@ public interface BlockService {
      *
      * @param pageId {@link Long} page id
      * @return {@link List}<{@link Block}> list of block with type of COLEECTION
-     * @throws {@link ResourceNotFoundException} when the given page not exist
+     * @throws ResourceNotFoundException when the given page not exist
      */
     public List<Block> findAllCollectionByPageId(Long pageId) throws ResourceNotFoundException;
+
+    /**
+     * get ordered list of all block of a given page
+     *
+     * @param pageId {@link Long} page id
+     * @return {@link List}<{@link Block}> ordered blocks of page
+     * @throws ResourceNotFoundException if page is not found
+     */
+    public List<Block> findAllByPageId(Long pageId) throws ResourceNotFoundException;
 }
