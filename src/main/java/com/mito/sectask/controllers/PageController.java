@@ -2,6 +2,7 @@ package com.mito.sectask.controllers;
 
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
+import com.mito.sectask.dto.dto.BlockDto;
 import com.mito.sectask.dto.dto.MenuPreviewDto;
 import com.mito.sectask.dto.dto.PageDto;
 import com.mito.sectask.dto.request.page.PageCreateRequest;
@@ -185,5 +186,36 @@ public class PageController {
                         .setImagePosition(page.getImagePosition())
                         .setImageId(imageId)
                         .setAuthority(authority));
+    }
+
+    @GetMapping("/{pageId}/block")
+    @Authenticated(true)
+    public Response<BlockDto[]> getPageBlocks(@PathVariable("pageId") Long pageId, @Caller User caller) {
+        try {
+            roleService.getUserPageAuthority(caller.getId(), pageId).orElseThrow(ForbiddenException::new);
+            List<Block> blocks = blockService.findAllByPageId(pageId);
+            BlockDto[] responseBody = blocks.stream()
+                    .map(block -> new BlockDto()
+                            .setId(block.getId())
+                            .setType(block.getBlockType())
+                            .setContent(block.getContent())
+                            .setIconKey(block.getIconKey())
+                            .setWidth(block.getWidth())
+                            .setFileId(
+                                    block.getFile() != null
+                                            ? block.getFile().getId().toString()
+                                            : null))
+                    .collect(Collectors.toList())
+                    .toArray(new BlockDto[0]);
+            return new Response<BlockDto[]>(HttpStatus.OK).setData(responseBody);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundHttpException();
+        } catch (ForbiddenException e) {
+            throw new ForbiddenHttpException();
+        } catch (UserNotFoundException e) {
+            throw new UnauthorizedHttpException();
+        } catch (Exception e) {
+            throw new InternalServerErrorHttpException();
+        }
     }
 }
