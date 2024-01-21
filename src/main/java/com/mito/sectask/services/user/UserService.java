@@ -19,10 +19,20 @@ public interface UserService {
      * update user data, by overwriting existing user based on a given user param
      *
      * @param userData {@link User} user data, must have id
-     * @return {@link Optional}<{@link User}> conatining the updated user data, else Optional.empty()
+     * @return {@link Optional}<{@link User}> containing the updated user data, else Optional.empty()
      *     if update fails
      */
     public Optional<User> updateUser(User userData);
+
+    /**
+     * find all member of a given page by id, if the given page is not a root
+     * then it will traverse the page-collection relation to get the root and
+     * return it's members
+     * 
+     * @param pageId {@link Long} page id
+     * @return  {@link List}<{@link User}> member of a given page
+     */
+    public List<User> findMembersOfPage(Long pageId);
 
     /**
      * find user by id

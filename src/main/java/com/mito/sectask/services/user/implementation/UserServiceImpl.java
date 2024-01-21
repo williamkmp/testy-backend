@@ -1,7 +1,10 @@
 package com.mito.sectask.services.user.implementation;
 
 import com.mito.sectask.dto.parameters.RegisterUserParameter;
+import com.mito.sectask.entities.Page;
 import com.mito.sectask.entities.User;
+import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
+import com.mito.sectask.repositories.PageRepository;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.encoder.PasswordEncocder;
 import com.mito.sectask.services.user.UserService;
@@ -17,6 +20,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncocder passwordEncoder;
+    private final PageRepository pageRepository;
 
     @Override
     @Transactional
@@ -101,5 +105,14 @@ public class UserServiceImpl implements UserService {
         if (maybeDuplicate.isEmpty()) return Boolean.TRUE;
         User duplicate = maybeDuplicate.get();
         return duplicate.getId().equals(userId);
+    }
+
+    @Override
+    public List<User> findMembersOfPage(Long pageId) {
+        Page page = pageRepository.findById(pageId).orElseThrow(ResourceNotFoundException::new);
+        while(page.getCollection() != null) {
+            page = page.getCollection().getPage();
+        }
+        return userRepository.findAllByRootPageId(page.getId());
     }
 }
