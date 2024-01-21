@@ -5,6 +5,7 @@ import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.dto.dto.BlockDto;
 import com.mito.sectask.dto.dto.MenuPreviewDto;
 import com.mito.sectask.dto.dto.PageDto;
+import com.mito.sectask.dto.dto.PreviewMessageDto;
 import com.mito.sectask.dto.request.page.PageCreateRequest;
 import com.mito.sectask.dto.request.page.PageUpdateRequest;
 import com.mito.sectask.dto.response.Response;
@@ -24,8 +25,11 @@ import com.mito.sectask.services.block.BlockService;
 import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.services.role.RoleService;
+import com.mito.sectask.services.user.UserService;
 import com.mito.sectask.utils.Util;
+import com.mito.sectask.values.DESTINATION;
 import com.mito.sectask.values.MESSAGES;
+import com.mito.sectask.values.PREVIEW_ACTION;
 import com.mito.sectask.values.USER_ROLE;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +38,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +56,8 @@ public class PageController {
     private final ImageService imageService;
     private final RoleService roleService;
     private final BlockService blockService;
+    private final UserService userService;
+    private final SimpMessagingTemplate socket;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
@@ -72,6 +79,17 @@ public class PageController {
                         .createRootPage(newPage, caller.getId(), request.getMembers())
                         .orElseThrow(InternalServerErrorHttpException::new)
                 : pageService.createSubPage(newPage, collectionId).orElseThrow(InternalServerErrorHttpException::new);
+
+        // Notify user for update
+        List<User> members = userService.findMembersOfPage(createdPage.getId());
+        for(User member : members) {
+            socket.convertAndSend(DESTINATION.userPreview(member.getId()), new PreviewMessageDto()
+                .setAction(PREVIEW_ACTION.ADD)
+                .setParentId(request.getCollectionId())
+                .setIconKey(createdPage.getIconKey())
+                .setIconKey(createdPage.getName())
+            );
+        }
 
         return new Response<PageDto>(HttpStatus.CREATED)
                 .setData(new PageDto()
@@ -112,6 +130,17 @@ public class PageController {
         Page updatedPage = pageService.update(page).orElseThrow(ResourceNotFoundHttpException::new);
         String updatedImageId =
                 updatedPage.getImage() != null ? updatedPage.getImage().getId().toString() : null;
+
+        // Notify user for update
+        List<User> members = userService.findMembersOfPage(updatedPage.getId());
+        for(User member : members) {
+            socket.convertAndSend(DESTINATION.userPreview(member.getId()), new PreviewMessageDto()
+                .setAction(PREVIEW_ACTION.ADD)
+                .setId(updatedPage.getId().toString())
+                .setIconKey(updatedPage.getIconKey())
+                .setIconKey(updatedPage.getName())
+            );
+        }
 
         return new Response<PageDto>(HttpStatus.OK)
                 .setData(new PageDto()
