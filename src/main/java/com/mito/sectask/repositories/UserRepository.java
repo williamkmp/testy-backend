@@ -25,6 +25,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param pageId {@link Long} page id
      * @return {@link List}<{@link User}> root page members
      */
-    @Query("SELECT u FROM User u JOIN u.authorities a JOIN a.page p WHERE p.id = pageId")
+    @Query("SELECT u FROM User u JOIN u.authorities a JOIN a.page p WHERE p.id = :pageId")
     List<User> findAllByRootPageId(@Param("pageId") Long pageId);
 }
