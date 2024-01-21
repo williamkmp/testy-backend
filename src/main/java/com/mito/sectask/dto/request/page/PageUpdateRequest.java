@@ -9,5 +9,7 @@ public class PageUpdateRequest {
 
     private String imageId;
 
+    private String title;
+
     private Float imagePosition;
 }
