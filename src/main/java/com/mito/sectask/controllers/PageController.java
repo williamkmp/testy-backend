@@ -33,6 +33,7 @@ import com.mito.sectask.values.PREVIEW_ACTION;
 import com.mito.sectask.values.USER_ROLE;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -132,16 +133,20 @@ public class PageController {
         String updatedImageId =
                 updatedPage.getImage() != null ? updatedPage.getImage().getId().toString() : null;
 
-        // Notify user for update
-        List<User> members = userService.findMembersOfPage(updatedPage.getId());
-        for (User member : members) {
-            socket.convertAndSend(
-                    DESTINATION.userPreview(member.getId()),
-                    new PreviewMessageDto()
-                            .setAction(PREVIEW_ACTION.ADD)
-                            .setId(updatedPage.getId().toString())
-                            .setIconKey(updatedPage.getIconKey())
-                            .setIconKey(updatedPage.getName()));
+        // Notify user for preview update if title, or icon key is changed
+        Boolean doNotifyMember = !Objects.equals(page.getIconKey(), updatedPage.getIconKey())
+                || !Objects.equals(page.getName(), updatedPage.getName());
+        if (Boolean.TRUE.equals(doNotifyMember)) {
+            List<User> members = userService.findMembersOfPage(updatedPage.getId());
+            for (User member : members) {
+                socket.convertAndSend(
+                        DESTINATION.userPreview(member.getId()),
+                        new PreviewMessageDto()
+                                .setAction(PREVIEW_ACTION.UPDATE)
+                                .setId(updatedPage.getId().toString())
+                                .setIconKey(updatedPage.getIconKey())
+                                .setIconKey(updatedPage.getName()));
+            }
         }
 
         return new Response<PageDto>(HttpStatus.OK)
