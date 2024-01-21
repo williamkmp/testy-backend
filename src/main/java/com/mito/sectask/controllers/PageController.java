@@ -126,7 +126,10 @@ public class PageController {
         Long imageId = Util.String.toLong(request.getImageId()).orElse(null);
         imageService.updatePageCoverImage(pageId, imageId);
         Page page = pageService.findById(pageId).orElseThrow(ResourceNotFoundHttpException::new);
+        String oldIconKey = page.getIconKey();
+        String oldTitle = page.getName();
         Float imagePosition = Optional.ofNullable(request.getImagePosition()).orElse(50f);
+        page.setName(request.getTitle());
         page.setIconKey(request.getIconKey());
         page.setImagePosition(imagePosition);
         Page updatedPage = pageService.update(page).orElseThrow(ResourceNotFoundHttpException::new);
@@ -134,8 +137,8 @@ public class PageController {
                 updatedPage.getImage() != null ? updatedPage.getImage().getId().toString() : null;
 
         // Notify user for preview update if title, or icon key is changed
-        Boolean doNotifyMember = !Objects.equals(page.getIconKey(), updatedPage.getIconKey())
-                || !Objects.equals(page.getName(), updatedPage.getName());
+        Boolean doNotifyMember = !Objects.equals(oldIconKey, updatedPage.getIconKey())
+                || !Objects.equals(oldTitle, updatedPage.getName());
         if (Boolean.TRUE.equals(doNotifyMember)) {
             List<User> members = userService.findMembersOfPage(updatedPage.getId());
             for (User member : members) {
@@ -145,7 +148,7 @@ public class PageController {
                                 .setAction(PREVIEW_ACTION.UPDATE)
                                 .setId(updatedPage.getId().toString())
                                 .setIconKey(updatedPage.getIconKey())
-                                .setIconKey(updatedPage.getName()));
+                                .setName(updatedPage.getName()));
             }
         }
 
