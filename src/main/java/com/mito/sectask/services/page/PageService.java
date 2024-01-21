@@ -63,12 +63,4 @@ public interface PageService {
      */
     public Optional<Page> getRootOfPage(Long pageId);
 
-    /**
-     * find the root page of a given page by id, if the page is already a root page
-     * return itself, will return Optional.empty() if page not found.
-     * 
-     * @param pageId {@link Long} page id
-     * @return {@link Optional}<{@link Page}> root page of the given page id, else Optional.empty()
-     */
-    public Optional<Page> findRootOfPage(Long pageId);
 }
