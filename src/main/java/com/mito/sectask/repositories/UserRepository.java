@@ -17,4 +17,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByEmails(@Param("emails") List<String> emails);
 
     Optional<User> findByTagName(String tagName);
+
+    /**
+     * find all user registered as member of a given page, 
+     * the page must be a root page. 
+     * 
+     * @param pageId {@link Long} page id
+     * @return {@link List}<{@link User}> root page members
+     */
+    @Query("SELECT u FROM User u JOIN u.authorities a JOIN a.page p WHERE p.id = pageId")
+    List<User> findAllByRootPageId(@Param("pageId") Long pageId);
 }
