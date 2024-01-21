@@ -5,7 +5,7 @@ package com.mito.sectask.values;
  * when connected to this {@link com.mito.sectask.values.DESTINATION#pageBlock(Long) STOMP Channel}  
  */
 public enum BLOCK_ACTION {
-    NEW,
+    ADD,
     UPDATE,
     DELETE
 }

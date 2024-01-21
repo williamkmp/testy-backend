@@ -5,7 +5,7 @@ package com.mito.sectask.values;
  * when connected to this {@link com.mito.sectask.values.DESTINATION#userPreview(Long) STOMP Channel}  
  */
 public enum PREVIEW_ACTION {
-    NEW,
+    ADD,
     UPDATE,
     DELETE
 }
