@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findMembersOfPage(Long pageId) {
         Page page = pageRepository.findById(pageId).orElseThrow(ResourceNotFoundException::new);
-        while(page.getCollection() != null) {
+        while (page.getCollection() != null) {
             page = page.getCollection().getPage();
         }
         return userRepository.findAllByRootPageId(page.getId());

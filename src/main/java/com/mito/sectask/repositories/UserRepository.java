@@ -19,9 +19,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByTagName(String tagName);
 
     /**
-     * find all user registered as member of a given page, 
-     * the page must be a root page. 
-     * 
+     * find all user registered as member of a given page,
+     * the page must be a root page.
+     *
      * @param pageId {@link Long} page id
      * @return {@link List}<{@link User}> root page members
      */

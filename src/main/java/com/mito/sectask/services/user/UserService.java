@@ -28,7 +28,7 @@ public interface UserService {
      * find all member of a given page by id, if the given page is not a root
      * then it will traverse the page-collection relation to get the root and
      * return it's members
-     * 
+     *
      * @param pageId {@link Long} page id
      * @return  {@link List}<{@link User}> member of a given page
      */

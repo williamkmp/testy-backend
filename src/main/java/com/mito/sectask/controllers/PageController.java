@@ -82,13 +82,14 @@ public class PageController {
 
         // Notify user for update
         List<User> members = userService.findMembersOfPage(createdPage.getId());
-        for(User member : members) {
-            socket.convertAndSend(DESTINATION.userPreview(member.getId()), new PreviewMessageDto()
-                .setAction(PREVIEW_ACTION.ADD)
-                .setParentId(request.getCollectionId())
-                .setIconKey(createdPage.getIconKey())
-                .setIconKey(createdPage.getName())
-            );
+        for (User member : members) {
+            socket.convertAndSend(
+                    DESTINATION.userPreview(member.getId()),
+                    new PreviewMessageDto()
+                            .setAction(PREVIEW_ACTION.ADD)
+                            .setParentId(request.getCollectionId())
+                            .setIconKey(createdPage.getIconKey())
+                            .setIconKey(createdPage.getName()));
         }
 
         return new Response<PageDto>(HttpStatus.CREATED)
@@ -133,13 +134,14 @@ public class PageController {
 
         // Notify user for update
         List<User> members = userService.findMembersOfPage(updatedPage.getId());
-        for(User member : members) {
-            socket.convertAndSend(DESTINATION.userPreview(member.getId()), new PreviewMessageDto()
-                .setAction(PREVIEW_ACTION.ADD)
-                .setId(updatedPage.getId().toString())
-                .setIconKey(updatedPage.getIconKey())
-                .setIconKey(updatedPage.getName())
-            );
+        for (User member : members) {
+            socket.convertAndSend(
+                    DESTINATION.userPreview(member.getId()),
+                    new PreviewMessageDto()
+                            .setAction(PREVIEW_ACTION.ADD)
+                            .setId(updatedPage.getId().toString())
+                            .setIconKey(updatedPage.getIconKey())
+                            .setIconKey(updatedPage.getName()));
         }
 
         return new Response<PageDto>(HttpStatus.OK)

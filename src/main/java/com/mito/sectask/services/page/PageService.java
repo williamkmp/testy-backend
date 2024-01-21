@@ -62,5 +62,4 @@ public interface PageService {
      *      if error or not found
      */
     public Optional<Page> getRootOfPage(Long pageId);
-
 }
