@@ -116,4 +116,19 @@ public class PageServiceImpl implements PageService {
 
         return Optional.of(page);
     }
+
+    @Override
+    public Optional<Page> findRootOfPage(Long pageId) {
+        Optional<Page> maybePage = pageRepository.findById(pageId);
+        if(maybePage.isEmpty()) {
+            return Optional.empty();
+        }
+        
+        Page page = maybePage.get();
+        while(page.getCollection() != null) {
+            page = page.getCollection().getPage();
+        }
+        
+        return Optional.of(page);
+    }
 }
