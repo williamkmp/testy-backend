@@ -7,23 +7,23 @@ import lombok.NoArgsConstructor;
 public class DESTINATION {
 
     /**
-     * STOMP destination url for /queue/user/{userId}/preview
+     * STOMP destination url for /topic/user/{userId}/preview
      *
      * @param userId {@link Long} user id
      * @return {@link String} STOMP destination path
      */
     public static String userPreview(Long userId) {
-        return "/queue/user/" + userId.toString() + "/preview";
+        return "/topic/user/" + userId.toString() + "/preview";
     }
 
     /**
-     * STOMP destination url for /queue/user/{userId}/notification
+     * STOMP destination url for /topic/user/{userId}/notification
      *
      * @param userId {@link Long} user id
      * @return {@link String} STOMP destination path
      */
     public static String userNotification(Long userId) {
-        return "/queue/user/" + userId.toString() + "/notification";
+        return "/topic/user/" + userId.toString() + "/notification";
     }
 
     /**
