@@ -2,6 +2,8 @@ package com.mito.sectask.configurations;
 
 import com.google.gson.Gson;
 import com.mito.sectask.annotations.sender.SenderResolver;
+import com.mito.sectask.annotations.sendersession.SenderSessionResolver;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,7 @@ public class WebsocketConfiguration
 
     private final Gson gson;
     private final SenderResolver senderResolver;
+    private final SenderSessionResolver senderSessionResolver;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -50,5 +53,6 @@ public class WebsocketConfiguration
     ) {
         WebSocketMessageBrokerConfigurer.super.addArgumentResolvers(resolvers);
         resolvers.add(senderResolver);
+        resolvers.add(senderSessionResolver);
     }
 }

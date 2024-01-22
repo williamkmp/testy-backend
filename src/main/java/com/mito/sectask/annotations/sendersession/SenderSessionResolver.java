@@ -1,26 +1,24 @@
-package com.mito.sectask.annotations.sender;
+package com.mito.sectask.annotations.sendersession;
 
-import com.mito.sectask.entities.User;
-import com.mito.sectask.repositories.UserRepository;
-import com.mito.sectask.values.KEY;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 
+import com.mito.sectask.values.KEY;
+
+import lombok.RequiredArgsConstructor;
+
 @Component
 @RequiredArgsConstructor
-public class SenderResolver implements HandlerMethodArgumentResolver {
-
-    private final UserRepository userRepository;
+public class SenderSessionResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return (
-            parameter.hasParameterAnnotation(Sender.class) &&
-            User.class.isAssignableFrom(parameter.getParameterType())
+            parameter.hasParameterAnnotation(SenderSession.class) &&
+            String.class.isAssignableFrom(parameter.getParameterType())
         );
     }
 
@@ -32,9 +30,6 @@ public class SenderResolver implements HandlerMethodArgumentResolver {
         SimpMessageHeaderAccessor header = SimpMessageHeaderAccessor.wrap(
             message
         );
-        Long senderId = Long.valueOf(
-            header.getFirstNativeHeader(KEY.SENDER_USER_ID)
-        );
-        return userRepository.findById(senderId).orElse(null);
+        return header.getFirstNativeHeader(KEY.SENDER_SESSION_ID);        
     }
 }
