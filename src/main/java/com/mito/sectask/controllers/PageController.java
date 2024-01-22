@@ -2,6 +2,7 @@ package com.mito.sectask.controllers;
 
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
+import com.mito.sectask.annotations.callersession.CallerSession;
 import com.mito.sectask.dto.dto.BlockDto;
 import com.mito.sectask.dto.dto.MenuPreviewDto;
 import com.mito.sectask.dto.dto.PageDto;
@@ -28,11 +29,15 @@ import com.mito.sectask.services.role.RoleService;
 import com.mito.sectask.services.user.UserService;
 import com.mito.sectask.utils.Util;
 import com.mito.sectask.values.DESTINATION;
+import com.mito.sectask.values.KEY;
 import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.PREVIEW_ACTION;
 import com.mito.sectask.values.USER_ROLE;
+
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -123,7 +128,8 @@ public class PageController {
     public Response<PageDto> updatePage(
         @PathVariable("pageId") Long pageId,
         @RequestBody PageUpdateRequest request,
-        @Caller User caller
+        @Caller User caller,
+        @CallerSession String sessionId
     ) {
         // Checking user's Role
         Role userRole = roleService
@@ -175,7 +181,11 @@ public class PageController {
                         .setAction(PREVIEW_ACTION.UPDATE)
                         .setId(updatedPage.getId().toString())
                         .setIconKey(updatedPage.getIconKey())
-                        .setName(updatedPage.getName())
+                        .setName(updatedPage.getName()),
+                    Map.ofEntries(
+                        new AbstractMap.SimpleEntry<String, String>(KEY.SENDER_USER_ID, caller.getId().toString()),
+                        new AbstractMap.SimpleEntry<String, String>(KEY.SENDER_SESSION_ID, sessionId)
+                    )
                 );
             }
         }
