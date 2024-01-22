@@ -109,7 +109,26 @@
 							<include>src/main/java/**/*.java</include>
 							<include>src/test/java/**/*.java</include>
 						</includes>
-						<palantirJavaFormat />
+						<prettier>
+							
+							<devDependencyProperties>
+							  <property>
+								<name>prettier</name>
+								<value>3.2.4</value>
+							  </property>
+							  <property>
+								<name>prettier-plugin-java</name> <!-- this could not be written in the simpler to write 'devDependencies' element. -->
+								<value>2.5.0</value>
+							  </property>
+							</devDependencyProperties>
+							
+							<config>
+								<tabWidth>4</tabWidth>
+								<useTabs>false</useTabs>
+								<printWidth>80</printWidth>
+								<plugins>prettier-plugin-java</plugins>
+							</config>
+						  </prettier>
 						<importOrder />
 						<removeUnusedImports/>
 						<formatAnnotations />
