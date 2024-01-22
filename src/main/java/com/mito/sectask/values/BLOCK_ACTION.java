@@ -7,5 +7,5 @@ package com.mito.sectask.values;
 public enum BLOCK_ACTION {
     ADD,
     UPDATE,
-    DELETE
+    DELETE,
 }

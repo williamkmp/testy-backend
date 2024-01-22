@@ -55,16 +55,20 @@ public class SeedRunner implements CommandLineRunner {
             // Running seeder
             for (Seeder seeder : seeders) {
                 Instant start = Instant.now();
-                String seederName = seeder.getClass().getSimpleName().split("\\$\\$")[0];
+                String seederName = seeder
+                    .getClass()
+                    .getSimpleName()
+                    .split("\\$\\$")[0];
                 seeder.seed();
                 Instant finish = Instant.now();
                 long elapsedTime = Duration.between(start, finish).toMillis();
 
-                log.atInfo()
-                        .setMessage("Execute [{}]: {}ms")
-                        .addArgument(seederName)
-                        .addArgument(elapsedTime)
-                        .log();
+                log
+                    .atInfo()
+                    .setMessage("Execute [{}]: {}ms")
+                    .addArgument(seederName)
+                    .addArgument(elapsedTime)
+                    .log();
             }
 
             log.info("Done seeding");

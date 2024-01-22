@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BlockService {
-
     /**
      * get a block with a certaion id
      *
@@ -22,7 +21,8 @@ public interface BlockService {
      * @return {@link List}<{@link Block}> list of block with type of COLEECTION
      * @throws ResourceNotFoundException when the given page not exist
      */
-    public List<Block> findAllCollectionByPageId(Long pageId) throws ResourceNotFoundException;
+    public List<Block> findAllCollectionByPageId(Long pageId)
+        throws ResourceNotFoundException;
 
     /**
      * get ordered list of all block of a given page
@@ -31,5 +31,6 @@ public interface BlockService {
      * @return {@link List}<{@link Block}> ordered blocks of page
      * @throws ResourceNotFoundException if page is not found
      */
-    public List<Block> findAllByPageId(Long pageId) throws ResourceNotFoundException;
+    public List<Block> findAllByPageId(Long pageId)
+        throws ResourceNotFoundException;
 }

@@ -41,10 +41,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Optional<User> loginUser(LoginParameter userCredential) {
-        Optional<User> maybeUser = userRepository.findByEmail(userCredential.getEmail());
+        Optional<User> maybeUser = userRepository.findByEmail(
+            userCredential.getEmail()
+        );
         if (maybeUser.isEmpty()) return Optional.empty();
         User registeredUser = maybeUser.get();
-        Boolean isPasswordMatch = password.matches(userCredential.getPassword(), registeredUser.getPassword());
+        Boolean isPasswordMatch = password.matches(
+            userCredential.getPassword(),
+            registeredUser.getPassword()
+        );
         if (Boolean.FALSE.equals(isPasswordMatch)) return Optional.empty();
         return Optional.of(registeredUser);
     }
@@ -59,7 +64,10 @@ public class AuthServiceImpl implements AuthService {
         }
 
         return Optional.of(
-                new TokenDto().setAccessToken(maybeAccessToken.get()).setRefreshToken(maybeRefreshtoken.get()));
+            new TokenDto()
+                .setAccessToken(maybeAccessToken.get())
+                .setRefreshToken(maybeRefreshtoken.get())
+        );
     }
 
     @Override
@@ -69,7 +77,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Optional<JwtPayload> verifyRefreshToken(String refreshToken) {
-        Optional<JwtPayload> maybePayload = verifyToken(REFRESH_TOKEN_SECRET, refreshToken);
+        Optional<JwtPayload> maybePayload = verifyToken(
+            REFRESH_TOKEN_SECRET,
+            refreshToken
+        );
 
         if (maybePayload.isEmpty()) return Optional.empty();
         JwtPayload payload = maybePayload.get();
@@ -79,7 +90,10 @@ public class AuthServiceImpl implements AuthService {
         if (maybeUser.isEmpty()) return Optional.empty();
         User user = maybeUser.get();
 
-        if (user.getRefreshToken() == null || !user.getRefreshToken().equals(refreshToken)) return Optional.empty();
+        if (
+            user.getRefreshToken() == null ||
+            !user.getRefreshToken().equals(refreshToken)
+        ) return Optional.empty();
 
         return Optional.of(payload);
     }
@@ -97,13 +111,18 @@ public class AuthServiceImpl implements AuthService {
         if (maybeUser.isEmpty()) return Optional.empty();
 
         User user = maybeUser.get();
-        JwtPayload tokenPayload = JwtPayload.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .tagName(user.getTagName())
-                .build();
+        JwtPayload tokenPayload = JwtPayload
+            .builder()
+            .id(user.getId())
+            .email(user.getEmail())
+            .tagName(user.getTagName())
+            .build();
 
-        return signPayload(ACCESS_TOKEN_SECRET, ACCESS_TOKEN_DURATION_MS, tokenPayload);
+        return signPayload(
+            ACCESS_TOKEN_SECRET,
+            ACCESS_TOKEN_DURATION_MS,
+            tokenPayload
+        );
     }
 
     /**
@@ -120,13 +139,18 @@ public class AuthServiceImpl implements AuthService {
         if (maybeUser.isEmpty()) return Optional.empty();
 
         User user = maybeUser.get();
-        JwtPayload tokenPayload = JwtPayload.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .tagName(user.getTagName())
-                .build();
+        JwtPayload tokenPayload = JwtPayload
+            .builder()
+            .id(user.getId())
+            .email(user.getEmail())
+            .tagName(user.getTagName())
+            .build();
 
-        Optional<String> maybeToken = signPayload(REFRESH_TOKEN_SECRET, REFRESH_TOKEN_DURATION_MS, tokenPayload);
+        Optional<String> maybeToken = signPayload(
+            REFRESH_TOKEN_SECRET,
+            REFRESH_TOKEN_DURATION_MS,
+            tokenPayload
+        );
 
         if (maybeToken.isEmpty()) return Optional.empty();
 
@@ -145,7 +169,11 @@ public class AuthServiceImpl implements AuthService {
      * @return {@link Optional}<{@link String}> conatining the generated token signed using the
      *     secret, else Optional.empty() if generation process failed
      */
-    public Optional<String> signPayload(String secret, Long duration, JwtPayload payload) {
+    public Optional<String> signPayload(
+        String secret,
+        Long duration,
+        JwtPayload payload
+    ) {
         Optional<String> token;
         try {
             String payloadJsonString = gson.toJson(payload);
@@ -154,11 +182,12 @@ public class AuthServiceImpl implements AuthService {
             Date now = new Date(systemTime);
             Date expiredAt = new Date(systemTime + duration);
 
-            String tokenString = JWT.create()
-                    .withPayload(payloadJsonString)
-                    .withIssuedAt(now)
-                    .withExpiresAt(expiredAt)
-                    .sign(Algorithm.HMAC256(secret));
+            String tokenString = JWT
+                .create()
+                .withPayload(payloadJsonString)
+                .withIssuedAt(now)
+                .withExpiresAt(expiredAt)
+                .sign(Algorithm.HMAC256(secret));
 
             token = Optional.of(tokenString);
         } catch (Exception e) {
@@ -178,10 +207,17 @@ public class AuthServiceImpl implements AuthService {
     public Optional<JwtPayload> verifyToken(String secret, String token) {
         Optional<JwtPayload> maybePayload;
         try {
-            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret)).build();
+            JWTVerifier verifier = JWT
+                .require(Algorithm.HMAC256(secret))
+                .build();
             String encodedPayload = verifier.verify(token).getPayload();
-            String payloadJsonString = new String(Base64.getDecoder().decode(encodedPayload));
-            JwtPayload payloadData = gson.fromJson(payloadJsonString, JwtPayload.class);
+            String payloadJsonString = new String(
+                Base64.getDecoder().decode(encodedPayload)
+            );
+            JwtPayload payloadData = gson.fromJson(
+                payloadJsonString,
+                JwtPayload.class
+            );
             maybePayload = Optional.of(payloadData);
         } catch (Exception e) {
             maybePayload = Optional.empty();

@@ -50,7 +50,11 @@ public class Block {
     @JoinColumn(name = "file_id", referencedColumnName = "id", nullable = true)
     private File file;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collection")
+    @OneToMany(
+        cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY,
+        mappedBy = "collection"
+    )
     private List<Page> pages;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

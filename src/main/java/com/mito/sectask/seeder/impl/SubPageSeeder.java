@@ -20,68 +20,93 @@ public class SubPageSeeder implements Seeder {
     @Override
     @Transactional
     public void seed() throws Exception {
-        Page testyPage = pageRepository.findById(1L).orElseThrow(() -> new Exception("Page not found"));
-        Page bimayPage = pageRepository.findById(2L).orElseThrow(() -> new Exception("Page not found"));
-        Page bimobPage = pageRepository.findById(3L).orElseThrow(() -> new Exception("Page not found"));
+        Page testyPage = pageRepository
+            .findById(1L)
+            .orElseThrow(() -> new Exception("Page not found"));
+        Page bimayPage = pageRepository
+            .findById(2L)
+            .orElseThrow(() -> new Exception("Page not found"));
+        Page bimobPage = pageRepository
+            .findById(3L)
+            .orElseThrow(() -> new Exception("Page not found"));
 
-        Block testyCollection =
-                getFirstCollectionByPageId(testyPage).orElseThrow(() -> new Exception("Collection not found"));
-        Block bimayCollection =
-                getFirstCollectionByPageId(bimayPage).orElseThrow(() -> new Exception("Collection not found"));
-        Block bimobCollection =
-                getFirstCollectionByPageId(bimobPage).orElseThrow(() -> new Exception("Collection not found"));
+        Block testyCollection = getFirstCollectionByPageId(testyPage)
+            .orElseThrow(() -> new Exception("Collection not found"));
+        Block bimayCollection = getFirstCollectionByPageId(bimayPage)
+            .orElseThrow(() -> new Exception("Collection not found"));
+        Block bimobCollection = getFirstCollectionByPageId(bimobPage)
+            .orElseThrow(() -> new Exception("Collection not found"));
 
-        pageRepository.save(new Page()
+        pageRepository.save(
+            new Page()
                 .setCollection(testyCollection)
                 .setIconKey("emoji-1215") // 📃
-                .setName("Documentation"));
+                .setName("Documentation")
+        );
 
-        pageRepository.save(new Page()
+        pageRepository.save(
+            new Page()
                 .setCollection(testyCollection)
                 .setIconKey("emoji-1265") // 📋
-                .setName("Notes"));
+                .setName("Notes")
+        );
 
-        pageRepository.save(new Page()
+        pageRepository.save(
+            new Page()
                 .setCollection(testyCollection)
                 .setIconKey("emoji-1001") // 🛳️
-                .setName("On Boarding"));
+                .setName("On Boarding")
+        );
 
-        pageRepository.save(new Page()
+        pageRepository.save(
+            new Page()
                 .setCollection(bimobCollection)
                 .setIconKey("emoji-1085") // 🌈
-                .setName("Mobile UI/UX"));
+                .setName("Mobile UI/UX")
+        );
 
-        pageRepository.save(new Page()
+        pageRepository.save(
+            new Page()
                 .setCollection(bimobCollection)
                 .setIconKey("emoji-1072") // ☁️
-                .setName("System Design"));
+                .setName("System Design")
+        );
 
-        pageRepository.save(new Page()
+        pageRepository.save(
+            new Page()
                 .setCollection(bimobCollection)
                 .setIconKey("emoji-883") // 🌐
-                .setName("API Specification"));
+                .setName("API Specification")
+        );
 
-        pageRepository.save(new Page()
+        pageRepository.save(
+            new Page()
                 .setCollection(bimayCollection)
                 .setIconKey("emoji-875") // 🎨
-                .setName("Client Documentation"));
+                .setName("Client Documentation")
+        );
 
-        pageRepository.save(new Page()
+        pageRepository.save(
+            new Page()
                 .setCollection(bimayCollection)
                 .setIconKey("emoji-1214") // 📚
-                .setName("Project Management"));
+                .setName("Project Management")
+        );
 
-        pageRepository.save(new Page()
+        pageRepository.save(
+            new Page()
                 .setCollection(bimayCollection)
                 .setIconKey("emoji-1297") // ⚙️
-                .setName("Server Documentation"));
+                .setName("Server Documentation")
+        );
     }
 
     @Transactional
     private Optional<Block> getFirstCollectionByPageId(Page page) {
         final List<Block> blocks = page.getBlocks();
-        return blocks.stream()
-                .filter(block -> block.getBlockType().equals(BLOCK_TYPE.COLLECTION))
-                .findFirst();
+        return blocks
+            .stream()
+            .filter(block -> block.getBlockType().equals(BLOCK_TYPE.COLLECTION))
+            .findFirst();
     }
 }

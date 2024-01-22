@@ -11,11 +11,17 @@ public class BctyptEncoder implements PasswordEncocder {
 
     private static final BCryptVersion version = BCryptVersion.S2A;
     private static final int STRENGTH2 = 10;
-    private static final Pattern BCRYPT_PATTERN = Pattern.compile("\\A\\$2([ayb])?\\$(\\d\\d)\\$[./0-9A-Za-z]{53}");
+    private static final Pattern BCRYPT_PATTERN = Pattern.compile(
+        "\\A\\$2([ayb])?\\$(\\d\\d)\\$[./0-9A-Za-z]{53}"
+    );
     private final SecureRandom random = new SecureRandom();
 
     private String getSalt() {
-        return Bcrypt.gensalt(BctyptEncoder.version.getVersion(), BctyptEncoder.STRENGTH2, this.random);
+        return Bcrypt.gensalt(
+            BctyptEncoder.version.getVersion(),
+            BctyptEncoder.STRENGTH2,
+            this.random
+        );
     }
 
     @Override

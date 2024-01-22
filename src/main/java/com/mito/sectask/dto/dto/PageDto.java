@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class PageDto {
+
     private String id;
     private String title;
     private USER_ROLE authority;

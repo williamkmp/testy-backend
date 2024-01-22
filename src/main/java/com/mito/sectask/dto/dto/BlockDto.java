@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class BlockDto {
+
     private String id;
     private BLOCK_TYPE type;
     private String content;

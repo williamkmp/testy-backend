@@ -40,85 +40,121 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping(
-            path = "/login",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        path = "/login",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @Transactional
-    public Response<LoginDto> login(@RequestBody @Valid AuthLoginRequest request) {
+    public Response<LoginDto> login(
+        @RequestBody @Valid AuthLoginRequest request
+    ) {
         Optional<User> maybeUser = authService.loginUser(
-                new LoginParameter().setEmail(request.getEmail()).setPassword(request.getPassword()));
+            new LoginParameter()
+                .setEmail(request.getEmail())
+                .setPassword(request.getPassword())
+        );
 
         if (maybeUser.isEmpty()) {
-            return new Response<LoginDto>(HttpStatus.BAD_REQUEST).setRootError(VALIDATION.INVALID_CREDENTIAL);
+            return new Response<LoginDto>(HttpStatus.BAD_REQUEST)
+                .setRootError(VALIDATION.INVALID_CREDENTIAL);
         }
 
         User registeredUser = maybeUser.get();
-        Optional<TokenDto> maybeToken = authService.generateTokens(registeredUser.getId());
+        Optional<TokenDto> maybeToken = authService.generateTokens(
+            registeredUser.getId()
+        );
 
         if (maybeToken.isEmpty()) {
-            return new Response<LoginDto>(HttpStatus.INTERNAL_SERVER_ERROR).setMessage(MESSAGES.ERROR_INTERNAL_SERVER);
+            return new Response<LoginDto>(HttpStatus.INTERNAL_SERVER_ERROR)
+                .setMessage(MESSAGES.ERROR_INTERNAL_SERVER);
         }
 
         String imageId = (registeredUser.getImage() != null)
-                ? registeredUser.getImage().getId().toString()
-                : null;
+            ? registeredUser.getImage().getId().toString()
+            : null;
 
         TokenDto token = maybeToken.get();
         return new Response<LoginDto>(HttpStatus.OK)
-                .setData(new LoginDto()
-                        .setId(registeredUser.getId().toString())
-                        .setEmail(registeredUser.getEmail())
-                        .setTagName(registeredUser.getTagName())
-                        .setFullName(registeredUser.getFullName())
-                        .setImageId(imageId)
-                        .setToken(token));
+            .setData(
+                new LoginDto()
+                    .setId(registeredUser.getId().toString())
+                    .setEmail(registeredUser.getEmail())
+                    .setTagName(registeredUser.getTagName())
+                    .setFullName(registeredUser.getFullName())
+                    .setImageId(imageId)
+                    .setToken(token)
+            );
     }
 
     @PostMapping(
-            path = "/register",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response<RegisterDto> register(@RequestBody @Valid AuthRegisterRequest request) {
-        boolean isEmailAvailable = Boolean.TRUE.equals(userService.checkEmailIsAvailable(request.getEmail()));
-        boolean isTagNameAvailable = Boolean.TRUE.equals(userService.checkTagNameIsAvailable(request.getTagName()));
+        path = "/register",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public Response<RegisterDto> register(
+        @RequestBody @Valid AuthRegisterRequest request
+    ) {
+        boolean isEmailAvailable = Boolean.TRUE.equals(
+            userService.checkEmailIsAvailable(request.getEmail())
+        );
+        boolean isTagNameAvailable = Boolean.TRUE.equals(
+            userService.checkTagNameIsAvailable(request.getTagName())
+        );
 
         // email or tagname is note available
         if (!isEmailAvailable || !isTagNameAvailable) {
             Map<String, String> validationError = new HashMap<>();
-            validationError.put("email", !isEmailAvailable ? VALIDATION.UNIQUE : null);
-            validationError.put("tagName", !isTagNameAvailable ? VALIDATION.UNIQUE : null);
+            validationError.put(
+                "email",
+                !isEmailAvailable ? VALIDATION.UNIQUE : null
+            );
+            validationError.put(
+                "tagName",
+                !isTagNameAvailable ? VALIDATION.UNIQUE : null
+            );
 
-            return new Response<RegisterDto>(HttpStatus.BAD_REQUEST).setError(validationError);
+            return new Response<RegisterDto>(HttpStatus.BAD_REQUEST)
+                .setError(validationError);
         }
 
-        Optional<User> maybeUser = this.userService.registerUser(new RegisterUserParameter()
-                .setEmail(request.getEmail())
-                .setTagName(request.getTagName())
-                .setFullName(request.getFullName())
-                .setPassword(request.getPassword()));
+        Optional<User> maybeUser =
+            this.userService.registerUser(
+                    new RegisterUserParameter()
+                        .setEmail(request.getEmail())
+                        .setTagName(request.getTagName())
+                        .setFullName(request.getFullName())
+                        .setPassword(request.getPassword())
+                );
 
         if (maybeUser.isEmpty()) {
             return new Response<RegisterDto>(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .setMessage(MESSAGES.ERROR_INTERNAL_SERVER);
+                .setMessage(MESSAGES.ERROR_INTERNAL_SERVER);
         }
 
         User createdUser = maybeUser.get();
 
         return new Response<RegisterDto>(HttpStatus.CREATED)
-                .setData(new RegisterDto()
-                        .setId(createdUser.getId().toString())
-                        .setEmail(createdUser.getEmail())
-                        .setTagName(createdUser.getTagName())
-                        .setFullName(createdUser.getFullName()));
+            .setData(
+                new RegisterDto()
+                    .setId(createdUser.getId().toString())
+                    .setEmail(createdUser.getEmail())
+                    .setTagName(createdUser.getTagName())
+                    .setFullName(createdUser.getFullName())
+            );
     }
 
     @PostMapping(
-            path = "/token",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response<TokenDto> refresh(@RequestBody @Valid AuthRefreshTokenRequest request) {
+        path = "/token",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public Response<TokenDto> refresh(
+        @RequestBody @Valid AuthRefreshTokenRequest request
+    ) {
         String refreshToken = request.getRefreshToken();
-        Optional<JwtPayload> maybeCaller = authService.verifyRefreshToken(refreshToken);
+        Optional<JwtPayload> maybeCaller = authService.verifyRefreshToken(
+            refreshToken
+        );
 
         if (maybeCaller.isEmpty()) {
             throw new UnauthorizedHttpException();
@@ -126,7 +162,9 @@ public class AuthController {
 
         JwtPayload caller = maybeCaller.get();
 
-        Optional<TokenDto> maybeTokens = authService.generateTokens(caller.getId());
+        Optional<TokenDto> maybeTokens = authService.generateTokens(
+            caller.getId()
+        );
 
         if (maybeTokens.isEmpty()) {
             throw new UnauthorizedHttpException();

@@ -28,16 +28,22 @@ public class BlockServiceImpl implements BlockService {
 
     @Override
     public List<Block> findAllCollectionByPageId(Long pageId) {
-        Page page = pageRepository.findById(pageId).orElseThrow(ResourceNotFoundException::new);
+        Page page = pageRepository
+            .findById(pageId)
+            .orElseThrow(ResourceNotFoundException::new);
         List<Block> blocks = page.getBlocks();
-        return blocks.stream()
-                .filter(block -> block.getBlockType().equals(BLOCK_TYPE.COLLECTION))
-                .collect(Collectors.toList());
+        return blocks
+            .stream()
+            .filter(block -> block.getBlockType().equals(BLOCK_TYPE.COLLECTION))
+            .collect(Collectors.toList());
     }
 
     @Override
-    public List<Block> findAllByPageId(Long pageId) throws ResourceNotFoundException {
-        Page page = pageRepository.findById(pageId).orElseThrow(ResourceNotFoundException::new);
+    public List<Block> findAllByPageId(Long pageId)
+        throws ResourceNotFoundException {
+        Page page = pageRepository
+            .findById(pageId)
+            .orElseThrow(ResourceNotFoundException::new);
         return blockRepository.findAllByPageId(page.getId());
     }
 }

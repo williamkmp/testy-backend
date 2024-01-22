@@ -87,7 +87,7 @@ public class Bcrypt {
         0x3f84d5b5,
         0xb5470917,
         0x9216d5d9,
-        0x8979fb1b
+        0x8979fb1b,
     };
 
     private static final int S_orig[] = {
@@ -1114,29 +1114,217 @@ public class Bcrypt {
         0xb74e6132,
         0xce77e25b,
         0x578fdfe3,
-        0x3ac372e6
+        0x3ac372e6,
     };
 
     // bcrypt IV: "OrpheanBeholderScryDoubt"
     private static final int bf_crypt_ciphertext[] = {
-        0x4f727068, 0x65616e42, 0x65686f6c, 0x64657253, 0x63727944, 0x6f756274
+        0x4f727068,
+        0x65616e42,
+        0x65686f6c,
+        0x64657253,
+        0x63727944,
+        0x6f756274,
     };
 
     // Table for Base64 encoding
     private static final char base64_code[] = {
-        '.', '/', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
-        'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-        'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2',
-        '3', '4', '5', '6', '7', '8', '9'
+        '.',
+        '/',
+        'A',
+        'B',
+        'C',
+        'D',
+        'E',
+        'F',
+        'G',
+        'H',
+        'I',
+        'J',
+        'K',
+        'L',
+        'M',
+        'N',
+        'O',
+        'P',
+        'Q',
+        'R',
+        'S',
+        'T',
+        'U',
+        'V',
+        'W',
+        'X',
+        'Y',
+        'Z',
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z',
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
     };
 
     // Table for Base64 decoding
     private static final byte index_64[] = {
-        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 54, 55, 56, 57, 58, 59, 60, 61,
-        62, 63, -1, -1, -1, -1, -1, -1, -1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-        23, 24, 25, 26, 27, -1, -1, -1, -1, -1, -1, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
-        45, 46, 47, 48, 49, 50, 51, 52, 53, -1, -1, -1, -1, -1
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        0,
+        1,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
     };
     static final int MIN_LOG_ROUNDS = 4;
     static final int MAX_LOG_ROUNDS = 31;
@@ -1155,7 +1343,8 @@ public class Bcrypt {
      * @param rs the destination buffer for the base64-encoded string
      * @exception IllegalArgumentException if the length is invalid
      */
-    static void encode_base64(byte d[], int len, StringBuilder rs) throws IllegalArgumentException {
+    static void encode_base64(byte d[], int len, StringBuilder rs)
+        throws IllegalArgumentException {
         int off = 0;
         int c1, c2;
 
@@ -1209,7 +1398,8 @@ public class Bcrypt {
      * @return an array containing the decoded bytes
      * @throws IllegalArgumentException if maxolen is invalid
      */
-    static byte[] decode_base64(String s, int maxolen) throws IllegalArgumentException {
+    static byte[] decode_base64(String s, int maxolen)
+        throws IllegalArgumentException {
         StringBuilder rs = new StringBuilder();
         int off = 0, slen = s.length(), olen = 0;
         byte ret[];
@@ -1265,7 +1455,7 @@ public class Bcrypt {
         int i, n, l = lr[off], r = lr[off + 1];
 
         l ^= this.P[0];
-        for (i = 0; i <= BLOWFISH_NUM_ROUNDS - 2; ) {
+        for (i = 0; i <= BLOWFISH_NUM_ROUNDS - 2;) {
             // Feistel substitution on left word
             n = this.S[(l >> 24) & 0xff];
             n += this.S[0x100 | ((l >> 16) & 0xff)];
@@ -1295,7 +1485,7 @@ public class Bcrypt {
      */
     private static int[] streamtowords(byte data[], int offp[], int signp[]) {
         int i;
-        int words[] = {0, 0};
+        int words[] = { 0, 0 };
         int off = offp[0];
         int sign = signp[0];
 
@@ -1321,7 +1511,7 @@ public class Bcrypt {
      * @return the next word of material from data
      */
     private static int streamtoword(byte data[], int offp[]) {
-        int signp[] = {0};
+        int signp[] = { 0 };
         return streamtowords(data, offp, signp)[0];
     }
 
@@ -1333,7 +1523,7 @@ public class Bcrypt {
      * @return the next word of material from data
      */
     private static int streamtoword_bug(byte data[], int offp[]) {
-        int signp[] = {0};
+        int signp[] = { 0 };
         return streamtowords(data, offp, signp)[1];
     }
 
@@ -1352,8 +1542,8 @@ public class Bcrypt {
      */
     private void key(byte key[], boolean sign_ext_bug, int safety) {
         int i;
-        int koffp[] = {0};
-        int lr[] = {0, 0};
+        int koffp[] = { 0 };
+        int lr[] = { 0, 0 };
         int plen = this.P.length, slen = this.S.length;
 
         for (i = 0; i < plen; i++) {
@@ -1386,12 +1576,17 @@ public class Bcrypt {
      * @param sign_ext_bug true to implement the 2x bug
      * @param safety bit 16 is set when the safety measure is requested
      */
-    private void ekskey(byte data[], byte key[], boolean sign_ext_bug, int safety) {
+    private void ekskey(
+        byte data[],
+        byte key[],
+        boolean sign_ext_bug,
+        int safety
+    ) {
         int i;
-        int koffp[] = {0}, doffp[] = {0};
-        int lr[] = {0, 0};
+        int koffp[] = { 0 }, doffp[] = { 0 };
+        int lr[] = { 0, 0 };
         int plen = this.P.length, slen = this.S.length;
-        int signp[] = {0}; // non-benign sign-extension flag
+        int signp[] = { 0 }; // non-benign sign-extension flag
         int diff = 0; // zero iff correct and buggy are same
 
         for (i = 0; i < plen; i++) {
@@ -1411,11 +1606,11 @@ public class Bcrypt {
          * protect from such many-buggy to one-correct collisions, by deviating from the
          * correct algorithm in such cases. Let's check for this.
          */
-        diff |= diff >> 16; /* still zero iff exact match */
-        diff &= 0xffff; /* ditto */
-        diff += 0xffff; /* bit 16 set iff "diff" was non-zero (on non-match) */
-        sign <<= 9; /* move the non-benign sign extension flag to bit 16 */
-        sign &= ~diff & safety; /* action needed? */
+        diff |= diff >> 16;/* still zero iff exact match */
+        diff &= 0xffff;/* ditto */
+        diff += 0xffff;/* bit 16 set iff "diff" was non-zero (on non-match) */
+        sign <<= 9;/* move the non-benign sign extension flag to bit 16 */
+        sign &= ~diff & safety;/* action needed? */
 
         /*
          * If we have determined that we need to deviate from the correct algorithm, flip
@@ -1465,7 +1660,13 @@ public class Bcrypt {
      * @return an array containing the binary hashed password
      */
     private byte[] crypt_raw(
-            byte password[], byte salt[], int log_rounds, boolean sign_ext_bug, int safety, boolean for_check) {
+        byte password[],
+        byte salt[],
+        int log_rounds,
+        boolean sign_ext_bug,
+        int safety,
+        boolean for_check
+    ) {
         int cdata[] = bf_crypt_ciphertext.clone();
         int clen = cdata.length;
 
@@ -1542,7 +1743,11 @@ public class Bcrypt {
         return hashpw(passwordb, salt, false);
     }
 
-    private static String hashpw(byte passwordb[], String salt, boolean for_check) {
+    private static String hashpw(
+        byte passwordb[],
+        String salt,
+        boolean for_check
+    ) {
         Bcrypt B;
         String real_salt;
         byte saltb[], hashed[];
@@ -1567,7 +1772,13 @@ public class Bcrypt {
             off = 3;
         } else {
             minor = salt.charAt(2);
-            if ((minor != 'a' && minor != 'x' && minor != 'y' && minor != 'b') || salt.charAt(3) != '$') {
+            if (
+                (minor != 'a' &&
+                    minor != 'x' &&
+                    minor != 'y' &&
+                    minor != 'b') ||
+                salt.charAt(3) != '$'
+            ) {
                 throw new IllegalArgumentException("Invalid salt revision");
             }
             off = 4;
@@ -1591,7 +1802,15 @@ public class Bcrypt {
         }
 
         B = new Bcrypt();
-        hashed = B.crypt_raw(passwordb, saltb, rounds, minor == 'x', minor == 'a' ? 0x10000 : 0, for_check);
+        hashed =
+            B.crypt_raw(
+                passwordb,
+                saltb,
+                rounds,
+                minor == 'x',
+                minor == 'a' ? 0x10000 : 0,
+                for_check
+            );
 
         rs.append("$2");
         if (minor >= 'a') {
@@ -1618,12 +1837,20 @@ public class Bcrypt {
      * @return an encoded salt value
      * @exception IllegalArgumentException if prefix or log_rounds is invalid
      */
-    public static String gensalt(String prefix, int log_rounds, SecureRandom random) throws IllegalArgumentException {
+    public static String gensalt(
+        String prefix,
+        int log_rounds,
+        SecureRandom random
+    ) throws IllegalArgumentException {
         StringBuilder rs = new StringBuilder();
         byte rnd[] = new byte[BCRYPT_SALT_LEN];
 
-        if (!prefix.startsWith("$2")
-                || (prefix.charAt(2) != 'a' && prefix.charAt(2) != 'y' && prefix.charAt(2) != 'b')) {
+        if (
+            !prefix.startsWith("$2") ||
+            (prefix.charAt(2) != 'a' &&
+                prefix.charAt(2) != 'y' &&
+                prefix.charAt(2) != 'b')
+        ) {
             throw new IllegalArgumentException("Invalid prefix");
         }
         if (log_rounds < 4 || log_rounds > 31) {
@@ -1653,7 +1880,8 @@ public class Bcrypt {
      * @return an encoded salt value
      * @exception IllegalArgumentException if prefix or log_rounds is invalid
      */
-    public static String gensalt(String prefix, int log_rounds) throws IllegalArgumentException {
+    public static String gensalt(String prefix, int log_rounds)
+        throws IllegalArgumentException {
         return gensalt(prefix, log_rounds, new SecureRandom());
     }
 
@@ -1666,7 +1894,8 @@ public class Bcrypt {
      * @return an encoded salt value
      * @exception IllegalArgumentException if log_rounds is invalid
      */
-    public static String gensalt(int log_rounds, SecureRandom random) throws IllegalArgumentException {
+    public static String gensalt(int log_rounds, SecureRandom random)
+        throws IllegalArgumentException {
         return gensalt("$2a", log_rounds, random);
     }
 
@@ -1678,7 +1907,8 @@ public class Bcrypt {
      * @return an encoded salt value
      * @exception IllegalArgumentException if log_rounds is invalid
      */
-    public static String gensalt(int log_rounds) throws IllegalArgumentException {
+    public static String gensalt(int log_rounds)
+        throws IllegalArgumentException {
         return gensalt(log_rounds, new SecureRandom());
     }
 
@@ -1721,6 +1951,9 @@ public class Bcrypt {
     }
 
     static boolean equalsNoEarlyReturn(String a, String b) {
-        return MessageDigest.isEqual(a.getBytes(StandardCharsets.UTF_8), b.getBytes(StandardCharsets.UTF_8));
+        return MessageDigest.isEqual(
+            a.getBytes(StandardCharsets.UTF_8),
+            b.getBytes(StandardCharsets.UTF_8)
+        );
     }
 }

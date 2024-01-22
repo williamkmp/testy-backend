@@ -42,19 +42,32 @@ public class BlockController {
     @GetMapping("/collection/{collectionId}/page/preview")
     @Authenticated(true)
     public Response<MenuPreviewDto[]> getPagePreviewByCollection(
-            @PathVariable("collectionId") String collectionId, @Caller User caller) {
+        @PathVariable("collectionId") String collectionId,
+        @Caller User caller
+    ) {
         try {
-            Block collection = blockService.findById(collectionId).orElseThrow(ResourceNotFoundException::new);
+            Block collection = blockService
+                .findById(collectionId)
+                .orElseThrow(ResourceNotFoundException::new);
             Page parentPage = collection.getPage();
-            roleService.getUserPageAuthority(caller.getId(), parentPage.getId()).orElseThrow(ForbiddenException::new);
-            List<MenuPreviewDto> previews = collection.getPages().stream()
-                    .map(page -> new MenuPreviewDto()
-                            .setId(page.getId().toString())
-                            .setIconKey(page.getIconKey())
-                            .setTitle(page.getName()))
-                    .collect(Collectors.toList());
-            MenuPreviewDto[] responseData = previews.toArray(new MenuPreviewDto[0]);
-            return new Response<MenuPreviewDto[]>(HttpStatus.OK).setData(responseData);
+            roleService
+                .getUserPageAuthority(caller.getId(), parentPage.getId())
+                .orElseThrow(ForbiddenException::new);
+            List<MenuPreviewDto> previews = collection
+                .getPages()
+                .stream()
+                .map(page ->
+                    new MenuPreviewDto()
+                        .setId(page.getId().toString())
+                        .setIconKey(page.getIconKey())
+                        .setTitle(page.getName())
+                )
+                .collect(Collectors.toList());
+            MenuPreviewDto[] responseData = previews.toArray(
+                new MenuPreviewDto[0]
+            );
+            return new Response<MenuPreviewDto[]>(HttpStatus.OK)
+                .setData(responseData);
         } catch (ForbiddenException e) {
             throw new ForbiddenHttpException();
         } catch (ResolutionException e) {

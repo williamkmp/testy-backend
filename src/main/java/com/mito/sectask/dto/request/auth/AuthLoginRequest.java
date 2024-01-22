@@ -15,12 +15,20 @@ import lombok.Value;
 public class AuthLoginRequest {
 
     @NotBlank(message = VALIDATION.REQUIRED)
-    @Size(min = 0, max = 100, message = VALIDATION.STRING_LENGTH + 0 + "," + 100)
+    @Size(
+        min = 0,
+        max = 100,
+        message = VALIDATION.STRING_LENGTH + 0 + "," + 100
+    )
     @Email(message = VALIDATION.STRING_EMAIL)
     private String email;
 
     @NotBlank(message = VALIDATION.REQUIRED)
-    @Size(min = 0, max = 100, message = VALIDATION.STRING_LENGTH + 0 + "," + 100)
+    @Size(
+        min = 0,
+        max = 100,
+        message = VALIDATION.STRING_LENGTH + 0 + "," + 100
+    )
     @Pattern(regexp = PATTERN.ALPHANUM, message = VALIDATION.STRING_ALPHANUM)
     private String password;
 }

@@ -42,14 +42,18 @@ public class UserController {
     @GetMapping(path = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authenticated(true)
     public Response<UserDto> me(@Caller User caller) {
-        String imageId = (caller.getImage() != null) ? caller.getImage().getId().toString() : null;
+        String imageId = (caller.getImage() != null)
+            ? caller.getImage().getId().toString()
+            : null;
         return new Response<UserDto>(HttpStatus.OK)
-                .setData(new UserDto()
-                        .setId(caller.getId().toString())
-                        .setEmail(caller.getEmail())
-                        .setTagName(caller.getTagName())
-                        .setFullName(caller.getFullName())
-                        .setImageId(imageId));
+            .setData(
+                new UserDto()
+                    .setId(caller.getId().toString())
+                    .setEmail(caller.getEmail())
+                    .setTagName(caller.getTagName())
+                    .setFullName(caller.getFullName())
+                    .setImageId(imageId)
+            );
     }
 
     @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -58,39 +62,64 @@ public class UserController {
         Optional<User> maybeUser = userService.findById(userId);
 
         if (maybeUser.isEmpty()) {
-            return new Response<UserDto>(HttpStatus.BAD_REQUEST).setMessage(MESSAGES.ERROR_RESOURCE_NOT_FOUND);
+            return new Response<UserDto>(HttpStatus.BAD_REQUEST)
+                .setMessage(MESSAGES.ERROR_RESOURCE_NOT_FOUND);
         }
 
         User user = maybeUser.get();
-        String imageId = (user.getImage() != null) ? user.getImage().getId().toString() : null;
+        String imageId = (user.getImage() != null)
+            ? user.getImage().getId().toString()
+            : null;
 
         return new Response<UserDto>(HttpStatus.OK)
-                .setData(new UserDto()
-                        .setId(user.getId().toString())
-                        .setEmail(user.getEmail())
-                        .setTagName(user.getTagName())
-                        .setFullName(user.getFullName())
-                        .setImageId(imageId));
+            .setData(
+                new UserDto()
+                    .setId(user.getId().toString())
+                    .setEmail(user.getEmail())
+                    .setTagName(user.getTagName())
+                    .setFullName(user.getFullName())
+                    .setImageId(imageId)
+            );
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @Transactional
     @Authenticated(true)
-    public Response<UserDto> updateProfile(@Valid @RequestBody UserUpdateProfileRequest request, @Caller User caller) {
-        boolean isTagNameAvailable =
-                Boolean.TRUE.equals(userService.checkTagNameIsAvailable(request.getTagName(), caller.getId()));
+    public Response<UserDto> updateProfile(
+        @Valid @RequestBody UserUpdateProfileRequest request,
+        @Caller User caller
+    ) {
+        boolean isTagNameAvailable = Boolean.TRUE.equals(
+            userService.checkTagNameIsAvailable(
+                request.getTagName(),
+                caller.getId()
+            )
+        );
 
-        boolean isEmailAvailable =
-                Boolean.TRUE.equals(userService.checkEmailIsAvailable(request.getEmail(), caller.getId()));
+        boolean isEmailAvailable = Boolean.TRUE.equals(
+            userService.checkEmailIsAvailable(
+                request.getEmail(),
+                caller.getId()
+            )
+        );
 
         if (!isTagNameAvailable || !isEmailAvailable) {
             Map<String, String> validationError = new HashMap<>();
-            validationError.put("tagName", !isTagNameAvailable ? VALIDATION.UNIQUE : null);
-            validationError.put("email", !isEmailAvailable ? VALIDATION.UNIQUE : null);
+            validationError.put(
+                "tagName",
+                !isTagNameAvailable ? VALIDATION.UNIQUE : null
+            );
+            validationError.put(
+                "email",
+                !isEmailAvailable ? VALIDATION.UNIQUE : null
+            );
 
             return new Response<UserDto>(HttpStatus.BAD_REQUEST)
-                    .setMessage(MESSAGES.UPDATE_FAIL)
-                    .setError(validationError);
+                .setMessage(MESSAGES.UPDATE_FAIL)
+                .setError(validationError);
         }
 
         // Update user data
@@ -106,47 +135,65 @@ public class UserController {
         // Updating user image
         Long newImageId = Util.String.toLong(request.getImageId()).orElse(null);
 
-        Optional<File> maybeImage = imageService.updateUserImage(caller.getId(), newImageId);
-        String imageId = maybeImage.isPresent() ? maybeImage.get().getId().toString() : null;
+        Optional<File> maybeImage = imageService.updateUserImage(
+            caller.getId(),
+            newImageId
+        );
+        String imageId = maybeImage.isPresent()
+            ? maybeImage.get().getId().toString()
+            : null;
 
         return new Response<UserDto>(HttpStatus.OK)
-                .setMessage(MESSAGES.UPDATE_SUCCESS)
-                .setData(new UserDto()
-                        .setId(updatedUser.getId().toString())
-                        .setEmail(updatedUser.getEmail())
-                        .setTagName(updatedUser.getTagName())
-                        .setFullName(updatedUser.getFullName())
-                        .setImageId(imageId));
+            .setMessage(MESSAGES.UPDATE_SUCCESS)
+            .setData(
+                new UserDto()
+                    .setId(updatedUser.getId().toString())
+                    .setEmail(updatedUser.getEmail())
+                    .setTagName(updatedUser.getTagName())
+                    .setFullName(updatedUser.getFullName())
+                    .setImageId(imageId)
+            );
     }
 
     @Authenticated(true)
     @PutMapping(path = "/password")
     public Response<UserDto> updatePassword(
-            @RequestBody @Valid UserUpdatePasswordRequest request, @Caller User caller) {
-        boolean isPasswordMatch = userService.validatePassword(caller.getId(), request.getOldPassword());
+        @RequestBody @Valid UserUpdatePasswordRequest request,
+        @Caller User caller
+    ) {
+        boolean isPasswordMatch = userService.validatePassword(
+            caller.getId(),
+            request.getOldPassword()
+        );
 
         if (!isPasswordMatch) {
             Map<String, String> validationError = new HashMap<>();
             validationError.put("oldPassword", VALIDATION.WRONG);
 
             return new Response<UserDto>(HttpStatus.BAD_REQUEST)
-                    .setMessage(MESSAGES.UPDATE_FAIL)
-                    .setError(validationError);
+                .setMessage(MESSAGES.UPDATE_FAIL)
+                .setError(validationError);
         }
 
         String encodedPassword = encoder.encode(request.getNewPassword());
         caller.setPassword(encodedPassword);
-        User updatedUser = userService.updateUser(caller).orElseThrow(UnauthorizedHttpException::new);
+        User updatedUser = userService
+            .updateUser(caller)
+            .orElseThrow(UnauthorizedHttpException::new);
 
-        String imageId = caller.getImage() != null ? caller.getImage().getId().toString() : null;
+        String imageId = caller.getImage() != null
+            ? caller.getImage().getId().toString()
+            : null;
 
         return new Response<UserDto>(HttpStatus.OK)
-                .setMessage(MESSAGES.UPDATE_SUCCESS)
-                .setData(new UserDto()
-                        .setId(updatedUser.getId().toString())
-                        .setEmail(updatedUser.getEmail())
-                        .setTagName(updatedUser.getTagName())
-                        .setFullName(updatedUser.getFullName())
-                        .setImageId(imageId));
+            .setMessage(MESSAGES.UPDATE_SUCCESS)
+            .setData(
+                new UserDto()
+                    .setId(updatedUser.getId().toString())
+                    .setEmail(updatedUser.getEmail())
+                    .setTagName(updatedUser.getTagName())
+                    .setFullName(updatedUser.getFullName())
+                    .setImageId(imageId)
+            );
     }
 }

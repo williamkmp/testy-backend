@@ -33,9 +33,9 @@ public class ImageServiceImpl implements ImageService {
     @Transactional
     public Optional<File> saveImage(byte[] imageBinary, String extension) {
         File newImage = new File()
-                .setBytes(imageBinary)
-                .setContentType("image/" + extension)
-                .setCreatedAt(new Date());
+            .setBytes(imageBinary)
+            .setContentType("image/" + extension)
+            .setCreatedAt(new Date());
 
         try {
             newImage = fileRepository.save(newImage);

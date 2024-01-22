@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PageService {
-
     /**
      * get list of root pages where the user have authority over, the retrieved pages did not include
      * their children
@@ -32,7 +31,11 @@ public interface PageService {
      * @param page {@link Page} the new page data.
      * @return {@link Optional}<{@link Page}> created page data
      */
-    public Optional<Page> createRootPage(Page page, Long userId, List<InviteDto> inviteList);
+    public Optional<Page> createRootPage(
+        Page page,
+        Long userId,
+        List<InviteDto> inviteList
+    );
 
     /**
      * create a page that bleongs to a certain collection

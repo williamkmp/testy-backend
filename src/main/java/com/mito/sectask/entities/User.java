@@ -50,6 +50,10 @@ public class User {
     @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = true)
     private File image;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(
+        cascade = CascadeType.ALL,
+        mappedBy = "user",
+        fetch = FetchType.LAZY
+    )
     private List<Authority> authorities;
 }

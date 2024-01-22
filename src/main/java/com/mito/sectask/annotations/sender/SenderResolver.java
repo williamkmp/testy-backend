@@ -18,14 +18,23 @@ public class SenderResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return (parameter.hasParameterAnnotation(Sender.class)
-                && User.class.isAssignableFrom(parameter.getParameterType()));
+        return (
+            parameter.hasParameterAnnotation(Sender.class) &&
+            User.class.isAssignableFrom(parameter.getParameterType())
+        );
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, Message<?> message) throws Exception {
-        SimpMessageHeaderAccessor header = SimpMessageHeaderAccessor.wrap(message);
-        Long senderId = Long.valueOf(header.getFirstNativeHeader(KEY.SENDER_HEADER_KEY));
+    public Object resolveArgument(
+        MethodParameter parameter,
+        Message<?> message
+    ) throws Exception {
+        SimpMessageHeaderAccessor header = SimpMessageHeaderAccessor.wrap(
+            message
+        );
+        Long senderId = Long.valueOf(
+            header.getFirstNativeHeader(KEY.SENDER_HEADER_KEY)
+        );
         return userRepository.findById(senderId).orElse(null);
     }
 }

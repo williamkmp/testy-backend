@@ -15,14 +15,17 @@ public class JsonConfiguration implements WebMvcConfigurer {
     @Bean
     Gson gson() {
         return new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
-                .setPrettyPrinting()
-                .create();
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
+            .setPrettyPrinting()
+            .create();
     }
 
     @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        GsonHttpMessageConverter gsonMessageConverter = new GsonHttpMessageConverter();
+    public void configureMessageConverters(
+        List<HttpMessageConverter<?>> converters
+    ) {
+        GsonHttpMessageConverter gsonMessageConverter =
+            new GsonHttpMessageConverter();
         gsonMessageConverter.setGson(gson());
         converters.add(gsonMessageConverter);
     }

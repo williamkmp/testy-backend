@@ -6,7 +6,6 @@ import com.mito.sectask.exceptions.exceptions.UserNotFoundException;
 import java.util.Optional;
 
 public interface RoleService {
-
     /**
      * check if a user has access to a given page, if so return the USER_ROLE, else return
      * Optional.empty(), if the given page is a sub-page this method will search trough the root page
@@ -20,5 +19,5 @@ public interface RoleService {
      * @throws ResourceNotFoundException if the page with given page id is not found
      */
     public Optional<Role> getUserPageAuthority(Long userId, Long pageId)
-            throws UserNotFoundException, ResourceNotFoundException;
+        throws UserNotFoundException, ResourceNotFoundException;
 }

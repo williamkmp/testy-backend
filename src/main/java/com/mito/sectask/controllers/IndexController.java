@@ -28,7 +28,10 @@ public class IndexController {
         responseBody.put("application", applicationName);
         responseBody.put("application-version", applicationVersion);
         responseBody.put("java-version", JavaVersion.getJavaVersion());
-        responseBody.put("engine-version", "Spring_Boot-" + SpringVersion.getVersion());
+        responseBody.put(
+            "engine-version",
+            "Spring_Boot-" + SpringVersion.getVersion()
+        );
         responseBody.put("dateTime", new Date());
 
         return new Response<Object>(HttpStatus.OK).setData(responseBody);

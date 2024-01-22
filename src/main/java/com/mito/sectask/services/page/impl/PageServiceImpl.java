@@ -49,7 +49,11 @@ public class PageServiceImpl implements PageService {
 
     @Override
     @Transactional
-    public Optional<Page> createRootPage(Page page, Long userId, List<InviteDto> inviteList) {
+    public Optional<Page> createRootPage(
+        Page page,
+        Long userId,
+        List<InviteDto> inviteList
+    ) {
         Optional<User> maybeUser = userRepository.findById(userId);
         if (maybeUser.isEmpty()) {
             return Optional.empty();
@@ -60,23 +64,27 @@ public class PageServiceImpl implements PageService {
 
         // Insert owner(full_access) authority
         Authority ownerAuthority = new Authority()
-                .setUser(owner)
-                .setPage(createdPage)
-                .setRole(fullAccessRole)
-                .setIsPending(false);
+            .setUser(owner)
+            .setPage(createdPage)
+            .setRole(fullAccessRole)
+            .setIsPending(false);
         authorityRepository.save(ownerAuthority);
 
         // Inserting members
         List<Authority> authorities = new ArrayList<>();
         for (InviteDto invite : inviteList) {
             Role memberRole = roleRepository.findByName(invite.getAuthority());
-            User member = userRepository.findByEmail(invite.getEmail()).orElse(null);
+            User member = userRepository
+                .findByEmail(invite.getEmail())
+                .orElse(null);
             if (member == null) continue;
-            authorities.add(new Authority()
+            authorities.add(
+                new Authority()
                     .setUser(member)
                     .setPage(createdPage)
                     .setRole(memberRole)
-                    .setIsPending(false));
+                    .setIsPending(false)
+            );
         }
         authorityRepository.saveAll(authorities);
 
@@ -86,7 +94,9 @@ public class PageServiceImpl implements PageService {
     @Override
     public Optional<Page> createSubPage(Page page, String collectionId) {
         // TODO implement craete subPage
-        throw new UnsupportedOperationException("Unimplemented method 'createSubPage'");
+        throw new UnsupportedOperationException(
+            "Unimplemented method 'createSubPage'"
+        );
     }
 
     @Override

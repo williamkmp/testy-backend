@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 public class MenuPreviewDto {
+
     private MENU_PREVIEW type;
     private String id;
     private String iconKey;

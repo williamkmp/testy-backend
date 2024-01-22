@@ -22,28 +22,33 @@ public class CollectionSeeder implements Seeder {
     @Override
     @Transactional
     public void seed() throws Exception {
-
-        Page testyPage = pageRepository.findById(1L).orElseThrow(() -> new Exception("Page not found"));
-        Page bimayPage = pageRepository.findById(2L).orElseThrow(() -> new Exception("Page not found"));
-        Page bimobPage = pageRepository.findById(3L).orElseThrow(() -> new Exception("Page not found"));
+        Page testyPage = pageRepository
+            .findById(1L)
+            .orElseThrow(() -> new Exception("Page not found"));
+        Page bimayPage = pageRepository
+            .findById(2L)
+            .orElseThrow(() -> new Exception("Page not found"));
+        Page bimobPage = pageRepository
+            .findById(3L)
+            .orElseThrow(() -> new Exception("Page not found"));
 
         Block testyFinding = new Block()
-                .setId(UUID.randomUUID().toString())
-                .setIconKey("emoji-1265") // 📋
-                .setBlockType(BLOCK_TYPE.COLLECTION)
-                .setContent("Application Findings");
+            .setId(UUID.randomUUID().toString())
+            .setIconKey("emoji-1265") // 📋
+            .setBlockType(BLOCK_TYPE.COLLECTION)
+            .setContent("Application Findings");
 
         Block bimayFinding = new Block()
-                .setId(UUID.randomUUID().toString())
-                .setIconKey("emoji-883") // 🌐
-                .setBlockType(BLOCK_TYPE.COLLECTION)
-                .setContent("Binusmaya Website Findings");
+            .setId(UUID.randomUUID().toString())
+            .setIconKey("emoji-883") // 🌐
+            .setBlockType(BLOCK_TYPE.COLLECTION)
+            .setContent("Binusmaya Website Findings");
 
         Block bimobFinding = new Block()
-                .setId(UUID.randomUUID().toString())
-                .setIconKey("emoji-1170") // 📱
-                .setBlockType(BLOCK_TYPE.COLLECTION)
-                .setContent("Binus Mobile Findings");
+            .setId(UUID.randomUUID().toString())
+            .setIconKey("emoji-1170") // 📱
+            .setBlockType(BLOCK_TYPE.COLLECTION)
+            .setContent("Binus Mobile Findings");
 
         appendCollectionToPage(testyFinding, testyPage);
         appendCollectionToPage(bimayFinding, bimayPage);

@@ -32,7 +32,11 @@ public class CollectionValue {
     private String value;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "header_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(
+        name = "header_id",
+        referencedColumnName = "id",
+        nullable = false
+    )
     private CollectionHeader header;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

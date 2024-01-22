@@ -20,8 +20,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     private final AuthService authService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
+    public boolean preHandle(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        Object handler
+    ) throws Exception {
         if (!(handler instanceof HandlerMethod)) return true;
 
         if (!isHandlerProtected((HandlerMethod) handler)) {
@@ -34,7 +37,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
         String accessToken = maybeToken.get();
 
-        Optional<JwtPayload> maybePayload = authService.verifyAccessToken(accessToken);
+        Optional<JwtPayload> maybePayload = authService.verifyAccessToken(
+            accessToken
+        );
 
         if (maybePayload.isEmpty()) {
             throw new UnauthorizedHttpException();
@@ -56,7 +61,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     private Optional<String> extractAccessToken(HttpServletRequest request) {
         final String BEARER = "Bearer ";
         String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER)) {
+        if (
+            authorizationHeader == null ||
+            !authorizationHeader.startsWith(BEARER)
+        ) {
             return Optional.empty();
         }
         String accessToken = authorizationHeader.substring(BEARER.length());
@@ -72,16 +80,24 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
      */
     private boolean isHandlerProtected(HandlerMethod handler) {
         boolean isNeedAuth = false;
-        boolean classIsAnnotated = handler.getBeanType().isAnnotationPresent(Authenticated.class);
-        boolean methodIsAnnotated = handler.getMethod().isAnnotationPresent(Authenticated.class);
+        boolean classIsAnnotated = handler
+            .getBeanType()
+            .isAnnotationPresent(Authenticated.class);
+        boolean methodIsAnnotated = handler
+            .getMethod()
+            .isAnnotationPresent(Authenticated.class);
 
         if (classIsAnnotated) {
             isNeedAuth =
-                    handler.getBeanType().getAnnotation(Authenticated.class).value();
+                handler
+                    .getBeanType()
+                    .getAnnotation(Authenticated.class)
+                    .value();
         }
 
         if (methodIsAnnotated) {
-            isNeedAuth = handler.getMethod().getAnnotation(Authenticated.class).value();
+            isNeedAuth =
+                handler.getMethod().getAnnotation(Authenticated.class).value();
         }
 
         return isNeedAuth;

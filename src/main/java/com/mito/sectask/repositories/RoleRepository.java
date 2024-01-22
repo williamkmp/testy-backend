@@ -26,17 +26,21 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
      * @return {@link Optional}<{@link Role}> conatining user role for a certain page, else Optional.empty()
      */
     @Query(
-            """
-            SELECT
-                r
-            FROM
-                Role r
-                JOIN FETCH r.authorities a
-                JOIN FETCH a.page p
-                JOIN FETCH a.user u
-            WHERE
-                p.id = :rootPageId
-                AND u.id = :userId
-            """)
-    public Optional<Role> findByRootPageId(@Param("rootPageId") long rootPageId, @Param("userId") long userId);
+        """
+        SELECT
+            r
+        FROM
+            Role r
+            JOIN FETCH r.authorities a
+            JOIN FETCH a.page p
+            JOIN FETCH a.user u
+        WHERE
+            p.id = :rootPageId
+            AND u.id = :userId
+        """
+    )
+    public Optional<Role> findByRootPageId(
+        @Param("rootPageId") long rootPageId,
+        @Param("userId") long userId
+    );
 }

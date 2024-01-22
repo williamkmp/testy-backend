@@ -27,13 +27,15 @@ public class UserServiceImpl implements UserService {
     public Optional<User> registerUser(RegisterUserParameter newUserData) {
         Optional<User> maybeUser;
 
-        String encryptedPassword = passwordEncoder.encode(newUserData.getPassword());
+        String encryptedPassword = passwordEncoder.encode(
+            newUserData.getPassword()
+        );
         User newUser = new User()
-                .setEmail(newUserData.getEmail())
-                .setTagName(newUserData.getTagName())
-                .setFullName(newUserData.getFullName())
-                .setPassword(encryptedPassword)
-                .setIsDeleted(false);
+            .setEmail(newUserData.getEmail())
+            .setTagName(newUserData.getTagName())
+            .setFullName(newUserData.getFullName())
+            .setPassword(encryptedPassword)
+            .setIsDeleted(false);
 
         try {
             newUser = userRepository.save(newUser);
@@ -76,7 +78,9 @@ public class UserServiceImpl implements UserService {
             return Boolean.FALSE;
         }
         User registeredUser = maybeUser.get();
-        return Boolean.valueOf(passwordEncoder.matches(password, registeredUser.getPassword()));
+        return Boolean.valueOf(
+            passwordEncoder.matches(password, registeredUser.getPassword())
+        );
     }
 
     @Override
@@ -109,7 +113,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findMembersOfPage(Long pageId) {
-        Page page = pageRepository.findById(pageId).orElseThrow(ResourceNotFoundException::new);
+        Page page = pageRepository
+            .findById(pageId)
+            .orElseThrow(ResourceNotFoundException::new);
         while (page.getCollection() != null) {
             page = page.getCollection().getPage();
         }

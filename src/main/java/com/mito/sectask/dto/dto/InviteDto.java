@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 public class InviteDto {
+
     private String email;
     private USER_ROLE authority;
 }

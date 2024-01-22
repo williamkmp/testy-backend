@@ -6,6 +6,7 @@ import lombok.Value;
 
 @Value
 public class BlockMessageDto {
+
     private BLOCK_ACTION action;
 
     private Long pageId;

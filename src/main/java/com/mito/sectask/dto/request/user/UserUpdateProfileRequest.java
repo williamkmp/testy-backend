@@ -15,7 +15,11 @@ import lombok.Value;
 public class UserUpdateProfileRequest {
 
     @NotBlank(message = VALIDATION.REQUIRED)
-    @Size(min = 0, max = 100, message = VALIDATION.STRING_LENGTH + 0 + "," + 100)
+    @Size(
+        min = 0,
+        max = 100,
+        message = VALIDATION.STRING_LENGTH + 0 + "," + 100
+    )
     @Email(message = VALIDATION.STRING_EMAIL)
     private String email;
 
@@ -25,7 +29,11 @@ public class UserUpdateProfileRequest {
     private String tagName;
 
     @NotBlank(message = VALIDATION.REQUIRED)
-    @Size(min = 0, max = 100, message = VALIDATION.STRING_LENGTH + 0 + "," + 100)
+    @Size(
+        min = 0,
+        max = 100,
+        message = VALIDATION.STRING_LENGTH + 0 + "," + 100
+    )
     private String fullName;
 
     private String imageId;

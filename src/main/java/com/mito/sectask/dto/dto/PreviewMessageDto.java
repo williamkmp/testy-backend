@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class PreviewMessageDto {
+
     private PREVIEW_ACTION action;
 
     private String parentId;

@@ -25,54 +25,68 @@ public class UserSeeder implements Seeder {
 
         List<User> users = new ArrayList<>();
 
-        users.add(new User()
+        users.add(
+            new User()
                 .setFullName("William Kurnia Mulyadi Putra")
                 .setEmail("william@email.com")
                 .setTagName("william.kmp")
                 .setPassword(DEFAULT_APSSWORD)
-                .setIsDeleted(false));
+                .setIsDeleted(false)
+        );
 
-        users.add(new User()
+        users.add(
+            new User()
                 .setFullName("Andre Wijaya")
                 .setEmail("andre@email.com")
                 .setTagName("andre.w")
                 .setPassword(DEFAULT_APSSWORD)
-                .setIsDeleted(false));
+                .setIsDeleted(false)
+        );
 
-        users.add(new User()
+        users.add(
+            new User()
                 .setFullName("Aisyah Poetri Rahmadhania")
                 .setEmail("aisyah@email.com")
                 .setTagName("aisyah.poetri")
                 .setPassword(DEFAULT_APSSWORD)
-                .setIsDeleted(false));
+                .setIsDeleted(false)
+        );
 
-        users.add(new User()
+        users.add(
+            new User()
                 .setFullName("Calvin Kurnia Mulyadi")
                 .setEmail("calvin@email.com")
                 .setTagName("calvin.kmp")
                 .setPassword(DEFAULT_APSSWORD)
-                .setIsDeleted(false));
+                .setIsDeleted(false)
+        );
 
-        users.add(new User()
+        users.add(
+            new User()
                 .setFullName("Stefan Kurnia")
                 .setEmail("stefan@email.com")
                 .setTagName("stefan.km")
                 .setPassword(DEFAULT_APSSWORD)
-                .setIsDeleted(false));
+                .setIsDeleted(false)
+        );
 
-        users.add(new User()
+        users.add(
+            new User()
                 .setFullName("Filipus Bramantyo Meridivitanto")
                 .setEmail("filipus@email.com")
                 .setTagName("filipus.bm")
                 .setPassword(DEFAULT_APSSWORD)
-                .setIsDeleted(false));
+                .setIsDeleted(false)
+        );
 
-        users.add(new User()
+        users.add(
+            new User()
                 .setFullName("Guido Owen Lwiantoro")
                 .setEmail("owen@email.com")
                 .setTagName("guido.owen")
                 .setPassword(DEFAULT_APSSWORD)
-                .setIsDeleted(false));
+                .setIsDeleted(false)
+        );
 
         userRepository.saveAllAndFlush(users);
     }

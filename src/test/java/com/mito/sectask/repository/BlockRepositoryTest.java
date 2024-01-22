@@ -25,21 +25,23 @@ class BlockRepositoryTest {
     @Test
     @DisplayName("Testing findAllByPageId()")
     void getPageBlocks() throws Exception {
-
         Long pageId = 1l;
         Page testyPage = pageRepository
-                .findById(pageId)
-                .orElseThrow(() -> new Exception("Page with id " + pageId + " not found"));
-        List<Block> pageBlocks = blockRepository.findAllByPageId(testyPage.getId());
+            .findById(pageId)
+            .orElseThrow(() ->
+                new Exception("Page with id " + pageId + " not found")
+            );
+        List<Block> pageBlocks = blockRepository.findAllByPageId(
+            testyPage.getId()
+        );
 
-        log.atInfo()
-                .setMessage("Testing block by Page[{}] '{}' count: {}")
-                .addArgument(testyPage.getId())
-                .addArgument(testyPage.getName())
-                .addArgument(pageBlocks.size())
-                .log();
-        ;
-
+        log
+            .atInfo()
+            .setMessage("Testing block by Page[{}] '{}' count: {}")
+            .addArgument(testyPage.getId())
+            .addArgument(testyPage.getName())
+            .addArgument(pageBlocks.size())
+            .log();
         for (int i = 0; i < pageBlocks.size(); i++) {
             Block currentBlock = pageBlocks.get(i);
 
@@ -53,18 +55,20 @@ class BlockRepositoryTest {
                 Block previousBlock = pageBlocks.get(i - 1);
                 Block nextBlock = pageBlocks.get(i + 1);
 
-                Assertions.assertThat(currentBlock.getId())
-                        .isNotBlank()
-                        .isNotNull()
-                        .isEqualTo(previousBlock.getNext().getId())
-                        .isEqualTo(nextBlock.getPrev().getId());
+                Assertions
+                    .assertThat(currentBlock.getId())
+                    .isNotBlank()
+                    .isNotNull()
+                    .isEqualTo(previousBlock.getNext().getId())
+                    .isEqualTo(nextBlock.getPrev().getId());
             }
 
             // Tail block
             if (i == 0) {
-                Assertions.assertThat(currentBlock.getPrev())
-                        .as("Check first block have no previous pointer")
-                        .isNull();
+                Assertions
+                    .assertThat(currentBlock.getPrev())
+                    .as("Check first block have no previous pointer")
+                    .isNull();
             }
         }
     }

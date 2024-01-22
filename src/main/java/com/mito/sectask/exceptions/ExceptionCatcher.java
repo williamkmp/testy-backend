@@ -22,16 +22,22 @@ public class ExceptionCatcher {
     @ExceptionHandler(Exception.class)
     public Response<Object> internalServerException(Exception exception) {
         log.error("Unhandled exception occured", exception);
-        return new Response<Object>(HttpStatus.INTERNAL_SERVER_ERROR).setMessage(MESSAGES.ERROR_INTERNAL_SERVER);
+        return new Response<Object>(HttpStatus.INTERNAL_SERVER_ERROR)
+            .setMessage(MESSAGES.ERROR_INTERNAL_SERVER);
     }
 
     @ExceptionHandler(HttpStatusCodeException.class)
-    public Response<Object> httpStatusCodeException(HttpStatusCodeException exception) {
-        return new Response<Object>(exception.getStatusCode()).setMessage(exception.getStatusText());
+    public Response<Object> httpStatusCodeException(
+        HttpStatusCodeException exception
+    ) {
+        return new Response<Object>(exception.getStatusCode())
+            .setMessage(exception.getStatusText());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Response<Object> validationException(MethodArgumentNotValidException exception) {
+    public Response<Object> validationException(
+        MethodArgumentNotValidException exception
+    ) {
         List<FieldError> errors = exception.getBindingResult().getFieldErrors();
         Map<String, String> failedValidations = new HashMap<>();
         for (FieldError error : errors) {
@@ -41,6 +47,7 @@ public class ExceptionCatcher {
             failedValidations.put(key, message);
         }
 
-        return new Response<>(HttpStatus.BAD_REQUEST).setError(failedValidations);
+        return new Response<>(HttpStatus.BAD_REQUEST)
+            .setError(failedValidations);
     }
 }

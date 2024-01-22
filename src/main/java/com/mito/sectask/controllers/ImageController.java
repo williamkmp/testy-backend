@@ -36,29 +36,41 @@ public class ImageController {
         }
 
         File image = maybeImage.get();
-        return ResponseEntity.ok()
-                .header("Content-Type", image.getContentType())
-                .body(image.getBytes());
+        return ResponseEntity
+            .ok()
+            .header("Content-Type", image.getContentType())
+            .body(image.getBytes());
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @Authenticated(true)
-    public Response<ImageInfoDto> uploadImage(@RequestParam("image") MultipartFile file) {
+    public Response<ImageInfoDto> uploadImage(
+        @RequestParam("image") MultipartFile file
+    ) {
         String[] paths = file.getOriginalFilename().split("\\.");
         String imageExtension = paths[paths.length - 1];
 
         try {
-            File savedImage =
-                    imageService.saveImage(file.getBytes(), imageExtension).orElseThrow(Exception::new);
+            File savedImage = imageService
+                .saveImage(file.getBytes(), imageExtension)
+                .orElseThrow(Exception::new);
 
-            String imageSrc = imageService.getImageUrl(savedImage.getId()).orElseThrow(Exception::new);
+            String imageSrc = imageService
+                .getImageUrl(savedImage.getId())
+                .orElseThrow(Exception::new);
             return new Response<ImageInfoDto>(HttpStatus.CREATED)
-                    .setMessage(MESSAGES.UPLOAD_SUCCESS)
-                    .setData(new ImageInfoDto()
-                            .setId(savedImage.getId().toString())
-                            .setSrc(imageSrc));
+                .setMessage(MESSAGES.UPLOAD_SUCCESS)
+                .setData(
+                    new ImageInfoDto()
+                        .setId(savedImage.getId().toString())
+                        .setSrc(imageSrc)
+                );
         } catch (Exception e) {
-            return new Response<ImageInfoDto>(HttpStatus.BAD_REQUEST).setMessage(MESSAGES.UPLOAD_FAIL);
+            return new Response<ImageInfoDto>(HttpStatus.BAD_REQUEST)
+                .setMessage(MESSAGES.UPLOAD_FAIL);
         }
     }
 }

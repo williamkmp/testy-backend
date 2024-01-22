@@ -23,18 +23,23 @@ public class CallerResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return (parameter.hasParameterAnnotation(Caller.class)
-                && User.class.isAssignableFrom(parameter.getParameterType()));
+        return (
+            parameter.hasParameterAnnotation(Caller.class) &&
+            User.class.isAssignableFrom(parameter.getParameterType())
+        );
     }
 
     @Override
     public Object resolveArgument(
-            MethodParameter parameter,
-            ModelAndViewContainer mavContainer,
-            NativeWebRequest webRequest,
-            WebDataBinderFactory binderFactory)
-            throws Exception {
-        Object payload = webRequest.getAttribute(KEY.REQUEST_CALLER_INFO, RequestAttributes.SCOPE_REQUEST);
+        MethodParameter parameter,
+        ModelAndViewContainer mavContainer,
+        NativeWebRequest webRequest,
+        WebDataBinderFactory binderFactory
+    ) throws Exception {
+        Object payload = webRequest.getAttribute(
+            KEY.REQUEST_CALLER_INFO,
+            RequestAttributes.SCOPE_REQUEST
+        );
 
         if (!(payload instanceof JwtPayload)) {
             throw new UnauthorizedHttpException();

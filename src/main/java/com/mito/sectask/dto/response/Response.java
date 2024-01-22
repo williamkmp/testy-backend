@@ -45,7 +45,8 @@ public class Response<T> extends ResponseEntity<StandardResponse<T>> {
         if (this.responseBody.getError() == null) {
             this.responseBody.setError(new HashMap<>());
         }
-        this.responseBody.getError().put(KEY.RESPONSE_ROOT_FORM_ERROR, errorCode);
+        this.responseBody.getError()
+            .put(KEY.RESPONSE_ROOT_FORM_ERROR, errorCode);
         return this;
     }
 }
