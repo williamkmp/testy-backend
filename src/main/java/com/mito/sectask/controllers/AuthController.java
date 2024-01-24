@@ -12,6 +12,8 @@ import com.mito.sectask.dto.request.auth.AuthRefreshTokenRequest;
 import com.mito.sectask.dto.request.auth.AuthRegisterRequest;
 import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.entities.User;
+import com.mito.sectask.exceptions.exceptions.UserNotFoundException;
+import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpException;
 import com.mito.sectask.exceptions.httpexceptions.UnauthorizedHttpException;
 import com.mito.sectask.services.auth.AuthService;
 import com.mito.sectask.services.user.UserService;
@@ -148,28 +150,38 @@ public class AuthController {
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Response<TokenDto> refresh(
+    public Response<LoginDto> refresh(
         @RequestBody @Valid AuthRefreshTokenRequest request
     ) {
-        String refreshToken = request.getRefreshToken();
-        Optional<JwtPayload> maybeCaller = authService.verifyRefreshToken(
-            refreshToken
-        );
+        try {
+            String refreshToken = request.getRefreshToken();
+            JwtPayload callerPayload = authService
+                .verifyRefreshToken(refreshToken)
+                .orElseThrow(UserNotFoundException::new);
+            TokenDto tokens = authService
+                .generateTokens(callerPayload.getId())
+                .orElseThrow(UserNotFoundException::new);
+            User caller = userService
+                .findById(callerPayload.getId())
+                .orElseThrow(UserNotFoundException::new);
+            String callerImageId = (caller.getImage() != null)
+                ? caller.getImage().getId().toString()
+                : null;
 
-        if (maybeCaller.isEmpty()) {
+            return new Response<LoginDto>(HttpStatus.OK)
+                .setData(
+                    new LoginDto()
+                        .setId(caller.getId().toString())
+                        .setEmail(caller.getEmail())
+                        .setTagName(caller.getTagName())
+                        .setFullName(caller.getFullName())
+                        .setImageId(callerImageId)
+                        .setToken(tokens)
+                );
+        } catch (UserNotFoundException e) {
             throw new UnauthorizedHttpException();
+        } catch (Exception e) {
+            throw new InternalServerErrorHttpException();
         }
-
-        JwtPayload caller = maybeCaller.get();
-
-        Optional<TokenDto> maybeTokens = authService.generateTokens(
-            caller.getId()
-        );
-
-        if (maybeTokens.isEmpty()) {
-            throw new UnauthorizedHttpException();
-        }
-
-        return new Response<TokenDto>(HttpStatus.OK).setData(maybeTokens.get());
     }
 }
