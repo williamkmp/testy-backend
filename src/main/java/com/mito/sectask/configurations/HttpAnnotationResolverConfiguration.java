@@ -2,7 +2,6 @@ package com.mito.sectask.configurations;
 
 import com.mito.sectask.annotations.caller.CallerResolver;
 import com.mito.sectask.annotations.callersession.CallerSessionResolver;
-
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

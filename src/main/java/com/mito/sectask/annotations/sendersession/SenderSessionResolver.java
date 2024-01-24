@@ -1,14 +1,12 @@
 package com.mito.sectask.annotations.sendersession;
 
+import com.mito.sectask.values.KEY;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Component;
-
-import com.mito.sectask.values.KEY;
-
-import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -30,6 +28,6 @@ public class SenderSessionResolver implements HandlerMethodArgumentResolver {
         SimpMessageHeaderAccessor header = SimpMessageHeaderAccessor.wrap(
             message
         );
-        return header.getFirstNativeHeader(KEY.SENDER_SESSION_ID);        
+        return header.getFirstNativeHeader(KEY.SENDER_SESSION_ID);
     }
 }

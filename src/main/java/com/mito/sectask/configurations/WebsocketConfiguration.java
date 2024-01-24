@@ -3,7 +3,6 @@ package com.mito.sectask.configurations;
 import com.google.gson.Gson;
 import com.mito.sectask.annotations.sender.SenderResolver;
 import com.mito.sectask.annotations.sendersession.SenderSessionResolver;
-
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

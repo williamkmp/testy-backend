@@ -33,7 +33,6 @@ import com.mito.sectask.values.KEY;
 import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.PREVIEW_ACTION;
 import com.mito.sectask.values.USER_ROLE;
-
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
@@ -183,8 +182,14 @@ public class PageController {
                         .setIconKey(updatedPage.getIconKey())
                         .setName(updatedPage.getName()),
                     Map.ofEntries(
-                        new AbstractMap.SimpleEntry<String, String>(KEY.SENDER_USER_ID, caller.getId().toString()),
-                        new AbstractMap.SimpleEntry<String, String>(KEY.SENDER_SESSION_ID, sessionId)
+                        new AbstractMap.SimpleEntry<String, String>(
+                            KEY.SENDER_USER_ID,
+                            caller.getId().toString()
+                        ),
+                        new AbstractMap.SimpleEntry<String, String>(
+                            KEY.SENDER_SESSION_ID,
+                            sessionId
+                        )
                     )
                 );
             }
