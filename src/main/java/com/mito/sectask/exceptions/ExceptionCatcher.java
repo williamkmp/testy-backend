@@ -5,8 +5,7 @@ import com.mito.sectask.values.MESSAGES;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,10 +13,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpStatusCodeException;
 
+@Slf4j
 @ControllerAdvice
 public class ExceptionCatcher {
-
-    private Logger log = LoggerFactory.getLogger(this.getClass());
 
     @ExceptionHandler(Exception.class)
     public Response<Object> internalServerException(Exception exception) {
