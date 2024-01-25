@@ -3,6 +3,7 @@ package com.mito.sectask.controllers;
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.annotations.callersession.CallerSession;
+import com.mito.sectask.annotations.sender.Sender;
 import com.mito.sectask.dto.dto.BlockDto;
 import com.mito.sectask.dto.dto.MenuPreviewDto;
 import com.mito.sectask.dto.dto.PageDto;
@@ -43,6 +44,8 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -337,6 +340,18 @@ public class PageController {
             throw new UnauthorizedHttpException();
         } catch (Exception e) {
             throw new InternalServerErrorHttpException();
+        }
+    }
+
+    @MessageMapping("/page/{pageId}/header")
+    public void receivePageHeaderUpdate(
+        @DestinationVariable("pageId") Long pageId,
+        @Sender User sender
+    ) {
+        try {
+            // TODO: impelemnt
+        } catch (Exception e) {
+            // TODO: handle exception
         }
     }
 }

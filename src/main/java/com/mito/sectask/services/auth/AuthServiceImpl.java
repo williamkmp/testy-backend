@@ -1,4 +1,4 @@
-package com.mito.sectask.services.auth.impl;
+package com.mito.sectask.services.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -9,7 +9,6 @@ import com.mito.sectask.dto.dto.TokenDto;
 import com.mito.sectask.dto.parameters.LoginParameter;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.repositories.UserRepository;
-import com.mito.sectask.services.auth.AuthService;
 import com.mito.sectask.services.encoder.PasswordEncocder;
 import jakarta.transaction.Transactional;
 import java.util.Base64;

@@ -1,11 +1,10 @@
-package com.mito.sectask.services.block.impl;
+package com.mito.sectask.services.block;
 
 import com.mito.sectask.entities.Block;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
 import com.mito.sectask.repositories.BlockRepository;
 import com.mito.sectask.repositories.PageRepository;
-import com.mito.sectask.services.block.BlockService;
 import com.mito.sectask.values.BLOCK_TYPE;
 import java.util.List;
 import java.util.Optional;
