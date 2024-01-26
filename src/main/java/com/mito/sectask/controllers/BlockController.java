@@ -77,7 +77,7 @@ public class BlockController {
         }
     }
 
-    @MessageMapping("/page/block")
+    @MessageMapping("/page/{pageId}/block.transaction")
     public void applyBlockUpdate(@Payload BlockMessageDto request) {
         // TODO: imeplement add block method
         log.info("page block update" + request.toString());

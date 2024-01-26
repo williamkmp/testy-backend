@@ -6,16 +6,15 @@ import lombok.Value;
 
 @Value
 public class BlockMessageDto {
-
     private BLOCK_ACTION action;
 
-    private Long pageId;
     private String blockId;
     private BLOCK_TYPE type;
     private String content;
     private String iconKey;
     private Float width;
     private String fileId;
+    private byte[] transaction;
 
     private String previousId;
     private String nextId;
