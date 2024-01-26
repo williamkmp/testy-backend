@@ -1,12 +1,19 @@
 package com.mito.sectask.exceptions;
 
 import com.mito.sectask.dto.response.Response;
+import com.mito.sectask.exceptions.messsagingexceptions.PageMessagingException;
+import com.mito.sectask.values.DESTINATION;
+import com.mito.sectask.values.KEY;
 import com.mito.sectask.values.MESSAGES;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,7 +22,10 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 @Slf4j
 @ControllerAdvice
+@RequiredArgsConstructor
 public class ExceptionCatcher {
+
+    private final SimpMessagingTemplate socket;
 
     @ExceptionHandler(Exception.class)
     public Response<Object> internalServerException(Exception exception) {
@@ -47,5 +57,22 @@ public class ExceptionCatcher {
 
         return new Response<>(HttpStatus.BAD_REQUEST)
             .setError(failedValidations);
+    }
+
+    @MessageExceptionHandler(PageMessagingException.class)
+    public void pageMessagingException(
+        PageMessagingException exception
+    ) {
+        socket.convertAndSend(
+            DESTINATION.pageUserError(exception.getPageId(), exception.getUserId()),
+            Map.ofEntries(
+                Map.entry("status", exception.getCode().value()),
+                Map.entry("message", exception.getMessage())
+            ),
+            Map.ofEntries(
+                Map.entry(KEY.SENDER_USER_ID, exception.getUserId().toString()),
+                Map.entry(KEY.SENDER_SESSION_ID, exception.getPageId().toString())
+            )
+        ); 
     }
 }

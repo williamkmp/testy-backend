@@ -1,4 +1,4 @@
-package com.mito.sectask.services.image.impl;
+package com.mito.sectask.services.image;
 
 import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.Page;
@@ -6,7 +6,7 @@ import com.mito.sectask.entities.User;
 import com.mito.sectask.repositories.FileRepository;
 import com.mito.sectask.repositories.PageRepository;
 import com.mito.sectask.repositories.UserRepository;
-import com.mito.sectask.services.image.ImageService;
+
 import jakarta.transaction.Transactional;
 import java.util.Date;
 import java.util.Optional;

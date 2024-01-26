@@ -1,4 +1,4 @@
-package com.mito.sectask.services.page.impl;
+package com.mito.sectask.services.page;
 
 import com.mito.sectask.dto.dto.InviteDto;
 import com.mito.sectask.entities.Authority;
@@ -10,7 +10,6 @@ import com.mito.sectask.repositories.AuthorityRepository;
 import com.mito.sectask.repositories.PageRepository;
 import com.mito.sectask.repositories.RoleRepository;
 import com.mito.sectask.repositories.UserRepository;
-import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.utils.Util;
 import com.mito.sectask.values.USER_ROLE;
 import jakarta.transaction.Transactional;

@@ -1,4 +1,4 @@
-package com.mito.sectask.services.role.impl;
+package com.mito.sectask.services.role;
 
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.entities.Role;
@@ -8,7 +8,7 @@ import com.mito.sectask.exceptions.exceptions.UserNotFoundException;
 import com.mito.sectask.repositories.RoleRepository;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.page.PageService;
-import com.mito.sectask.services.role.RoleService;
+
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

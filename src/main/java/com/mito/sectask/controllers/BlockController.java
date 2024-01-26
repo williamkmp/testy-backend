@@ -87,12 +87,12 @@ public class BlockController {
   }
 
   @SendTo("/page/{pageId}/block")
-  @MessageMapping("/page/block")
-  public void applyBlockUpdate(@Payload BlockMessageDto request) {
+  @MessageMapping("/page/{pageId}/block.transaction")
+  public void applyBlockUpdate(@Payload BlockMessageDto request, @PathVariable("pageId") Long pageId) {
     if (request.getAction() == BLOCK_ACTION.ADD) {
       Block block = new Block();
       Long imageId = Util.String.toLong(request.getFileId()).orElse(null);
-      Optional<Page> page = pageService.findById(request.getPageId());
+      Optional<Page> page = pageService.findById(pageId);
 
       File coverImagFile = imageService.findById(imageId).orElse(null);
       block
@@ -131,7 +131,7 @@ public class BlockController {
         .findById(request.getBlockId())
         .orElseThrow(ResourceNotFoundException::new);
       Long imageId = Util.String.toLong(request.getFileId()).orElse(null);
-      Optional<Page> page = pageService.findById(request.getPageId());
+      Optional<Page> page = pageService.findById(pageId);
       Block previousBlock = blockService
         .findById(request.getPreviousId())
         .orElse(null);
@@ -167,20 +167,7 @@ public class BlockController {
 
   @MessageMapping("/page/collection")
   public void applyCollectionUpdate(@Payload BlockMessageDto request) {
-    Page page = pageService
-      .findById(request.getPageId())
-      .orElseThrow(ResourceNotFoundException::new);
-    Block block = new Block();
-    Long imageId = Util.String.toLong(request.getFileId()).orElse(null);
-    File coverImagFile = imageService.findById(imageId).orElse(null);
-    block
-      .setBlockType(request.getType())
-      .setPage(page)
-      .setFile(coverImagFile)
-      .setContent(request.getContent())
-      .setIconKey(request.getIconKey())
-      .setId(request.getBlockId())
-      .setWidth(request.getWidth());
+    // TODO: imeplement add block method
     log.info("page block update" + request.toString());
   }
 }

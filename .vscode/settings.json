@@ -15,6 +15,7 @@
         ".vscode": true,
         "mvnw": true,
         "mvnw.cmd": true,
+        "README.md": true
     },
     "java.configuration.updateBuildConfiguration": "automatic",
     "maven.view": "hierarchical",

@@ -1,6 +1,5 @@
-package com.mito.sectask.services.encoder.impl;
+package com.mito.sectask.services.encoder;
 
-import com.mito.sectask.services.encoder.PasswordEncocder;
 import com.mito.sectask.utils.Bcrypt;
 import java.security.SecureRandom;
 import java.util.regex.Pattern;

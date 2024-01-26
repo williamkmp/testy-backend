@@ -1,4 +1,4 @@
-package com.mito.sectask.services.user.implementation;
+package com.mito.sectask.services.user;
 
 import com.mito.sectask.dto.parameters.RegisterUserParameter;
 import com.mito.sectask.entities.Page;
@@ -7,7 +7,7 @@ import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
 import com.mito.sectask.repositories.PageRepository;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.encoder.PasswordEncocder;
-import com.mito.sectask.services.user.UserService;
+
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;

@@ -33,7 +33,7 @@ public class DESTINATION {
      * @return {@link String} STOMP destination path
      */
     public static String pageUpdate(Long pageId) {
-        return "/topic/page/" + pageId.toString() + "/preview";
+        return "/topic/page/" + pageId.toString() + "/header";
     }
 
     /**
@@ -55,4 +55,15 @@ public class DESTINATION {
     public static String pageCollection(Long pageId) {
         return "/topic/page/" + pageId.toString() + "/collection";
     }
+
+    /**
+     *  STOMP destination url form /topic/page/{pageId}/user/{userId}/url
+     * 
+     * @param pageId {@link Long} page id
+     * @param userId {@link Long} user id
+     * @return {@link String} STOMP destination path
+     */
+    public static String pageUserError(Long pageId, Long userId) {
+        return "/topic/page/" + pageId.toString() + "/user/" + userId.toString() + "/error";
+    } 
 }

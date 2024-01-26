@@ -8,4 +8,5 @@ public enum BLOCK_ACTION {
     ADD,
     UPDATE,
     DELETE,
+    TRANSACTION,
 }
