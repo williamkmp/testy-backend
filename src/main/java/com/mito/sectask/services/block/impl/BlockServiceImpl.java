@@ -17,33 +17,53 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BlockServiceImpl implements BlockService {
 
-    private final BlockRepository blockRepository;
-    private final PageRepository pageRepository;
+  private final BlockRepository blockRepository;
+  private final PageRepository pageRepository;
 
-    @Override
-    public Optional<Block> findById(String blockId) {
-        if (blockId == null) return Optional.empty();
-        return blockRepository.findById(blockId);
-    }
+  @Override
+  public Optional<Block> findById(String blockId) {
+    if (blockId == null) return Optional.empty();
+    return blockRepository.findById(blockId);
+  }
 
-    @Override
-    public List<Block> findAllCollectionByPageId(Long pageId) {
-        Page page = pageRepository
-            .findById(pageId)
-            .orElseThrow(ResourceNotFoundException::new);
-        List<Block> blocks = page.getBlocks();
-        return blocks
-            .stream()
-            .filter(block -> block.getBlockType().equals(BLOCK_TYPE.COLLECTION))
-            .collect(Collectors.toList());
-    }
+  @Override
+  public List<Block> findAllCollectionByPageId(Long pageId) {
+    Page page = pageRepository
+      .findById(pageId)
+      .orElseThrow(ResourceNotFoundException::new);
+    List<Block> blocks = page.getBlocks();
+    return blocks
+      .stream()
+      .filter(block -> block.getBlockType().equals(BLOCK_TYPE.COLLECTION))
+      .collect(Collectors.toList());
+  }
 
-    @Override
-    public List<Block> findAllByPageId(Long pageId)
-        throws ResourceNotFoundException {
-        Page page = pageRepository
-            .findById(pageId)
-            .orElseThrow(ResourceNotFoundException::new);
-        return blockRepository.findAllByPageId(page.getId());
-    }
+  @Override
+  public List<Block> findAllByPageId(Long pageId)
+    throws ResourceNotFoundException {
+    Page page = pageRepository
+      .findById(pageId)
+      .orElseThrow(ResourceNotFoundException::new);
+    return blockRepository.findAllByPageId(page.getId());
+  }
+
+  @Override
+  public Optional<Block> createBlock(Block newBlock) {
+    Block block = blockRepository.save(newBlock);
+    return Optional.of(block);
+  }
+
+  @Override
+  public Optional<Block> updateBlock(Block block) {
+    if (block != null) return Optional.empty();
+    Block updatedBlock = blockRepository.save(block);
+    return Optional.of(updatedBlock);
+  }
+
+  @Override
+  public void deleteBlock(Block block) {
+    if (block == null) return;
+    blockRepository.delete(block);
+    return;
+  }
 }
