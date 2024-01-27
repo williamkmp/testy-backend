@@ -8,7 +8,6 @@ import com.mito.sectask.exceptions.exceptions.UserNotFoundException;
 import com.mito.sectask.repositories.RoleRepository;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.page.PageService;
-
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

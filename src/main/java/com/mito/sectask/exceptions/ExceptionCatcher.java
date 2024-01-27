@@ -8,7 +8,6 @@ import com.mito.sectask.values.MESSAGES;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -60,19 +59,23 @@ public class ExceptionCatcher {
     }
 
     @MessageExceptionHandler(PageMessagingException.class)
-    public void pageMessagingException(
-        PageMessagingException exception
-    ) {
+    public void pageMessagingException(PageMessagingException exception) {
         socket.convertAndSend(
-            DESTINATION.pageUserError(exception.getPageId(), exception.getUserId()),
+            DESTINATION.pageUserError(
+                exception.getPageId(),
+                exception.getUserId()
+            ),
             Map.ofEntries(
                 Map.entry("status", exception.getCode().value()),
                 Map.entry("message", exception.getMessage())
             ),
             Map.ofEntries(
                 Map.entry(KEY.SENDER_USER_ID, exception.getUserId().toString()),
-                Map.entry(KEY.SENDER_SESSION_ID, exception.getPageId().toString())
+                Map.entry(
+                    KEY.SENDER_SESSION_ID,
+                    exception.getPageId().toString()
+                )
             )
-        ); 
+        );
     }
 }

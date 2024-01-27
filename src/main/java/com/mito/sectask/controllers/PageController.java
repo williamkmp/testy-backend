@@ -1,23 +1,5 @@
 package com.mito.sectask.controllers;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.annotations.callersession.CallerSession;
@@ -51,8 +33,23 @@ import com.mito.sectask.values.KEY;
 import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.PREVIEW_ACTION;
 import com.mito.sectask.values.USER_ROLE;
-
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/page")
@@ -184,7 +181,10 @@ public class PageController {
                         .setIconKey(updatedPage.getIconKey())
                         .setName(updatedPage.getName()),
                     Map.ofEntries(
-                        Map.entry(KEY.SENDER_USER_ID, caller.getId().toString()),
+                        Map.entry(
+                            KEY.SENDER_USER_ID,
+                            caller.getId().toString()
+                        ),
                         Map.entry(KEY.SENDER_SESSION_ID, sessionId)
                     )
                 );

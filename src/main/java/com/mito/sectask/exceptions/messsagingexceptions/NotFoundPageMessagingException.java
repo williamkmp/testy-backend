@@ -1,18 +1,21 @@
 package com.mito.sectask.exceptions.messsagingexceptions;
 
-import org.springframework.http.HttpStatus;
 import com.mito.sectask.values.MESSAGES;
+import org.springframework.http.HttpStatus;
 
-public class NotFoundPageMessagingException extends PageMessagingException{
+public class NotFoundPageMessagingException extends PageMessagingException {
 
-    public NotFoundPageMessagingException(Long userId, Long pageId, String sessionId) {
+    public NotFoundPageMessagingException(
+        Long userId,
+        Long pageId,
+        String sessionId
+    ) {
         super(
             userId,
             pageId,
             sessionId,
-            HttpStatus.NOT_FOUND, 
+            HttpStatus.NOT_FOUND,
             MESSAGES.ERROR_RESOURCE_NOT_FOUND
         );
     }
-    
 }

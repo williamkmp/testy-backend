@@ -7,7 +7,6 @@ import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
 import com.mito.sectask.repositories.PageRepository;
 import com.mito.sectask.repositories.UserRepository;
 import com.mito.sectask.services.encoder.PasswordEncocder;
-
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
