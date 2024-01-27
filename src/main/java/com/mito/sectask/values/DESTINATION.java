@@ -37,13 +37,13 @@ public class DESTINATION {
     }
 
     /**
-     * STOMP destination url for /topic/page/{pageId}/block
+     * STOMP destination url for /topic/page/{pageId}/block.transaction
      *
      * @param pageId {@link Long} page id
      * @return {@link String} STOMP destination path
      */
-    public static String pageBlock(Long pageId) {
-        return "/topic/page/" + pageId.toString() + "/block";
+    public static String pageBlockTransaction(Long pageId) {
+        return "/topic/page/" + pageId.toString() + "/block.transaction";
     }
 
     /**
@@ -58,12 +58,18 @@ public class DESTINATION {
 
     /**
      *  STOMP destination url form /topic/page/{pageId}/user/{userId}/url
-     * 
+     *
      * @param pageId {@link Long} page id
      * @param userId {@link Long} user id
      * @return {@link String} STOMP destination path
      */
     public static String pageUserError(Long pageId, Long userId) {
-        return "/topic/page/" + pageId.toString() + "/user/" + userId.toString() + "/error";
-    } 
+        return (
+            "/topic/page/" +
+            pageId.toString() +
+            "/user/" +
+            userId.toString() +
+            "/error"
+        );
+    }
 }
