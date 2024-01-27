@@ -1,14 +1,16 @@
-package com.mito.sectask.dto.request.block;
+package com.mito.sectask.dto.dto;
 
-import com.mito.sectask.values.BLOCK_ACTION;
 import com.mito.sectask.values.BLOCK_TYPE;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
-@Value
+@Data
+@Accessors(chain = true)
+@NoArgsConstructor
 public class BlockMessageDto {
-    private BLOCK_ACTION action;
 
-    private String blockId;
+    private String id;
     private BLOCK_TYPE type;
     private String content;
     private String iconKey;
