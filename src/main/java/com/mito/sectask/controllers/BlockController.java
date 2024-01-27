@@ -2,8 +2,10 @@ package com.mito.sectask.controllers;
 
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
+import com.mito.sectask.annotations.sender.Sender;
+import com.mito.sectask.annotations.sendersession.SenderSession;
+import com.mito.sectask.dto.dto.BlockMessageDto;
 import com.mito.sectask.dto.dto.MenuPreviewDto;
-import com.mito.sectask.dto.request.block.BlockMessageDto;
 import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.entities.Block;
 import com.mito.sectask.entities.Page;
@@ -13,14 +15,21 @@ import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
 import com.mito.sectask.exceptions.httpexceptions.ForbiddenHttpException;
 import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpException;
 import com.mito.sectask.exceptions.httpexceptions.ResourceNotFoundHttpException;
+import com.mito.sectask.exceptions.messsagingexceptions.NotFoundPageMessagingException;
 import com.mito.sectask.services.block.BlockService;
+import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.services.role.RoleService;
+import com.mito.sectask.values.DESTINATION;
+import com.mito.sectask.values.KEY;
 import java.lang.module.ResolutionException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -37,6 +46,7 @@ public class BlockController {
 
     private final BlockService blockService;
     private final RoleService roleService;
+    private final PageService pageService;
     private final SimpMessagingTemplate socket;
 
     @GetMapping("/collection/{collectionId}/page/preview")
@@ -78,9 +88,35 @@ public class BlockController {
     }
 
     @MessageMapping("/page/{pageId}/block.transaction")
-    public void applyBlockUpdate(@Payload BlockMessageDto request) {
-        // TODO: imeplement add block method
-        log.info("page block update" + request.toString());
+    public void applyBlockUpdate(
+        @DestinationVariable("pageId") Long pageId,
+        @Payload BlockMessageDto request,
+        @Sender User sender,
+        @SenderSession String sessionId
+    ) throws NotFoundPageMessagingException {
+        try {
+            pageService.findById(pageId).orElseThrow(NotFoundException::new);
+            roleService
+                .getUserPageAuthority(sender.getId(), pageId)
+                .orElseThrow(ForbiddenException::new);
+            socket.convertAndSend(
+                DESTINATION.pageBlockTransaction(pageId),
+                new BlockMessageDto()
+                    .setId(request.getId())
+                    .setType(request.getType())
+                    .setTransaction(request.getTransaction()),
+                Map.ofEntries(
+                    Map.entry(KEY.SENDER_USER_ID, sender.getId().toString()),
+                    Map.entry(KEY.SENDER_SESSION_ID, sessionId)
+                )
+            );
+        } catch (Exception e) {
+            throw new NotFoundPageMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
+        }
     }
 
     @MessageMapping("/page/collection")
