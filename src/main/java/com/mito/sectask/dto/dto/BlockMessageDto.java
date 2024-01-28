@@ -1,5 +1,7 @@
 package com.mito.sectask.dto.dto;
 
+import java.util.List;
+
 import com.mito.sectask.values.BLOCK_TYPE;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +18,7 @@ public class BlockMessageDto {
     private String iconKey;
     private Float width;
     private String fileId;
-    private byte[] transaction;
+    private int[] transaction;
 
     private String previousId;
     private String nextId;
