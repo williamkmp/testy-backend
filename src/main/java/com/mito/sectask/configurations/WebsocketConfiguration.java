@@ -26,7 +26,7 @@ public class WebsocketConfiguration
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic");
+        registry.enableSimpleBroker("/topic/page", "/topic/user");
         registry.setApplicationDestinationPrefixes("/app");
     }
 
