@@ -104,7 +104,7 @@ public class BlockController {
                 new BlockMessageDto()
                     .setId(request.getId())
                     .setType(request.getType())
-                    .setTransaction(request.getTransaction()),
+                    .setContent(request.getContent()),
                 Map.ofEntries(
                     Map.entry(KEY.SENDER_USER_ID, sender.getId().toString()),
                     Map.entry(KEY.SENDER_SESSION_ID, sessionId)
