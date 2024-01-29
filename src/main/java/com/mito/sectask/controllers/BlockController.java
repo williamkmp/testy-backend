@@ -99,6 +99,11 @@ public class BlockController {
             roleService
                 .getUserPageAuthority(sender.getId(), pageId)
                 .orElseThrow(ForbiddenException::new);
+            Block block = blockService
+                .findById(request.getId())
+                .orElseThrow(ResourceNotFoundException::new);
+            block.setContent(request.getContent());
+            blockService.save(block);
             socket.convertAndSend(
                 DESTINATION.pageBlockTransaction(pageId),
                 new BlockMessageDto()

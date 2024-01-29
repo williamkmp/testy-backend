@@ -15,6 +15,14 @@ public interface BlockService {
     public Optional<Block> findById(String blockId);
 
     /**
+     * save a block entity state
+     *
+     * @param blockId {@link String} block uuid
+     * @return {@link Optional}<{@link Block}> updated block entity
+     */
+    public Optional<Block> save(Block block);
+
+    /**
      * get list of COLLECTION typed block from a given page
      *
      * @param pageId {@link Long} page id

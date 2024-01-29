@@ -26,6 +26,12 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
+    public Optional<Block> save(Block block) {
+        if (block == null) return Optional.empty();
+        return Optional.of(blockRepository.save(block));
+    }
+
+    @Override
     public List<Block> findAllCollectionByPageId(Long pageId) {
         Page page = pageRepository
             .findById(pageId)
