@@ -36,19 +36,19 @@ public class CollectionSeeder implements Seeder {
             .setId(UUID.randomUUID().toString())
             .setIconKey("emoji-1265") // 📋
             .setBlockType(BLOCK_TYPE.COLLECTION)
-            .setContent("Application Findings");
+            .setContent("<p>Application Findings</p>");
 
         Block bimayFinding = new Block()
             .setId(UUID.randomUUID().toString())
             .setIconKey("emoji-883") // 🌐
             .setBlockType(BLOCK_TYPE.COLLECTION)
-            .setContent("Binusmaya Website Findings");
+            .setContent("<p>Binusmaya Website Findings</p>");
 
         Block bimobFinding = new Block()
             .setId(UUID.randomUUID().toString())
             .setIconKey("emoji-1170") // 📱
             .setBlockType(BLOCK_TYPE.COLLECTION)
-            .setContent("Binus Mobile Findings");
+            .setContent("<p>Binus Mobile Findings</p>");
 
         appendCollectionToPage(testyFinding, testyPage);
         appendCollectionToPage(bimayFinding, bimayPage);

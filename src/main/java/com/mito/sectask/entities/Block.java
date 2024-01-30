@@ -33,14 +33,14 @@ public class Block {
     @Column(name = "block_type", nullable = false)
     private BLOCK_TYPE blockType;
 
-    @Column(name = "content", nullable = true, columnDefinition = "TEXT")
-    private String content;
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    private String content = "<p></p>";
 
-    @Column(name = "icon_key", nullable = true)
-    private String iconKey;
+    @Column(name = "icon_key", nullable = false)
+    private String iconKey = "emoji-1215";
 
-    @Column(name = "width", nullable = true)
-    private Float width;
+    @Column(name = "width", nullable = false)
+    private Float width = 100f;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "page_id", referencedColumnName = "id", nullable = true)

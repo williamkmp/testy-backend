@@ -8,6 +8,7 @@ import com.mito.sectask.dto.dto.BlockMessageDto;
 import com.mito.sectask.dto.dto.MenuPreviewDto;
 import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.entities.Block;
+import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.exceptions.ForbiddenException;
@@ -17,6 +18,7 @@ import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpExcepti
 import com.mito.sectask.exceptions.httpexceptions.ResourceNotFoundHttpException;
 import com.mito.sectask.exceptions.messsagingexceptions.NotFoundPageMessagingException;
 import com.mito.sectask.services.block.BlockService;
+import com.mito.sectask.services.image.ImageService;
 import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.services.role.RoleService;
 import com.mito.sectask.values.DESTINATION;
@@ -47,6 +49,7 @@ public class BlockController {
     private final BlockService blockService;
     private final RoleService roleService;
     private final PageService pageService;
+    private final ImageService imageService;
     private final SimpMessagingTemplate socket;
 
     @GetMapping("/collection/{collectionId}/page/preview")
@@ -103,6 +106,55 @@ public class BlockController {
                 .findById(request.getId())
                 .orElseThrow(ResourceNotFoundException::new);
             block.setContent(request.getContent());
+            blockService.save(block);
+            socket.convertAndSend(
+                DESTINATION.pageBlockTransaction(pageId),
+                new BlockMessageDto()
+                    .setId(request.getId())
+                    .setType(request.getType())
+                    .setContent(request.getContent()),
+                Map.ofEntries(
+                    Map.entry(KEY.SENDER_USER_ID, sender.getId().toString()),
+                    Map.entry(KEY.SENDER_SESSION_ID, sessionId)
+                )
+            );
+        } catch (Exception e) {
+            throw new NotFoundPageMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
+        }
+    }
+
+    @MessageMapping("/page/{pageId}/block.transaction")
+    public void receiveBlockMove(
+        @DestinationVariable("pageId") Long pageId,
+        @Payload BlockMessageDto request,
+        @Sender User sender,
+        @SenderSession String sessionId
+    ) throws NotFoundPageMessagingException {
+        try {
+            pageService
+                .findById(pageId)
+                .orElseThrow(NotFoundException::new);
+            roleService
+                .getUserPageAuthority(sender.getId(), pageId)
+                .orElseThrow(ForbiddenException::new);
+            Block block = blockService
+                .findById(request.getId())
+                .orElseThrow(ResourceNotFoundException::new);
+            File newFile = imageService
+                .findById(Long.valueOf(request.getFileId()))
+                .orElse(null);
+
+
+            block.setContent(request.getContent());
+            block.setBlockType(request.getType());
+            block.setWidth(request.getWidth());
+            block.setIconKey(request.getIconKey());
+            block.setFile(newFile);
+
             blockService.save(block);
             socket.convertAndSend(
                 DESTINATION.pageBlockTransaction(pageId),
