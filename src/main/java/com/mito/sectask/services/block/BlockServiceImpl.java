@@ -6,12 +6,15 @@ import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
 import com.mito.sectask.repositories.BlockRepository;
 import com.mito.sectask.repositories.PageRepository;
 import com.mito.sectask.values.BLOCK_TYPE;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BlockServiceImpl implements BlockService {
@@ -50,5 +53,67 @@ public class BlockServiceImpl implements BlockService {
             .findById(pageId)
             .orElseThrow(ResourceNotFoundException::new);
         return blockRepository.findAllByPageId(page.getId());
+    }
+
+    @Override
+    @Transactional
+    public Block moveBlock(String blockId, String newPrevId, String newNextId) {
+        Block targetBlock = blockRepository
+            .findById(blockId)
+            .orElseThrow(ResourceNotFoundException::new);
+        Block oldPrevBlock = targetBlock.getPrev();
+        Block oldNextBlock = targetBlock.getNext();
+        Block newPrevBlock = newPrevId != null
+            ? blockRepository.findById(newPrevId).orElse(null)
+            : null;
+        Block newNextBlock = newNextId != null
+            ? blockRepository.findById(newNextId).orElse(null)
+            : null;
+
+        try {
+            // Lifting targetBlock from it's old position
+            targetBlock.setNext(null);
+            targetBlock.setPrev(null);
+            targetBlock = blockRepository.saveAndFlush(targetBlock);
+            if (oldPrevBlock != null) {
+                oldPrevBlock.setNext(
+                    oldNextBlock != null ? oldNextBlock : null
+                );
+                blockRepository.saveAndFlush(oldPrevBlock);
+            }
+            if (oldNextBlock != null) {
+                oldNextBlock.setPrev(
+                    oldPrevBlock != null ? oldPrevBlock : null
+                );
+                blockRepository.saveAndFlush(oldNextBlock);
+            }
+
+            // Detach newPrevBlock and newNextBlock
+            if (newPrevBlock != null) {
+                newPrevBlock.setNext(null);
+                newPrevBlock = blockRepository.saveAndFlush(newPrevBlock);
+            }
+            if (newNextBlock != null) {
+                newNextBlock.setPrev(null);
+                newNextBlock = blockRepository.saveAndFlush(newNextBlock);
+            }
+
+            // Insert targetBlock to it's new position
+            if (newPrevBlock != null) {
+                targetBlock.setPrev(newPrevBlock);
+                newPrevBlock.setNext(targetBlock);
+                blockRepository.saveAndFlush(newPrevBlock);
+            }
+            if (newNextBlock != null) {
+                targetBlock.setNext(newNextBlock);
+                newNextBlock.setPrev(targetBlock);
+                blockRepository.saveAndFlush(newNextBlock);
+            }
+
+            return blockRepository.saveAndFlush(targetBlock);
+        } catch (Exception e) {
+            log.info("Error moving block: {}", blockId);
+            throw new ResourceNotFoundException();
+        }
     }
 }

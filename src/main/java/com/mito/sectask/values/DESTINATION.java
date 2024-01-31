@@ -47,6 +47,16 @@ public class DESTINATION {
     }
 
     /**
+     * STOMP destination url for /topic/page/{pageId}/block.transaction
+     *
+     * @param pageId {@link Long} page id
+     * @return {@link String} STOMP destination path
+     */
+    public static String pageBlockMove(Long pageId) {
+        return "/topic/page/" + pageId.toString() + "/block.move";
+    }
+
+    /**
      * STOMP destination url for /topic/page/{pageId}/collection
      *
      * @param pageId {@link Long} page id

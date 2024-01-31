@@ -17,6 +17,6 @@ public class BlockMessageDto {
     private Float width;
     private String fileId;
 
-    private String previousId;
+    private String prevId;
     private String nextId;
 }

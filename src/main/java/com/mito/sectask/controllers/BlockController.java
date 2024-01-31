@@ -23,9 +23,11 @@ import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.services.role.RoleService;
 import com.mito.sectask.values.DESTINATION;
 import com.mito.sectask.values.KEY;
+import jakarta.transaction.Transactional;
 import java.lang.module.ResolutionException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,7 +93,7 @@ public class BlockController {
     }
 
     @MessageMapping("/page/{pageId}/block.transaction")
-    public void applyBlockUpdate(
+    public void receiveBlockUpdate(
         @DestinationVariable("pageId") Long pageId,
         @Payload BlockMessageDto request,
         @Sender User sender,
@@ -105,14 +107,30 @@ public class BlockController {
             Block block = blockService
                 .findById(request.getId())
                 .orElseThrow(ResourceNotFoundException::new);
+            File newFile = request.getFileId() != null
+                ? imageService
+                    .findById(Long.valueOf(request.getFileId()))
+                    .orElse(null)
+                : null;
+
             block.setContent(request.getContent());
+            block.setBlockType(request.getType());
+            block.setWidth(request.getWidth());
+            block.setIconKey(request.getIconKey());
+            block.setFile(newFile);
+
             blockService.save(block);
             socket.convertAndSend(
                 DESTINATION.pageBlockTransaction(pageId),
                 new BlockMessageDto()
                     .setId(request.getId())
                     .setType(request.getType())
-                    .setContent(request.getContent()),
+                    .setContent(request.getContent())
+                    .setFileId(
+                        newFile != null ? newFile.getId().toString() : null
+                    )
+                    .setWidth(request.getWidth())
+                    .setIconKey(request.getIconKey()),
                 Map.ofEntries(
                     Map.entry(KEY.SENDER_USER_ID, sender.getId().toString()),
                     Map.entry(KEY.SENDER_SESSION_ID, sessionId)
@@ -127,7 +145,8 @@ public class BlockController {
         }
     }
 
-    @MessageMapping("/page/{pageId}/block.transaction")
+    @Transactional
+    @MessageMapping("/page/{pageId}/block.move")
     public void receiveBlockMove(
         @DestinationVariable("pageId") Long pageId,
         @Payload BlockMessageDto request,
@@ -135,33 +154,46 @@ public class BlockController {
         @SenderSession String sessionId
     ) throws NotFoundPageMessagingException {
         try {
-            pageService
-                .findById(pageId)
-                .orElseThrow(NotFoundException::new);
+            // checking user access and data integrity
+            pageService.findById(pageId).orElseThrow(NotFoundException::new);
             roleService
                 .getUserPageAuthority(sender.getId(), pageId)
                 .orElseThrow(ForbiddenException::new);
-            Block block = blockService
-                .findById(request.getId())
-                .orElseThrow(ResourceNotFoundException::new);
-            File newFile = imageService
-                .findById(Long.valueOf(request.getFileId()))
-                .orElse(null);
 
+            Block block = blockService.findById(request.getId()).orElse(null);
 
-            block.setContent(request.getContent());
-            block.setBlockType(request.getType());
-            block.setWidth(request.getWidth());
-            block.setIconKey(request.getIconKey());
-            block.setFile(newFile);
+            if (block == null) return;
+            String oldPrevId = block.getPrev() != null
+                ? block.getPrev().getId()
+                : null;
+            String oldNextId = block.getNext() != null
+                ? block.getNext().getId()
+                : null;
+            boolean isBlockMove =
+                !Objects.equals(oldPrevId, request.getPrevId()) &&
+                !Objects.equals(oldNextId, request.getNextId());
+            if (!isBlockMove) return;
 
-            blockService.save(block);
+            Block updatedBlock = blockService.moveBlock(
+                request.getId(),
+                request.getPrevId(),
+                request.getNextId()
+            );
+
             socket.convertAndSend(
-                DESTINATION.pageBlockTransaction(pageId),
+                DESTINATION.pageBlockMove(pageId),
                 new BlockMessageDto()
-                    .setId(request.getId())
-                    .setType(request.getType())
-                    .setContent(request.getContent()),
+                    .setId(updatedBlock.getId())
+                    .setPrevId(
+                        updatedBlock.getPrev() != null
+                            ? updatedBlock.getPrev().getId()
+                            : null
+                    )
+                    .setNextId(
+                        updatedBlock.getNext() != null
+                            ? updatedBlock.getNext().getId()
+                            : null
+                    ),
                 Map.ofEntries(
                     Map.entry(KEY.SENDER_USER_ID, sender.getId().toString()),
                     Map.entry(KEY.SENDER_SESSION_ID, sessionId)

@@ -41,4 +41,14 @@ public interface BlockService {
      */
     public List<Block> findAllByPageId(Long pageId)
         throws ResourceNotFoundException;
+
+    /**
+     * move and update target block to an ew postion in the linked list
+     *
+     * @param blockId {@link String} target block uuid
+     * @param newPrevId {@link String} new previous block uuid
+     * @param newNextId {@link String} new next block uuid
+     * @return {@link Block} updated target block data
+     */
+    public Block moveBlock(String blockId, String newPrevId, String newNextId);
 }
