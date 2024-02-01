@@ -113,7 +113,7 @@ public class BlockServiceImpl implements BlockService {
             return blockRepository.saveAndFlush(targetBlock);
         } catch (Exception e) {
             log.info("Error moving block: {}", blockId);
-            log.equals(e);
+            e.printStackTrace();
             throw new ResourceNotFoundException();
         }
     }
@@ -142,7 +142,7 @@ public class BlockServiceImpl implements BlockService {
             return Optional.of(newBlock);
         } catch (Exception e) {
             log.error("Error inserting block: {}", newBlock.getId());
-            log.equals(e);
+            e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -171,7 +171,7 @@ public class BlockServiceImpl implements BlockService {
             return Optional.of(targetBlock);
         } catch (Exception e) {
             log.error("Error deleting block: {}", blockId);
-            log.equals(e);
+            e.printStackTrace();
             return Optional.empty();
         }
     }
