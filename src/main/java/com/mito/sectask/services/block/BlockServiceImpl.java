@@ -121,25 +121,23 @@ public class BlockServiceImpl implements BlockService {
     @Override
     @Transactional
     public Optional<Block> insertBlockAfter(String prevId, Block newBlock) {
-        Block prevBlock = prevId != null 
+        Block prevBlock = prevId != null
             ? blockRepository.findById(prevId).orElse(null)
             : null;
-        Block nextBlock = prevBlock != null 
-            ? prevBlock.getNext()
-            : null;
+        Block nextBlock = prevBlock != null ? prevBlock.getNext() : null;
         newBlock = blockRepository.saveAndFlush(newBlock);
-        try {            
-            if(prevBlock != null) {
+        try {
+            if (prevBlock != null) {
                 prevBlock.setNext(newBlock);
                 prevBlock = blockRepository.saveAndFlush(prevBlock);
             }
-            if(nextBlock != null) {
+            if (nextBlock != null) {
                 nextBlock.setPrev(newBlock);
                 nextBlock = blockRepository.saveAndFlush(nextBlock);
             }
             newBlock.setPrev(prevBlock);
             newBlock.setNext(nextBlock);
-            newBlock = blockRepository.saveAndFlush(newBlock); 
+            newBlock = blockRepository.saveAndFlush(newBlock);
             log.info("Insert block: {}", newBlock.getId());
             return Optional.of(newBlock);
         } catch (Exception e) {

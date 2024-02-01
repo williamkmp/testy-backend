@@ -54,9 +54,9 @@ public interface BlockService {
 
     /**
      * insert new block after a certain existing block
-     * 
+     *
      * @param prevId {@link String} previous block id, set as null if insert head
-     * @param newBlock {@link Block} new block 
+     * @param newBlock {@link Block} new block
      * @return {@link Optional}<{@link Block}> inserted block, else empty if insert operation failed
      */
     public Optional<Block> insertBlockAfter(String prevId, Block newBlock);

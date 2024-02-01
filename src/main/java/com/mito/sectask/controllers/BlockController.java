@@ -198,7 +198,11 @@ public class BlockController {
                 )
             );
         } catch (Exception e) {
-            log.error("Block move error blockId: {}, pageId:{}", request.getId(), pageId);
+            log.error(
+                "Block move error blockId: {}, pageId:{}",
+                request.getId(),
+                pageId
+            );
             throw new NotFoundPageMessagingException(
                 sender.getId(),
                 pageId,
@@ -216,22 +220,26 @@ public class BlockController {
     ) throws NotFoundPageMessagingException {
         try {
             // checking user access and data integrity
-            Page page = pageService.findById(pageId).orElseThrow(NotFoundException::new);
+            Page page = pageService
+                .findById(pageId)
+                .orElseThrow(NotFoundException::new);
             roleService
                 .getUserPageAuthority(sender.getId(), pageId)
                 .orElseThrow(ForbiddenException::new);
-            
-            // Add block type from client is always PARAGRAPH (UI/UX Specification) 
-            Block insertedBlock = blockService.insertBlockAfter(
-                request.getPrevId(), 
-                new Block()
-                    .setPage(page)
-                    .setId(request.getId())
-                    .setBlockType(request.getType())
-                    .setContent(request.getContent())
-                    .setWidth(request.getWidth())
-                    .setIconKey(request.getIconKey())
-            ).orElseThrow(NotFoundException::new);
+
+            // Add block type from client is always PARAGRAPH (UI/UX Specification)
+            Block insertedBlock = blockService
+                .insertBlockAfter(
+                    request.getPrevId(),
+                    new Block()
+                        .setPage(page)
+                        .setId(request.getId())
+                        .setBlockType(request.getType())
+                        .setContent(request.getContent())
+                        .setWidth(request.getWidth())
+                        .setIconKey(request.getIconKey())
+                )
+                .orElseThrow(NotFoundException::new);
 
             socket.convertAndSend(
                 DESTINATION.pageBlockAdd(pageId),
@@ -256,9 +264,12 @@ public class BlockController {
                     Map.entry(KEY.SENDER_SESSION_ID, sessionId)
                 )
             );
-        
         } catch (Exception e) {
-            log.error("Block add error blockId: {}, pageId:{}", request.getId(), pageId);
+            log.error(
+                "Block add error blockId: {}, pageId:{}",
+                request.getId(),
+                pageId
+            );
             throw new NotFoundPageMessagingException(
                 sender.getId(),
                 pageId,
