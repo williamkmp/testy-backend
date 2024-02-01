@@ -23,7 +23,6 @@ import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.services.role.RoleService;
 import com.mito.sectask.values.DESTINATION;
 import com.mito.sectask.values.KEY;
-import jakarta.transaction.Transactional;
 import java.lang.module.ResolutionException;
 import java.util.List;
 import java.util.Map;
@@ -145,7 +144,6 @@ public class BlockController {
         }
     }
 
-    @Transactional
     @MessageMapping("/page/{pageId}/block.move")
     public void receiveBlockMove(
         @DestinationVariable("pageId") Long pageId,
@@ -200,6 +198,7 @@ public class BlockController {
                 )
             );
         } catch (Exception e) {
+            log.error("Block move error blockId: {}, pageId:{}", request.getId(), pageId);
             throw new NotFoundPageMessagingException(
                 sender.getId(),
                 pageId,
@@ -208,9 +207,63 @@ public class BlockController {
         }
     }
 
-    @MessageMapping("/page/collection")
-    public void applyCollectionUpdate(@Payload BlockMessageDto request) {
-        // TODO: imeplement add block method
-        log.info("page block update" + request.toString());
+    @MessageMapping("/page/{pageId}/block.add")
+    public void receiveBlockInsert(
+        @DestinationVariable("pageId") Long pageId,
+        @Payload BlockMessageDto request,
+        @Sender User sender,
+        @SenderSession String sessionId
+    ) throws NotFoundPageMessagingException {
+        try {
+            // checking user access and data integrity
+            Page page = pageService.findById(pageId).orElseThrow(NotFoundException::new);
+            roleService
+                .getUserPageAuthority(sender.getId(), pageId)
+                .orElseThrow(ForbiddenException::new);
+            
+            // Add block type from client is always PARAGRAPH (UI/UX Specification) 
+            Block insertedBlock = blockService.insertBlockAfter(
+                request.getPrevId(), 
+                new Block()
+                    .setPage(page)
+                    .setId(request.getId())
+                    .setBlockType(request.getType())
+                    .setContent(request.getContent())
+                    .setWidth(request.getWidth())
+                    .setIconKey(request.getIconKey())
+            ).orElseThrow(NotFoundException::new);
+
+            socket.convertAndSend(
+                DESTINATION.pageBlockAdd(pageId),
+                new BlockMessageDto()
+                    .setId(insertedBlock.getId())
+                    .setType(insertedBlock.getBlockType())
+                    .setWidth(insertedBlock.getWidth())
+                    .setContent(insertedBlock.getContent())
+                    .setIconKey(insertedBlock.getIconKey())
+                    .setPrevId(
+                        insertedBlock.getPrev() != null
+                            ? insertedBlock.getPrev().getId()
+                            : null
+                    )
+                    .setNextId(
+                        insertedBlock.getNext() != null
+                            ? insertedBlock.getNext().getId()
+                            : null
+                    ),
+                Map.ofEntries(
+                    Map.entry(KEY.SENDER_USER_ID, sender.getId().toString()),
+                    Map.entry(KEY.SENDER_SESSION_ID, sessionId)
+                )
+            );
+        
+        } catch (Exception e) {
+            log.error("Block add error blockId: {}, pageId:{}", request.getId(), pageId);
+            throw new NotFoundPageMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
+        }
     }
 }
