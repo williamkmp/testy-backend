@@ -31,6 +31,9 @@ public class File {
     @Column(name = "content_type", nullable = false)
     private String contentType;
 
+    @Column(name = "name", nullable = true)
+    private String name;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private Date createdAt;

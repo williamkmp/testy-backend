@@ -151,7 +151,9 @@ public class BlockServiceImpl implements BlockService {
     @Transactional
     public Optional<Block> deleteBlock(String blockId) {
         try {
-            Block targetBlock = blockRepository.findById(blockId).orElseThrow(ResourceNotFoundException::new);
+            Block targetBlock = blockRepository
+                .findById(blockId)
+                .orElseThrow(ResourceNotFoundException::new);
             Block prevBlock = targetBlock.getPrev();
             Block nextBlock = targetBlock.getNext();
 
@@ -159,11 +161,11 @@ public class BlockServiceImpl implements BlockService {
             targetBlock.setNext(null);
             blockRepository.saveAndFlush(targetBlock);
 
-            if(prevBlock != null) {
+            if (prevBlock != null) {
                 prevBlock.setNext(nextBlock);
-                blockRepository.saveAndFlush(prevBlock); 
+                blockRepository.saveAndFlush(prevBlock);
             }
-            if(nextBlock != null) {
+            if (nextBlock != null) {
                 nextBlock.setPrev(prevBlock);
                 blockRepository.saveAndFlush(nextBlock);
             }

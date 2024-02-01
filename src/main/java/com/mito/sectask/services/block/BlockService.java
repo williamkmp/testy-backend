@@ -62,8 +62,8 @@ public interface BlockService {
     public Optional<Block> insertBlockAfter(String prevId, Block newBlock);
 
     /**
-     * delete a given block from a page linked list 
-     * 
+     * delete a given block from a page linked list
+     *
      * @param blockId {@link Stirng} deleted block id
      * @return {@link Optional}<{@link Block}> deleted block data, else Optional.empty() if operation failed
      */

@@ -287,9 +287,7 @@ public class BlockController {
     ) throws NotFoundPageMessagingException {
         try {
             // checking user access and data integrity
-            pageService
-                .findById(pageId)
-                .orElseThrow(NotFoundException::new);
+            pageService.findById(pageId).orElseThrow(NotFoundException::new);
             roleService
                 .getUserPageAuthority(sender.getId(), pageId)
                 .orElseThrow(ForbiddenException::new);
@@ -301,8 +299,7 @@ public class BlockController {
 
             socket.convertAndSend(
                 DESTINATION.pageBlockDel(pageId),
-                new BlockMessageDto()
-                    .setId(deletedBlock.getId()),
+                new BlockMessageDto().setId(deletedBlock.getId()),
                 Map.ofEntries(
                     Map.entry(KEY.SENDER_USER_ID, sender.getId().toString()),
                     Map.entry(KEY.SENDER_SESSION_ID, sessionId)
