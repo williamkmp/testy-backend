@@ -42,7 +42,7 @@ public class Block {
     @Column(name = "width", nullable = false)
     private Float width = 100f;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "page_id", referencedColumnName = "id", nullable = true)
     private Page page;
 

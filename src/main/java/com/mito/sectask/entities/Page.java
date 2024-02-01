@@ -51,7 +51,7 @@ public class Page {
     )
     private List<Block> blocks;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
         name = "collection_id",
         referencedColumnName = "id",
