@@ -146,4 +146,33 @@ public class BlockServiceImpl implements BlockService {
             return Optional.empty();
         }
     }
+
+    @Override
+    @Transactional
+    public Optional<Block> deleteBlock(String blockId) {
+        try {
+            Block targetBlock = blockRepository.findById(blockId).orElseThrow(ResourceNotFoundException::new);
+            Block prevBlock = targetBlock.getPrev();
+            Block nextBlock = targetBlock.getNext();
+
+            targetBlock.setPrev(null);
+            targetBlock.setNext(null);
+            blockRepository.saveAndFlush(targetBlock);
+
+            if(prevBlock != null) {
+                prevBlock.setNext(nextBlock);
+                blockRepository.saveAndFlush(prevBlock); 
+            }
+            if(nextBlock != null) {
+                nextBlock.setPrev(prevBlock);
+                blockRepository.saveAndFlush(nextBlock);
+            }
+            blockRepository.delete(targetBlock);
+            return Optional.of(targetBlock);
+        } catch (Exception e) {
+            log.error("Error deleting block: {}", blockId);
+            log.equals(e);
+            return Optional.empty();
+        }
+    }
 }

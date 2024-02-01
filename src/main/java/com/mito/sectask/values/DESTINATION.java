@@ -67,6 +67,16 @@ public class DESTINATION {
     }
 
     /**
+     * STOMP destination url for /topic/page/{pageId}/block.delete
+     *
+     * @param pageId {@link Long} page id
+     * @return {@link String} STOMP destination path
+     */
+    public static String pageBlockDel(Long pageId) {
+        return "/topic/page/" + pageId.toString() + "/block.delete";
+    }
+
+    /**
      * STOMP destination url for /topic/page/{pageId}/collection
      *
      * @param pageId {@link Long} page id

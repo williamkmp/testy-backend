@@ -277,4 +277,48 @@ public class BlockController {
             );
         }
     }
+
+    @MessageMapping("/page/{pageId}/block.delete")
+    public void receiveBlockDelete(
+        @DestinationVariable("pageId") Long pageId,
+        @Payload BlockMessageDto request,
+        @Sender User sender,
+        @SenderSession String sessionId
+    ) throws NotFoundPageMessagingException {
+        try {
+            // checking user access and data integrity
+            pageService
+                .findById(pageId)
+                .orElseThrow(NotFoundException::new);
+            roleService
+                .getUserPageAuthority(sender.getId(), pageId)
+                .orElseThrow(ForbiddenException::new);
+
+            // Add block type from client is always PARAGRAPH (UI/UX Specification)
+            Block deletedBlock = blockService
+                .deleteBlock(request.getId())
+                .orElseThrow(NotFoundException::new);
+
+            socket.convertAndSend(
+                DESTINATION.pageBlockDel(pageId),
+                new BlockMessageDto()
+                    .setId(deletedBlock.getId()),
+                Map.ofEntries(
+                    Map.entry(KEY.SENDER_USER_ID, sender.getId().toString()),
+                    Map.entry(KEY.SENDER_SESSION_ID, sessionId)
+                )
+            );
+        } catch (Exception e) {
+            log.error(
+                "Block delete error blockId: {}, pageId:{}",
+                request.getId(),
+                pageId
+            );
+            throw new NotFoundPageMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
+        }
+    }
 }
