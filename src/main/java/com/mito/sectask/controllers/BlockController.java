@@ -18,7 +18,7 @@ import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpExcepti
 import com.mito.sectask.exceptions.httpexceptions.ResourceNotFoundHttpException;
 import com.mito.sectask.exceptions.messsagingexceptions.NotFoundPageMessagingException;
 import com.mito.sectask.services.block.BlockService;
-import com.mito.sectask.services.image.ImageService;
+import com.mito.sectask.services.file.FileService;
 import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.services.role.RoleService;
 import com.mito.sectask.values.DESTINATION;
@@ -50,7 +50,7 @@ public class BlockController {
     private final BlockService blockService;
     private final RoleService roleService;
     private final PageService pageService;
-    private final ImageService imageService;
+    private final FileService fileService;
     private final SimpMessagingTemplate socket;
 
     @GetMapping("/collection/{collectionId}/page/preview")
@@ -107,10 +107,15 @@ public class BlockController {
                 .findById(request.getId())
                 .orElseThrow(ResourceNotFoundException::new);
             File newFile = request.getFileId() != null
-                ? imageService
+                ? fileService
                     .findById(Long.valueOf(request.getFileId()))
                     .orElse(null)
                 : null;
+
+            File previousFile = block.getFile();
+            if (previousFile != null && newFile == null) {
+                fileService.deleteById(previousFile.getId());
+            }
 
             block.setContent(request.getContent());
             block.setBlockType(request.getType());

@@ -4,6 +4,7 @@ import com.mito.sectask.dto.dto.FilePreviewDto;
 import com.mito.sectask.entities.File;
 import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
 import com.mito.sectask.repositories.FileRepository;
+import jakarta.transaction.Transactional;
 import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Optional<FilePreviewDto> saveUploadFormdata(MultipartFile file) {
+    public Optional<File> saveUploadFormdata(MultipartFile file) {
         try {
             File newFile = new File()
                 .setName(file.getOriginalFilename())
@@ -43,16 +44,7 @@ public class FileServiceImpl implements FileService {
                 .setContentType(file.getContentType())
                 .setCreatedAt(new Date());
             newFile = fileRepository.saveAndFlush(newFile);
-            String url = getFileUrl(newFile.getId())
-                .orElseThrow(ResourceNotFoundException::new);
-            return Optional.of(
-                new FilePreviewDto()
-                    .setId(newFile.getId().toString())
-                    .setName(newFile.getName())
-                    .setSize(file.getSize())
-                    .setExtension(newFile.getContentType())
-                    .setUrl(url)
-            );
+            return Optional.of(newFile);
         } catch (Exception e) {
             log.error("Error saving file");
             e.printStackTrace();
@@ -67,10 +59,42 @@ public class FileServiceImpl implements FileService {
             File file = fileRepository
                 .findById(fileId)
                 .orElseThrow(ResourceNotFoundException::new);
-            return Optional.of(GET_FILE_URL + file.getId().toString());
+            String clientAccessURL = constructClientAccessUrl(file.getId());
+            return Optional.of(clientAccessURL);
         } catch (Exception e) {
             log.error("Error constructing file url id:{}", fileId);
             e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<FilePreviewDto> createPreview(File file) {
+        if (file == null) return Optional.empty();
+        return Optional.of(
+            new FilePreviewDto()
+                .setId(file.getId().toString())
+                .setName(file.getName())
+                .setExtension(file.getContentType())
+                .setSize(Long.valueOf(file.getBytes().length))
+                .setUrl(constructClientAccessUrl(file.getId()))
+        );
+    }
+
+    private String constructClientAccessUrl(Long fileId) {
+        return (GET_FILE_URL + fileId.toString());
+    }
+
+    @Override
+    @Transactional
+    public Optional<File> deleteById(Long fileId) {
+        try {
+            File file = fileRepository
+                .findById(fileId)
+                .orElseThrow(ResourceNotFoundException::new);
+            fileRepository.deleteById(file.getId());
+            return Optional.of(file);
+        } catch (Exception e) {
             return Optional.empty();
         }
     }

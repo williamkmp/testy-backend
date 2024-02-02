@@ -47,12 +47,17 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
+    @Transactional
     public List<Block> findAllByPageId(Long pageId)
         throws ResourceNotFoundException {
         Page page = pageRepository
             .findById(pageId)
             .orElseThrow(ResourceNotFoundException::new);
-        return blockRepository.findAllByPageId(page.getId());
+        List<Block> pageBlocks = blockRepository.findAllByPageId(page.getId());
+        for (Block block : pageBlocks) {
+            block.getFile();
+        }
+        return pageBlocks;
     }
 
     @Override
