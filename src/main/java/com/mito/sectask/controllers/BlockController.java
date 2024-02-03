@@ -1,5 +1,22 @@
 package com.mito.sectask.controllers;
 
+import java.lang.module.ResolutionException;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.annotations.sender.Sender;
@@ -29,23 +46,9 @@ import com.mito.sectask.values.DESTINATION;
 import com.mito.sectask.values.KEY;
 import com.mito.sectask.values.PREVIEW_ACTION;
 
-import java.lang.module.ResolutionException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
 
 @Slf4j
 @RestController
@@ -74,8 +77,8 @@ public class BlockController {
             roleService
                 .getUserPageAuthority(caller.getId(), parentPage.getId())
                 .orElseThrow(ForbiddenException::new);
-            List<MenuPreviewDto> previews = collection
-                .getPages()
+            List<MenuPreviewDto> previews = pageService
+                .findByCollectionId(collectionId)
                 .stream()
                 .map(page ->
                     new MenuPreviewDto()
@@ -125,7 +128,8 @@ public class BlockController {
             }
 
             String oldContent = block.getContent(); 
-            String oldIconKey = block.getIconKey(); 
+            String oldIconKey = block.getIconKey();
+            BLOCK_TYPE oldBlockType = block.getBlockType(); 
             
             block.setContent(request.getContent());
             block.setBlockType(request.getType());
@@ -139,20 +143,21 @@ public class BlockController {
                     !Objects.equals(oldIconKey, block.getIconKey()) ||
                     !Objects.equals(oldContent, block.getContent());
                 if(doNotify) {
+                    Page parentPage = block.getPage();
+                    String senderId = sender.getId().toString();
+                    boolean isNewColelction = !Objects.equals(oldBlockType, BLOCK_TYPE.COLLECTION);
                     List<User> members = userService.findMembersOfCollection(block.getId());
                     for (User member : members) {
                         socket.convertAndSend(
                             DESTINATION.userPreview(member.getId()),
                             new PreviewMessageDto()
-                                .setAction(PREVIEW_ACTION.UPDATE)
+                                .setAction(isNewColelction ? PREVIEW_ACTION.ADD : PREVIEW_ACTION.UPDATE)
+                                .setParentId(parentPage.getId().toString())
                                 .setId(block.getId())
                                 .setIconKey(block.getIconKey())
                                 .setName(block.getContent()),
                             Map.ofEntries(
-                                Map.entry(
-                                    KEY.SENDER_USER_ID,
-                                    sender.getId().toString()
-                                ),
+                                Map.entry(KEY.SENDER_USER_ID,senderId),
                                 Map.entry(KEY.SENDER_SESSION_ID, sessionId)
                             )
                         );
@@ -333,10 +338,27 @@ public class BlockController {
                 .getUserPageAuthority(sender.getId(), pageId)
                 .orElseThrow(ForbiddenException::new);
 
-            // Add block type from client is always PARAGRAPH (UI/UX Specification)
             Block deletedBlock = blockService
                 .deleteBlock(request.getId())
                 .orElseThrow(NotFoundException::new);
+
+            if(deletedBlock.getBlockType() == BLOCK_TYPE.COLLECTION) {
+                List<User> members = userService.findMembersOfPage(pageId);
+                String senderId = sender.getId().toString();
+                for (User member : members) {
+                    socket.convertAndSend(
+                        DESTINATION.userPreview(member.getId()),
+                        new PreviewMessageDto()
+                            .setAction(PREVIEW_ACTION.DELETE)
+                            .setParentId(pageId.toString())
+                            .setId(deletedBlock.getId()),
+                        Map.ofEntries(
+                            Map.entry(KEY.SENDER_USER_ID,senderId),
+                            Map.entry(KEY.SENDER_SESSION_ID, sessionId)
+                        )
+                    );
+                }
+            }
 
             socket.convertAndSend(
                 DESTINATION.pageBlockDel(pageId),

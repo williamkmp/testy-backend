@@ -70,6 +70,7 @@ public class PageController {
     @Authenticated(true)
     public Response<PageDto> createPage(
         @RequestBody PageCreateRequest request,
+        @CallerSession String sessionId,
         @Caller User caller
     ) {
         // Get parent and Image data
@@ -93,6 +94,7 @@ public class PageController {
                 .orElseThrow(InternalServerErrorHttpException::new);
 
         // Notify user for update
+        String senderId = caller.getId().toString();
         List<User> members = userService.findMembersOfPage(createdPage.getId());
         for (User member : members) {
             socket.convertAndSend(
@@ -101,7 +103,12 @@ public class PageController {
                     .setAction(PREVIEW_ACTION.ADD)
                     .setParentId(request.getCollectionId())
                     .setIconKey(createdPage.getIconKey())
-                    .setIconKey(createdPage.getName())
+                    .setName(createdPage.getName())
+                    .setId(createdPage.getId().toString()),
+                Map.ofEntries(
+                    Map.entry(KEY.SENDER_USER_ID, senderId),
+                    Map.entry(KEY.SENDER_SESSION_ID, sessionId)
+                )
             );
         }
 
@@ -179,7 +186,12 @@ public class PageController {
                         .setAction(PREVIEW_ACTION.UPDATE)
                         .setId(updatedPage.getId().toString())
                         .setIconKey(updatedPage.getIconKey())
-                        .setName(updatedPage.getName()),
+                        .setName(updatedPage.getName())
+                        .setParentId(
+                            updatedPage.getCollection() != null 
+                                ? updatedPage.getCollection().getId()
+                                : null
+                        ),
                     Map.ofEntries(
                         Map.entry(
                             KEY.SENDER_USER_ID,

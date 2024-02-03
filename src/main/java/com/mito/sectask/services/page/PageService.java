@@ -65,4 +65,12 @@ public interface PageService {
      *      if error or not found
      */
     public Optional<Page> getRootOfPage(Long pageId);
+
+    /**
+     * find all page of a given colelction orderd by created at descending
+     * 
+     * @param collectionId {@link String} block id
+     * @return {@link List}<{@link Page}> pages of a given colelction
+     */
+    public List<Page> findByCollectionId(String collectionId);
 }

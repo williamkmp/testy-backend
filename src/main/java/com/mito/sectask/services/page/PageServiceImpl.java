@@ -6,7 +6,9 @@ import com.mito.sectask.entities.Block;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.entities.Role;
 import com.mito.sectask.entities.User;
+import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
 import com.mito.sectask.repositories.AuthorityRepository;
+import com.mito.sectask.repositories.BlockRepository;
 import com.mito.sectask.repositories.PageRepository;
 import com.mito.sectask.repositories.RoleRepository;
 import com.mito.sectask.repositories.UserRepository;
@@ -16,9 +18,13 @@ import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PageServiceImpl implements PageService {
@@ -27,6 +33,7 @@ public class PageServiceImpl implements PageService {
     private final RoleRepository roleRepository;
     private final AuthorityRepository authorityRepository;
     private final UserRepository userRepository;
+    private final BlockRepository blockRepository;
 
     @Override
     public List<Page> getRootPages(Long userId) {
@@ -91,11 +98,19 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
+    @Transactional
     public Optional<Page> createSubPage(Page page, String collectionId) {
-        // TODO implement craete subPage
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'createSubPage'"
-        );
+        try {
+            Block collection = blockRepository.findById(collectionId)
+                .orElseThrow(ResourceNotFoundException::new);
+            page = pageRepository.saveAndFlush(page);
+            page.setCollection(collection);
+            return Optional.of(pageRepository.saveAndFlush(page));
+        } catch (Exception e) {
+            log.error("Error creating sub page id:{} collectionId:{}", page.getId(), collectionId);
+            e.printStackTrace();
+            return Optional.empty();
+        } 
     }
 
     @Override
@@ -124,5 +139,10 @@ public class PageServiceImpl implements PageService {
         }
 
         return Optional.of(page);
+    }
+
+    @Override
+    public List<Page> findByCollectionId(String collectionId) {
+        return pageRepository.findAllByCollectionIdOrderByCreatedAtDesc(collectionId);
     }
 }

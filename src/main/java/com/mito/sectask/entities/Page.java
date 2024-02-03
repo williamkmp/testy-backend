@@ -32,10 +32,10 @@ public class Page {
     private Long id;
 
     @Column(name = "name", nullable = true)
-    private String name;
+    private String name = "";
 
     @Column(name = "icon_key", nullable = true)
-    private String iconKey;
+    private String iconKey = "emoji-1215";
 
     @Column(name = "image_position", nullable = false)
     private Float imagePosition = (float) 0;
