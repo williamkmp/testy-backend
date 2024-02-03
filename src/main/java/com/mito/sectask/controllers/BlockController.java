@@ -6,12 +6,14 @@ import com.mito.sectask.annotations.sender.Sender;
 import com.mito.sectask.annotations.sendersession.SenderSession;
 import com.mito.sectask.dto.dto.BlockMessageDto;
 import com.mito.sectask.dto.dto.MenuPreviewDto;
+import com.mito.sectask.dto.dto.PreviewMessageDto;
 import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.entities.Block;
 import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.Page;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.exceptions.ForbiddenException;
+import com.mito.sectask.exceptions.exceptions.MismatchedDataException;
 import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
 import com.mito.sectask.exceptions.httpexceptions.ForbiddenHttpException;
 import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpException;
@@ -21,8 +23,12 @@ import com.mito.sectask.services.block.BlockService;
 import com.mito.sectask.services.file.FileService;
 import com.mito.sectask.services.page.PageService;
 import com.mito.sectask.services.role.RoleService;
+import com.mito.sectask.services.user.UserService;
+import com.mito.sectask.values.BLOCK_TYPE;
 import com.mito.sectask.values.DESTINATION;
 import com.mito.sectask.values.KEY;
+import com.mito.sectask.values.PREVIEW_ACTION;
+
 import java.lang.module.ResolutionException;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +57,7 @@ public class BlockController {
     private final RoleService roleService;
     private final PageService pageService;
     private final FileService fileService;
+    private final UserService userService;
     private final SimpMessagingTemplate socket;
 
     @GetMapping("/collection/{collectionId}/page/preview")
@@ -117,13 +124,42 @@ public class BlockController {
                 fileService.deleteById(previousFile.getId());
             }
 
+            String oldContent = block.getContent(); 
+            String oldIconKey = block.getIconKey(); 
+            
             block.setContent(request.getContent());
             block.setBlockType(request.getType());
             block.setWidth(request.getWidth());
             block.setIconKey(request.getIconKey());
             block.setFile(newFile);
+            block = blockService.save(block).orElseThrow(MismatchedDataException::new);
+            
+            if(block.getBlockType() == BLOCK_TYPE.COLLECTION) {
+                boolean doNotify = 
+                    !Objects.equals(oldIconKey, block.getIconKey()) ||
+                    !Objects.equals(oldContent, block.getContent());
+                if(doNotify) {
+                    List<User> members = userService.findMembersOfCollection(block.getId());
+                    for (User member : members) {
+                        socket.convertAndSend(
+                            DESTINATION.userPreview(member.getId()),
+                            new PreviewMessageDto()
+                                .setAction(PREVIEW_ACTION.UPDATE)
+                                .setId(block.getId())
+                                .setIconKey(block.getIconKey())
+                                .setName(block.getContent()),
+                            Map.ofEntries(
+                                Map.entry(
+                                    KEY.SENDER_USER_ID,
+                                    sender.getId().toString()
+                                ),
+                                Map.entry(KEY.SENDER_SESSION_ID, sessionId)
+                            )
+                        );
+                    }
+                }
+            }
 
-            blockService.save(block);
             socket.convertAndSend(
                 DESTINATION.pageBlockTransaction(pageId),
                 new BlockMessageDto()

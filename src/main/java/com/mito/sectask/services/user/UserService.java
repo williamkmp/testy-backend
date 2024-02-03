@@ -30,9 +30,18 @@ public interface UserService {
      * return it's members
      *
      * @param pageId {@link Long} page id
-     * @return  {@link List}<{@link User}> member of a given page
+     * @return  {@link List}<{@link User}> members of a given page
      */
     public List<User> findMembersOfPage(Long pageId);
+
+    /**
+     * find all member of a given collection by id, this method will traverse the page-collection relation to get the root and
+     * return it's members
+     *
+     * @param collectionId {@link Long} block id
+     * @return  {@link List}<{@link User}> members of a given collection
+     */
+    public List<User> findMembersOfCollection(String collectionId);
 
     /**
      * find user by id
