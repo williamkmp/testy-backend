@@ -12,7 +12,6 @@ import com.mito.sectask.services.file.FileService;
 import com.mito.sectask.values.MESSAGES;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,12 +40,21 @@ public class FileController {
             File requestedFile = fileService
                 .findById(fileId)
                 .orElseThrow(ResourceNotFoundException::new);
-                
+
             return ResponseEntity
                 .ok()
-                .header(HttpHeaders.CONTENT_TYPE, requestedFile.getContentType())
-                .header(HttpHeaders.CONTENT_LENGTH, Long.toString(requestedFile.getBytes().length))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + requestedFile.getName() + "\"")
+                .header(
+                    HttpHeaders.CONTENT_TYPE,
+                    requestedFile.getContentType()
+                )
+                .header(
+                    HttpHeaders.CONTENT_LENGTH,
+                    Long.toString(requestedFile.getBytes().length)
+                )
+                .header(
+                    HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + requestedFile.getName() + "\""
+                )
                 .body(requestedFile.getBytes());
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundHttpException();

@@ -18,10 +18,8 @@ import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -101,16 +99,21 @@ public class PageServiceImpl implements PageService {
     @Transactional
     public Optional<Page> createSubPage(Page page, String collectionId) {
         try {
-            Block collection = blockRepository.findById(collectionId)
+            Block collection = blockRepository
+                .findById(collectionId)
                 .orElseThrow(ResourceNotFoundException::new);
             page = pageRepository.saveAndFlush(page);
             page.setCollection(collection);
             return Optional.of(pageRepository.saveAndFlush(page));
         } catch (Exception e) {
-            log.error("Error creating sub page id:{} collectionId:{}", page.getId(), collectionId);
+            log.error(
+                "Error creating sub page id:{} collectionId:{}",
+                page.getId(),
+                collectionId
+            );
             e.printStackTrace();
             return Optional.empty();
-        } 
+        }
     }
 
     @Override
@@ -143,6 +146,8 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public List<Page> findByCollectionId(String collectionId) {
-        return pageRepository.findAllByCollectionIdOrderByCreatedAtDesc(collectionId);
+        return pageRepository.findAllByCollectionIdOrderByCreatedAtDesc(
+            collectionId
+        );
     }
 }

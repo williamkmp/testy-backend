@@ -1,22 +1,5 @@
 package com.mito.sectask.controllers;
 
-import java.lang.module.ResolutionException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.annotations.sender.Sender;
@@ -45,10 +28,23 @@ import com.mito.sectask.values.BLOCK_TYPE;
 import com.mito.sectask.values.DESTINATION;
 import com.mito.sectask.values.KEY;
 import com.mito.sectask.values.PREVIEW_ACTION;
-
+import java.lang.module.ResolutionException;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -127,37 +123,49 @@ public class BlockController {
                 fileService.deleteById(previousFile.getId());
             }
 
-            String oldContent = block.getContent(); 
+            String oldContent = block.getContent();
             String oldIconKey = block.getIconKey();
-            BLOCK_TYPE oldBlockType = block.getBlockType(); 
-            
+            BLOCK_TYPE oldBlockType = block.getBlockType();
+
             block.setContent(request.getContent());
             block.setBlockType(request.getType());
             block.setWidth(request.getWidth());
             block.setIconKey(request.getIconKey());
             block.setFile(newFile);
-            block = blockService.save(block).orElseThrow(MismatchedDataException::new);
-            
-            if(block.getBlockType() == BLOCK_TYPE.COLLECTION) {
-                boolean doNotify = 
+            block =
+                blockService
+                    .save(block)
+                    .orElseThrow(MismatchedDataException::new);
+
+            if (block.getBlockType() == BLOCK_TYPE.COLLECTION) {
+                boolean doNotify =
                     !Objects.equals(oldIconKey, block.getIconKey()) ||
                     !Objects.equals(oldContent, block.getContent());
-                if(doNotify) {
+                if (doNotify) {
                     Page parentPage = block.getPage();
                     String senderId = sender.getId().toString();
-                    boolean isNewColelction = !Objects.equals(oldBlockType, BLOCK_TYPE.COLLECTION);
-                    List<User> members = userService.findMembersOfCollection(block.getId());
+                    boolean isNewColelction = !Objects.equals(
+                        oldBlockType,
+                        BLOCK_TYPE.COLLECTION
+                    );
+                    List<User> members = userService.findMembersOfCollection(
+                        block.getId()
+                    );
                     for (User member : members) {
                         socket.convertAndSend(
                             DESTINATION.userPreview(member.getId()),
                             new PreviewMessageDto()
-                                .setAction(isNewColelction ? PREVIEW_ACTION.ADD : PREVIEW_ACTION.UPDATE)
+                                .setAction(
+                                    isNewColelction
+                                        ? PREVIEW_ACTION.ADD
+                                        : PREVIEW_ACTION.UPDATE
+                                )
                                 .setParentId(parentPage.getId().toString())
                                 .setId(block.getId())
                                 .setIconKey(block.getIconKey())
                                 .setName(block.getContent()),
                             Map.ofEntries(
-                                Map.entry(KEY.SENDER_USER_ID,senderId),
+                                Map.entry(KEY.SENDER_USER_ID, senderId),
                                 Map.entry(KEY.SENDER_SESSION_ID, sessionId)
                             )
                         );
@@ -342,7 +350,7 @@ public class BlockController {
                 .deleteBlock(request.getId())
                 .orElseThrow(NotFoundException::new);
 
-            if(deletedBlock.getBlockType() == BLOCK_TYPE.COLLECTION) {
+            if (deletedBlock.getBlockType() == BLOCK_TYPE.COLLECTION) {
                 List<User> members = userService.findMembersOfPage(pageId);
                 String senderId = sender.getId().toString();
                 for (User member : members) {
@@ -353,7 +361,7 @@ public class BlockController {
                             .setParentId(pageId.toString())
                             .setId(deletedBlock.getId()),
                         Map.ofEntries(
-                            Map.entry(KEY.SENDER_USER_ID,senderId),
+                            Map.entry(KEY.SENDER_USER_ID, senderId),
                             Map.entry(KEY.SENDER_SESSION_ID, sessionId)
                         )
                     );

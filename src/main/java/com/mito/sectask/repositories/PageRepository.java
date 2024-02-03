@@ -30,6 +30,7 @@ public interface PageRepository extends JpaRepository<Page, Long> {
     )
     public List<Page> findAllByUserId(@Param("userId") Long userId);
 
-
-    public List<Page> findAllByCollectionIdOrderByCreatedAtDesc(String collectionId);
+    public List<Page> findAllByCollectionIdOrderByCreatedAtDesc(
+        String collectionId
+    );
 }

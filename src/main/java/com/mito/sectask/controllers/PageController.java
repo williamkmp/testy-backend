@@ -188,7 +188,7 @@ public class PageController {
                         .setIconKey(updatedPage.getIconKey())
                         .setName(updatedPage.getName())
                         .setParentId(
-                            updatedPage.getCollection() != null 
+                            updatedPage.getCollection() != null
                                 ? updatedPage.getCollection().getId()
                                 : null
                         ),

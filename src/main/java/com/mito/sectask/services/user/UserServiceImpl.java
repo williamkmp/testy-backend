@@ -126,7 +126,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findMembersOfCollection(String collectionId) {
-        Block collection = blockRepository.findById(collectionId).orElseThrow(ResourceNotFoundException::new);
+        Block collection = blockRepository
+            .findById(collectionId)
+            .orElseThrow(ResourceNotFoundException::new);
         return findMembersOfPage(collection.getPage().getId());
     }
 }
