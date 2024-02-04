@@ -15,7 +15,7 @@ public class JsonConfiguration implements WebMvcConfigurer {
     @Bean
     Gson gson() {
         return new GsonBuilder()
-            .setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
             .create();
     }
 
