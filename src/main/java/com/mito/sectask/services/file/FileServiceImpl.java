@@ -29,8 +29,10 @@ public class FileServiceImpl implements FileService {
                 .orElseThrow(ResourceNotFoundException::new);
             return Optional.of(file);
         } catch (Exception e) {
-            log.error("File not found id:{}", fileId);
-            e.printStackTrace();
+            if(fileId > 0) {
+                log.error("File not found id:{}", fileId);
+                e.printStackTrace();
+            }
             return Optional.empty();
         }
     }
@@ -62,8 +64,10 @@ public class FileServiceImpl implements FileService {
             String clientAccessURL = constructClientAccessUrl(file.getId());
             return Optional.of(clientAccessURL);
         } catch (Exception e) {
-            log.error("Error constructing file url id:{}", fileId);
-            e.printStackTrace();
+            if(fileId > 0) {
+                log.error("Error constructing clieng get file url id:{}", fileId);
+                e.printStackTrace();
+            }
             return Optional.empty();
         }
     }
@@ -95,6 +99,10 @@ public class FileServiceImpl implements FileService {
             fileRepository.deleteById(file.getId());
             return Optional.of(file);
         } catch (Exception e) {
+            if(fileId > 0) {
+                log.error("Error deleting file id:{}", fileId);
+                e.printStackTrace();
+            }
             return Optional.empty();
         }
     }

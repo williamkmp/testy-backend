@@ -61,7 +61,7 @@ public class ChatController {
                 .orElseThrow(ForbiddenException::new);
             Pageable paging = PageRequest.of(pageNo, PAGE_SIZE);
             List<Chat> chatRecord = chatService.findAllByPageId(pageId, paging);
-            ChatDto[] responseBody = (ChatDto[]) chatRecord
+            List<ChatDto> chatList = chatRecord
                 .stream()
                 .map(chat ->
                     new ChatDto()
@@ -69,8 +69,8 @@ public class ChatController {
                         .setContent(chat.getContent())
                         .setSenderId(chat.getSender().getId().toString())
                         .setSentAt(chat.getSentAt())
-                )
-                .toArray();
+                ).toList();
+            ChatDto[] responseBody = chatList.toArray(new ChatDto[0]); 
             return new Response<ChatDto[]>(HttpStatus.OK).setData(responseBody);
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundHttpException();
