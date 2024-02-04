@@ -87,6 +87,16 @@ public class DESTINATION {
     }
 
     /**
+     * STOMP destination url for /topic/page/{pageId}/chat
+     *
+     * @param pageId {@link Long} page id
+     * @return {@link String} STOMP destination path
+     */
+    public static String pageChat(Long pageId) {
+        return "/topic/page/" + pageId.toString() + "/chat";
+    }
+
+    /**
      *  STOMP destination url form /topic/page/{pageId}/user/{userId}/url
      *
      * @param pageId {@link Long} page id

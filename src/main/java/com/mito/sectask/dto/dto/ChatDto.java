@@ -1,5 +1,6 @@
 package com.mito.sectask.dto.dto;
 
+import java.util.Date;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -13,4 +14,5 @@ public class ChatDto {
     private String content;
     private String senderId;
     private String pageId;
+    private Date sentAt;
 }
