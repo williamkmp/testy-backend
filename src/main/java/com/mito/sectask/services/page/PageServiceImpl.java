@@ -52,6 +52,19 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
+    public Optional<Page> delete(Long pageId) {
+        try {
+            Page page = pageRepository
+                .findById(pageId)
+                .orElseThrow(Exception::new);
+            pageRepository.deleteById(pageId);
+            return Optional.of(page);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     @Transactional
     public Optional<Page> createRootPage(
         Page page,

@@ -6,6 +6,7 @@ import com.mito.sectask.annotations.callersession.CallerSession;
 import com.mito.sectask.dto.dto.BlockDto;
 import com.mito.sectask.dto.dto.MenuPreviewDto;
 import com.mito.sectask.dto.dto.PageDto;
+import com.mito.sectask.dto.dto.PageMessagingExceptionDto;
 import com.mito.sectask.dto.dto.PreviewMessageDto;
 import com.mito.sectask.dto.request.page.PageCreateRequest;
 import com.mito.sectask.dto.request.page.PageUpdateRequest;
@@ -17,6 +18,7 @@ import com.mito.sectask.entities.Role;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.exceptions.ForbiddenException;
 import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
+import com.mito.sectask.exceptions.exceptions.UnauthorizedException;
 import com.mito.sectask.exceptions.exceptions.UserNotFoundException;
 import com.mito.sectask.exceptions.httpexceptions.ForbiddenHttpException;
 import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpException;
@@ -43,6 +45,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -227,6 +230,64 @@ public class PageController {
                     .setImagePosition(updatedPage.getImagePosition())
                     .setImageId(updatedImageId)
             );
+    }
+
+    @DeleteMapping("/{pageId}")
+    @Authenticated(true)
+    public Response<Object> deletePage(
+        @PathVariable("pageId") Long pageId,
+        @Caller User caller,
+        @CallerSession String session
+    ) {
+        try {
+            Role userRole = roleService
+                .getUserPageAuthority(caller.getId(), pageId)
+                .orElseThrow(ForbiddenException::new);
+            Page page = pageService
+                .findById(pageId)
+                .orElseThrow(ResourceNotFoundException::new);
+
+            Boolean pageIsRoot = page.getCollection() == null;
+            Boolean canDelete =
+                (pageIsRoot && userRole.getName() == USER_ROLE.FULL_ACCESS) ||
+                (!pageIsRoot &&
+                    userRole.getName() == USER_ROLE.COLLABORATORS) ||
+                (!pageIsRoot && userRole.getName() == USER_ROLE.FULL_ACCESS);
+
+            if (Boolean.TRUE.equals(canDelete)) {
+                Page deletedPage = pageService
+                    .delete(pageId)
+                    .orElseThrow(ResourceNotFoundException::new);
+
+                socket.convertAndSend(
+                    DESTINATION.pageUserError(pageId, caller.getId()),
+                    new PageMessagingExceptionDto()
+                        .setStatus(HttpStatus.NOT_FOUND.value())
+                        .setMessage(MESSAGES.ERROR_RESOURCE_NOT_FOUND)
+                        .setPageId(deletedPage.getId().toString())
+                        .setUserId(caller.getId().toString()),
+                    Map.ofEntries(
+                        Map.entry(
+                            KEY.SENDER_USER_ID,
+                            caller.getId().toString()
+                        ),
+                        Map.entry(KEY.SENDER_SESSION_ID, session)
+                    )
+                );
+            } else {
+                throw new ForbiddenException();
+            }
+
+            return new Response<>(HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundHttpException();
+        } catch (ForbiddenException e) {
+            throw new ForbiddenHttpException();
+        } catch (UnauthorizedException e) {
+            throw new UnauthorizedHttpException();
+        } catch (Exception e) {
+            throw new InternalServerErrorHttpException();
+        }
     }
 
     @GetMapping(path = "/preview", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -26,6 +26,14 @@ public interface PageService {
     public Optional<Page> findById(Long pageId);
 
     /**
+     * delete a given page by id
+     *
+     * @param pageId {@link Long} page id
+     * @return {@link Optional}<{@link Page}> deleted page data (detached entity)
+     */
+    public Optional<Page> delete(Long pageId);
+
+    /**
      * create a new root page and register it to the database. Returns the created root Page data.
      *
      * @param page {@link Page} the new page data.
