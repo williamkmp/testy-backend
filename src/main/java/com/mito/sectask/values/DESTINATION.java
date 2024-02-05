@@ -97,7 +97,7 @@ public class DESTINATION {
     }
 
     /**
-     *  STOMP destination url form /topic/page/{pageId}/user/{userId}/url
+     *  STOMP destination url form /topic/page/{pageId}/user/{userId}/error
      *
      * @param pageId {@link Long} page id
      * @param userId {@link Long} user id
