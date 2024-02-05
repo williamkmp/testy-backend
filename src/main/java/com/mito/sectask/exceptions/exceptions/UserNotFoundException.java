@@ -3,7 +3,7 @@ package com.mito.sectask.exceptions.exceptions;
 public class UserNotFoundException extends RuntimeException {
 
     public UserNotFoundException() {
-        super("Unauthorized resource access");
+        super("User not found exception");
     }
 
     public UserNotFoundException(String message) {
