@@ -1,5 +1,6 @@
 package com.mito.sectask.exceptions;
 
+import com.mito.sectask.dto.dto.PageMessagingExceptionDto;
 import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.exceptions.messsagingexceptions.PageMessagingException;
 import com.mito.sectask.values.DESTINATION;
@@ -65,10 +66,11 @@ public class ExceptionCatcher {
                 exception.getPageId(),
                 exception.getUserId()
             ),
-            Map.ofEntries(
-                Map.entry("status", exception.getCode().value()),
-                Map.entry("message", exception.getMessage())
-            ),
+            new PageMessagingExceptionDto()
+                .setStatus(exception.getCode().value())
+                .setPageId(exception.getPageId().toString())
+                .setUserId(exception.getUserId().toString())
+                .setMessage(exception.getMessage()),
             Map.ofEntries(
                 Map.entry(KEY.SENDER_USER_ID, exception.getUserId().toString()),
                 Map.entry(
