@@ -69,8 +69,9 @@ public class ChatController {
                         .setContent(chat.getContent())
                         .setSenderId(chat.getSender().getId().toString())
                         .setSentAt(chat.getSentAt())
-                ).toList();
-            ChatDto[] responseBody = chatList.toArray(new ChatDto[0]); 
+                )
+                .toList();
+            ChatDto[] responseBody = chatList.toArray(new ChatDto[0]);
             return new Response<ChatDto[]>(HttpStatus.OK).setData(responseBody);
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundHttpException();
