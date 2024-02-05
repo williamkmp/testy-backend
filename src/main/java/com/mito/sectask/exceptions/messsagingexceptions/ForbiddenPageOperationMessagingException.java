@@ -6,10 +6,10 @@ import org.springframework.http.HttpStatus;
 /**
  * inidcates a user doesn't have authorization to access a given page, user must be redirected to index page
  */
-public class UnauthorizedPageAccessMessagingException
+public class ForbiddenPageOperationMessagingException
     extends PageMessagingException {
 
-    public UnauthorizedPageAccessMessagingException(
+    public ForbiddenPageOperationMessagingException(
         Long userId,
         Long pageId,
         String sessionId
@@ -18,8 +18,8 @@ public class UnauthorizedPageAccessMessagingException
             userId,
             pageId,
             sessionId,
-            HttpStatus.UNAUTHORIZED,
-            MESSAGES.ERROR_FORBIDDEN
+            HttpStatus.FORBIDDEN,
+            MESSAGES.UPDATE_FAIL
         );
     }
 }
