@@ -370,6 +370,10 @@ public class PageController {
             ? page.getImage().getId().toString()
             : null;
 
+        String collectionId = page.getCollection() != null
+            ? page.getCollection().getId()
+            : null;
+
         return new Response<PageDto>(HttpStatus.OK)
             .setData(
                 new PageDto()
@@ -379,6 +383,7 @@ public class PageController {
                     .setImagePosition(page.getImagePosition())
                     .setImageId(imageId)
                     .setAuthority(authority)
+                    .setCollectionId(collectionId)
             );
     }
 

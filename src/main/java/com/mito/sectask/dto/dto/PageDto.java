@@ -13,6 +13,7 @@ public class PageDto {
     private String id;
     private String title;
     private USER_ROLE authority;
+    private String collectionId;
     private String iconKey;
     private String imageId;
     private Float imagePosition;
