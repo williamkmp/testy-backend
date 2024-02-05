@@ -3,9 +3,12 @@ package com.mito.sectask.exceptions.messsagingexceptions;
 import com.mito.sectask.values.MESSAGES;
 import org.springframework.http.HttpStatus;
 
-public class NotFoundPageMessagingException extends PageMessagingException {
+/**
+ * indicates a page is deleted, user must be redirected to index page
+ */
+public class PageNotFoundMessagingException extends PageMessagingException {
 
-    public NotFoundPageMessagingException(
+    public PageNotFoundMessagingException(
         Long userId,
         Long pageId,
         String sessionId
