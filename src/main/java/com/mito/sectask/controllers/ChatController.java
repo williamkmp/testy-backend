@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -42,7 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping(path = "/chat")
 public class ChatController {
 
-    private Integer PAGE_SIZE = 20;
+    private Integer PAGE_SIZE = 50;
     private final ChatService chatService;
     private final RoleService roleService;
     private final PageService pageService;
@@ -59,8 +57,7 @@ public class ChatController {
             roleService
                 .getUserPageAuthority(caller.getId(), pageId)
                 .orElseThrow(ForbiddenException::new);
-            Pageable paging = PageRequest.of(pageNo, PAGE_SIZE);
-            List<Chat> chatRecord = chatService.findAllByPageId(pageId, paging);
+            List<Chat> chatRecord = chatService.findAllByPageId(pageId);
             List<ChatDto> chatList = chatRecord
                 .stream()
                 .map(chat ->

@@ -16,6 +16,14 @@ public interface ChatService {
     public List<Chat> findAllByPageId(Long pageId, Pageable paging);
 
     /**
+     * get all page chat record sorted from newst to oldest
+     *
+     * @param pageId {@link Long} page id
+     * @return {@link List}<{@link Chat}> page chat record
+     */
+    public List<Chat> findAllByPageId(Long pageId);
+
+    /**
      * save a new chat erecord to the database
      *
      * @param newChat {@link Chat} new chat

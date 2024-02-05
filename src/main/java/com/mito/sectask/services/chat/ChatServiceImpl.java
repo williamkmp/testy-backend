@@ -23,6 +23,11 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    public List<Chat> findAllByPageId(Long pageId) {
+        return chatRepository.findAllByPageIdOrderBySentAtDesc(pageId);
+    }
+
+    @Override
     @Transactional
     public Optional<Chat> save(Chat newChat) {
         try {

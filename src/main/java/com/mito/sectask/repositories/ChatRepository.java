@@ -12,4 +12,6 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
         Long pageId,
         Pageable pageable
     );
+
+    public List<Chat> findAllByPageIdOrderBySentAtDesc(Long pageId);
 }
