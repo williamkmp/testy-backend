@@ -11,14 +11,19 @@ import com.mito.sectask.dto.response.Response;
 import com.mito.sectask.entities.Block;
 import com.mito.sectask.entities.File;
 import com.mito.sectask.entities.Page;
+import com.mito.sectask.entities.Role;
 import com.mito.sectask.entities.User;
 import com.mito.sectask.exceptions.exceptions.ForbiddenException;
 import com.mito.sectask.exceptions.exceptions.MismatchedDataException;
 import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
+import com.mito.sectask.exceptions.exceptions.UnauthorizedException;
 import com.mito.sectask.exceptions.httpexceptions.ForbiddenHttpException;
 import com.mito.sectask.exceptions.httpexceptions.InternalServerErrorHttpException;
 import com.mito.sectask.exceptions.httpexceptions.ResourceNotFoundHttpException;
-import com.mito.sectask.exceptions.messsagingexceptions.NotFoundPageMessagingException;
+import com.mito.sectask.exceptions.messsagingexceptions.ForbiddenPageOperationMessagingException;
+import com.mito.sectask.exceptions.messsagingexceptions.PageDataMismatchMessagingException;
+import com.mito.sectask.exceptions.messsagingexceptions.PageNotFoundMessagingException;
+import com.mito.sectask.exceptions.messsagingexceptions.UnauthorizedPageAccessMessagingException;
 import com.mito.sectask.services.block.BlockService;
 import com.mito.sectask.services.file.FileService;
 import com.mito.sectask.services.page.PageService;
@@ -28,6 +33,7 @@ import com.mito.sectask.values.BLOCK_TYPE;
 import com.mito.sectask.values.DESTINATION;
 import com.mito.sectask.values.KEY;
 import com.mito.sectask.values.PREVIEW_ACTION;
+import com.mito.sectask.values.USER_ROLE;
 import java.lang.module.ResolutionException;
 import java.util.List;
 import java.util.Map;
@@ -103,12 +109,18 @@ public class BlockController {
         @Payload BlockMessageDto request,
         @Sender User sender,
         @SenderSession String sessionId
-    ) throws NotFoundPageMessagingException {
+    )
+        throws PageNotFoundMessagingException, UnauthorizedPageAccessMessagingException, PageDataMismatchMessagingException, ForbiddenPageOperationMessagingException {
         try {
             pageService.findById(pageId).orElseThrow(NotFoundException::new);
-            roleService
+            Role role = roleService
                 .getUserPageAuthority(sender.getId(), pageId)
-                .orElseThrow(ForbiddenException::new);
+                .orElseThrow(UnauthorizedException::new);
+
+            if (USER_ROLE.VIEWERS == role.getName()) {
+                throw new ForbiddenException();
+            }
+
             Block block = blockService
                 .findById(request.getId())
                 .orElseThrow(ResourceNotFoundException::new);
@@ -189,8 +201,33 @@ public class BlockController {
                     Map.entry(KEY.SENDER_SESSION_ID, sessionId)
                 )
             );
+        } catch (ForbiddenException e) {
+            throw new ForbiddenPageOperationMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
+        } catch (UnauthorizedException e) {
+            throw new UnauthorizedPageAccessMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
+        } catch (ResourceNotFoundException e) {
+            throw new PageNotFoundMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
         } catch (Exception e) {
-            throw new NotFoundPageMessagingException(
+            log.error(
+                "Error handling block.transaction, blockId:{} pageId:{} userId:{}",
+                request.getId(),
+                pageId,
+                sender.getId()
+            );
+            e.printStackTrace();
+            throw new PageDataMismatchMessagingException(
                 sender.getId(),
                 pageId,
                 sessionId
@@ -204,13 +241,18 @@ public class BlockController {
         @Payload BlockMessageDto request,
         @Sender User sender,
         @SenderSession String sessionId
-    ) throws NotFoundPageMessagingException {
+    )
+        throws PageNotFoundMessagingException, UnauthorizedPageAccessMessagingException, PageDataMismatchMessagingException, ForbiddenPageOperationMessagingException {
         try {
             // checking user access and data integrity
             pageService.findById(pageId).orElseThrow(NotFoundException::new);
-            roleService
+            Role role = roleService
                 .getUserPageAuthority(sender.getId(), pageId)
-                .orElseThrow(ForbiddenException::new);
+                .orElseThrow(UnauthorizedException::new);
+
+            if (USER_ROLE.VIEWERS == role.getName()) {
+                throw new ForbiddenException();
+            }
 
             Block block = blockService.findById(request.getId()).orElse(null);
 
@@ -251,13 +293,33 @@ public class BlockController {
                     Map.entry(KEY.SENDER_SESSION_ID, sessionId)
                 )
             );
+        } catch (ForbiddenException e) {
+            throw new ForbiddenPageOperationMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
+        } catch (UnauthorizedException e) {
+            throw new UnauthorizedPageAccessMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
+        } catch (ResourceNotFoundException e) {
+            throw new PageNotFoundMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
         } catch (Exception e) {
             log.error(
-                "Block move error blockId: {}, pageId:{}",
+                "Error handling block.move, blockId:{} pageId:{} userId:{}",
                 request.getId(),
-                pageId
+                pageId,
+                sender.getId()
             );
-            throw new NotFoundPageMessagingException(
+            e.printStackTrace();
+            throw new PageDataMismatchMessagingException(
                 sender.getId(),
                 pageId,
                 sessionId
@@ -271,15 +333,20 @@ public class BlockController {
         @Payload BlockMessageDto request,
         @Sender User sender,
         @SenderSession String sessionId
-    ) throws NotFoundPageMessagingException {
+    )
+        throws PageNotFoundMessagingException, ForbiddenPageOperationMessagingException, UnauthorizedPageAccessMessagingException, PageDataMismatchMessagingException {
         try {
             // checking user access and data integrity
             Page page = pageService
                 .findById(pageId)
                 .orElseThrow(NotFoundException::new);
-            roleService
+            Role role = roleService
                 .getUserPageAuthority(sender.getId(), pageId)
                 .orElseThrow(ForbiddenException::new);
+
+            if (USER_ROLE.VIEWERS == role.getName()) {
+                throw new ForbiddenException();
+            }
 
             // Add block type from client is always PARAGRAPH (UI/UX Specification)
             Block insertedBlock = blockService
@@ -318,13 +385,32 @@ public class BlockController {
                     Map.entry(KEY.SENDER_SESSION_ID, sessionId)
                 )
             );
+        } catch (ForbiddenException e) {
+            throw new ForbiddenPageOperationMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
+        } catch (UnauthorizedException e) {
+            throw new UnauthorizedPageAccessMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
+        } catch (ResourceNotFoundException e) {
+            throw new PageNotFoundMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
         } catch (Exception e) {
             log.error(
-                "Block add error blockId: {}, pageId:{}",
-                request.getId(),
-                pageId
+                "Error handling block.add pageId:{} userId:{}",
+                pageId,
+                sender.getId()
             );
-            throw new NotFoundPageMessagingException(
+            e.printStackTrace();
+            throw new PageDataMismatchMessagingException(
                 sender.getId(),
                 pageId,
                 sessionId
@@ -338,13 +424,18 @@ public class BlockController {
         @Payload BlockMessageDto request,
         @Sender User sender,
         @SenderSession String sessionId
-    ) throws NotFoundPageMessagingException {
+    )
+        throws PageNotFoundMessagingException, ForbiddenPageOperationMessagingException, UnauthorizedPageAccessMessagingException, PageDataMismatchMessagingException {
         try {
             // checking user access and data integrity
             pageService.findById(pageId).orElseThrow(NotFoundException::new);
-            roleService
+            Role role = roleService
                 .getUserPageAuthority(sender.getId(), pageId)
                 .orElseThrow(ForbiddenException::new);
+
+            if (USER_ROLE.VIEWERS == role.getName()) {
+                throw new ForbiddenException();
+            }
 
             Block deletedBlock = blockService
                 .deleteBlock(request.getId())
@@ -376,13 +467,33 @@ public class BlockController {
                     Map.entry(KEY.SENDER_SESSION_ID, sessionId)
                 )
             );
+        } catch (ForbiddenException e) {
+            throw new ForbiddenPageOperationMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
+        } catch (UnauthorizedException e) {
+            throw new UnauthorizedPageAccessMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
+        } catch (ResourceNotFoundException e) {
+            throw new PageNotFoundMessagingException(
+                sender.getId(),
+                pageId,
+                sessionId
+            );
         } catch (Exception e) {
             log.error(
-                "Block delete error blockId: {}, pageId:{}",
+                "Error handling block.delete blockId:{} pageId:{} userId:{}",
                 request.getId(),
-                pageId
+                pageId,
+                sender.getId()
             );
-            throw new NotFoundPageMessagingException(
+            e.printStackTrace();
+            throw new PageDataMismatchMessagingException(
                 sender.getId(),
                 pageId,
                 sessionId
