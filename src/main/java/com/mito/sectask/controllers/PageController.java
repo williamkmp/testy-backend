@@ -4,6 +4,7 @@ import com.mito.sectask.annotations.Authenticated;
 import com.mito.sectask.annotations.caller.Caller;
 import com.mito.sectask.annotations.callersession.CallerSession;
 import com.mito.sectask.dto.dto.BlockDto;
+import com.mito.sectask.dto.dto.MemberDto;
 import com.mito.sectask.dto.dto.MenuPreviewDto;
 import com.mito.sectask.dto.dto.PageDto;
 import com.mito.sectask.dto.dto.PageMessagingExceptionDto;
@@ -35,6 +36,7 @@ import com.mito.sectask.values.KEY;
 import com.mito.sectask.values.MESSAGES;
 import com.mito.sectask.values.PREVIEW_ACTION;
 import com.mito.sectask.values.USER_ROLE;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -277,7 +279,6 @@ public class PageController {
             } else {
                 throw new ForbiddenException();
             }
-
             return new Response<>(HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundHttpException();
@@ -309,6 +310,101 @@ public class PageController {
 
         return new Response<MenuPreviewDto[]>(HttpStatus.OK)
             .setData(pagePreviews);
+    }
+
+    @GetMapping("/{pageId}/user")
+    @Authenticated(true)
+    public Response<MemberDto[]> getPageMembers(
+        @Caller User caller,
+        @PathVariable("pageId") Long pageId
+    ) {
+        try {
+            roleService
+                .getUserPageAuthority(caller.getId(), pageId)
+                .orElseThrow(ForbiddenException::new);
+            Page page = pageService
+                .findById(pageId)
+                .orElseThrow(ResourceNotFoundException::new);
+
+            List<User> userList = userService.findMembersOfPage(page.getId());
+            List<MemberDto> memberList = new ArrayList<>();
+
+            for (User user : userList) {
+                Role userAuthority = roleService
+                    .getUserPageAuthority(user.getId(), pageId)
+                    .orElseThrow(Exception::new);
+                memberList.add(
+                    new MemberDto()
+                        .setId(user.getId().toString())
+                        .setFullName(user.getFullName())
+                        .setTagName(user.getTagName())
+                        .setAuthority(userAuthority.getName())
+                        .setImageId(
+                            user.getImage() != null
+                                ? user.getImage().getId().toString()
+                                : null
+                        )
+                );
+            }
+            return new Response<MemberDto[]>(HttpStatus.OK)
+                .setData(memberList.toArray(new MemberDto[0]));
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundHttpException();
+        } catch (ForbiddenException e) {
+            throw new ForbiddenHttpException();
+        } catch (UnauthorizedException e) {
+            throw new UnauthorizedHttpException();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServerErrorHttpException();
+        }
+    }
+
+    @GetMapping("/{pageId}/user/{userId}")
+    @Authenticated(true)
+    public Response<MemberDto> getMemberInformation(
+        @PathVariable("pageId") Long pageId,
+        @PathVariable("userId") Long userId,
+        @Caller User caller
+    ) {
+        try {
+            roleService
+                .getUserPageAuthority(caller.getId(), pageId)
+                .orElseThrow(ForbiddenException::new);
+            Page page = pageService
+                .findById(pageId)
+                .orElseThrow(ResourceNotFoundException::new);
+            User user = userService
+                .findById(userId)
+                .orElseThrow(ResourceNotFoundException::new);
+            Role userRole = roleService
+                .getUserPageAuthority(user.getId(), page.getId())
+                .orElseThrow(Exception::new);
+
+            return new Response<MemberDto>(HttpStatus.OK)
+                .setData(
+                    new MemberDto()
+                        .setId(user.getId().toString())
+                        .setEmail(user.getEmail())
+                        .setTagName(user.getTagName())
+                        .setFullName(user.getFullName())
+                        .setAuthority(userRole.getName())
+                        .setImageId(
+                            user.getImage() != null
+                                ? user.getImage().getId().toString()
+                                : null
+                        )
+                );
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundHttpException();
+        } catch (ForbiddenException e) {
+            throw new ForbiddenHttpException();
+        } catch (UnauthorizedException e) {
+            throw new UnauthorizedHttpException();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServerErrorHttpException();
+        }
     }
 
     @GetMapping(path = "/{pageId}/collection/preview")
