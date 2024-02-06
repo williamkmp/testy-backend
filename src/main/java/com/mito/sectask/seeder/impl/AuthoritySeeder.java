@@ -37,8 +37,8 @@ public class AuthoritySeeder implements Seeder {
     public void seed() throws Exception {
         ProjectConfiguration configuration1 = new ProjectConfiguration()
             .setPageId(1L) // Testy
-            .setOwnerEmail("aisyah@email.com")
-            .addMember("william@email.com")
+            .setOwnerEmail("william@email.com")
+            .addMember("aisyah@email.com")
             .addMember("andre@email.com");
 
         ProjectConfiguration configuration2 = new ProjectConfiguration()
