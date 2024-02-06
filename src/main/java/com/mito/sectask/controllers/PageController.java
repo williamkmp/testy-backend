@@ -6,6 +6,7 @@ import com.mito.sectask.annotations.callersession.CallerSession;
 import com.mito.sectask.dto.dto.BlockDto;
 import com.mito.sectask.dto.dto.MemberDto;
 import com.mito.sectask.dto.dto.MenuPreviewDto;
+import com.mito.sectask.dto.dto.PageDeleteDto;
 import com.mito.sectask.dto.dto.PageDto;
 import com.mito.sectask.dto.dto.PageMessagingExceptionDto;
 import com.mito.sectask.dto.dto.PreviewMessageDto;
@@ -236,7 +237,7 @@ public class PageController {
 
     @DeleteMapping("/{pageId}")
     @Authenticated(true)
-    public Response<Object> deletePage(
+    public Response<PageDeleteDto> deletePage(
         @PathVariable("pageId") Long pageId,
         @Caller User caller,
         @CallerSession String session
@@ -249,6 +250,10 @@ public class PageController {
                 .findById(pageId)
                 .orElseThrow(ResourceNotFoundException::new);
 
+            Page parentPage = page.getCollection() != null 
+                ? page.getCollection().getPage()
+                : null;
+
             Boolean pageIsRoot = page.getCollection() == null;
             Boolean canDelete =
                 (pageIsRoot && userRole.getName() == USER_ROLE.FULL_ACCESS) ||
@@ -256,6 +261,25 @@ public class PageController {
                     userRole.getName() == USER_ROLE.COLLABORATORS) ||
                 (!pageIsRoot && userRole.getName() == USER_ROLE.FULL_ACCESS);
 
+            // Notify member of page deletion
+            List<User> members = userService.findMembersOfPage(pageId);
+            for (User member : members) {
+                socket.convertAndSend(
+                    DESTINATION.userPreview(member.getId()),
+                    new PreviewMessageDto()
+                        .setAction(PREVIEW_ACTION.DELETE)
+                        .setParentId(page.getCollection() != null ? page.getCollection().getId() : null)
+                        .setIconKey(page.getIconKey())
+                        .setName(page.getName())
+                        .setId(page.getId().toString()),
+                    Map.ofEntries(
+                        Map.entry(KEY.SENDER_USER_ID, caller.getId().toString()),
+                        Map.entry(KEY.SENDER_SESSION_ID, session)
+                    )
+                );
+            }
+
+            // Delete process 
             if (Boolean.TRUE.equals(canDelete)) {
                 Page deletedPage = pageService
                     .delete(pageId)
@@ -276,10 +300,17 @@ public class PageController {
                         Map.entry(KEY.SENDER_SESSION_ID, session)
                     )
                 );
+
+                return new Response<PageDeleteDto>(HttpStatus.OK)
+                    .setData(new PageDeleteDto()
+                        .setPageId(deletedPage.getId().toString())
+                        .setRedirectPageId(parentPage != null ? parentPage.getId().toString() : null)
+                    );
             } else {
                 throw new ForbiddenException();
             }
-            return new Response<>(HttpStatus.OK);
+
+
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundHttpException();
         } catch (ForbiddenException e) {
@@ -287,6 +318,7 @@ public class PageController {
         } catch (UnauthorizedException e) {
             throw new UnauthorizedHttpException();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new InternalServerErrorHttpException();
         }
     }

@@ -41,6 +41,7 @@ public class PageServiceImpl implements PageService {
     @Override
     @Transactional
     public Optional<Page> findById(Long pageId) {
+        //TODO: fix delete method, failed deleting root page
         if (pageId == null) return Optional.empty();
         Optional<Page> maybePage = pageRepository.findById(pageId);
         if (maybePage.isEmpty()) {
@@ -52,14 +53,23 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
+    @Transactional
     public Optional<Page> delete(Long pageId) {
         try {
             Page page = pageRepository
                 .findById(pageId)
                 .orElseThrow(Exception::new);
-            pageRepository.deleteById(pageId);
+            List<Authority> authorities = page.getAuthorities();
+            if(!authorities.isEmpty()) {
+                for(Authority authority : authorities) {
+                    authorityRepository.delete(authority);
+                }
+            }
+            pageRepository.delete(page);
             return Optional.of(page);
         } catch (Exception e) {
+            log.error("Error delteing page id:{}", pageId);
+            e.printStackTrace();
             return Optional.empty();
         }
     }
