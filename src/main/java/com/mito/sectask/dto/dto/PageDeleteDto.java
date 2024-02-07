@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 public class PageDeleteDto {
+
     private String pageId;
     private String redirectPageId;
 }

@@ -13,4 +13,5 @@ public class PageMessagingExceptionDto {
     private String userId;
     private String pageId;
     private String message;
+    private String redirectUrl;
 }

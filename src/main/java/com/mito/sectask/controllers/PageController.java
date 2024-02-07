@@ -249,10 +249,15 @@ public class PageController {
             Page page = pageService
                 .findById(pageId)
                 .orElseThrow(ResourceNotFoundException::new);
-
-            Page parentPage = page.getCollection() != null 
+            Page parentPage = page.getCollection() != null
                 ? page.getCollection().getPage()
                 : null;
+            String pageCollectionId = page.getCollection() != null
+                ? page.getCollection().getId()
+                : null;
+            String afterDeleteRedirectUrl = page.getCollection() != null
+                ? "/page/" + page.getCollection().getPage().getId().toString()
+                : "/";
 
             Boolean pageIsRoot = page.getCollection() == null;
             Boolean canDelete =
@@ -261,25 +266,8 @@ public class PageController {
                     userRole.getName() == USER_ROLE.COLLABORATORS) ||
                 (!pageIsRoot && userRole.getName() == USER_ROLE.FULL_ACCESS);
 
-            // Notify member of page deletion
+            // Delete process
             List<User> members = userService.findMembersOfPage(pageId);
-            for (User member : members) {
-                socket.convertAndSend(
-                    DESTINATION.userPreview(member.getId()),
-                    new PreviewMessageDto()
-                        .setAction(PREVIEW_ACTION.DELETE)
-                        .setParentId(page.getCollection() != null ? page.getCollection().getId() : null)
-                        .setIconKey(page.getIconKey())
-                        .setName(page.getName())
-                        .setId(page.getId().toString()),
-                    Map.ofEntries(
-                        Map.entry(KEY.SENDER_USER_ID, caller.getId().toString()),
-                        Map.entry(KEY.SENDER_SESSION_ID, session)
-                    )
-                );
-            }
-
-            // Delete process 
             if (Boolean.TRUE.equals(canDelete)) {
                 Page deletedPage = pageService
                     .delete(pageId)
@@ -291,6 +279,7 @@ public class PageController {
                         .setStatus(HttpStatus.NOT_FOUND.value())
                         .setMessage(MESSAGES.ERROR_RESOURCE_NOT_FOUND)
                         .setPageId(deletedPage.getId().toString())
+                        .setRedirectUrl(afterDeleteRedirectUrl)
                         .setUserId(caller.getId().toString()),
                     Map.ofEntries(
                         Map.entry(
@@ -301,16 +290,39 @@ public class PageController {
                     )
                 );
 
+                // Notify member of page deletion
+                for (User member : members) {
+                    socket.convertAndSend(
+                        DESTINATION.userPreview(member.getId()),
+                        new PreviewMessageDto()
+                            .setAction(PREVIEW_ACTION.DELETE)
+                            .setId(pageId.toString())
+                            .setParentId(pageCollectionId)
+                            .setIconKey(page.getIconKey())
+                            .setName(page.getName()),
+                        Map.ofEntries(
+                            Map.entry(
+                                KEY.SENDER_USER_ID,
+                                caller.getId().toString()
+                            ),
+                            Map.entry(KEY.SENDER_SESSION_ID, session)
+                        )
+                    );
+                }
+
                 return new Response<PageDeleteDto>(HttpStatus.OK)
-                    .setData(new PageDeleteDto()
-                        .setPageId(deletedPage.getId().toString())
-                        .setRedirectPageId(parentPage != null ? parentPage.getId().toString() : null)
+                    .setData(
+                        new PageDeleteDto()
+                            .setPageId(deletedPage.getId().toString())
+                            .setRedirectPageId(
+                                parentPage != null
+                                    ? parentPage.getId().toString()
+                                    : null
+                            )
                     );
             } else {
                 throw new ForbiddenException();
             }
-
-
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundHttpException();
         } catch (ForbiddenException e) {
