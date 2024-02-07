@@ -1,6 +1,5 @@
 package com.mito.sectask.entities;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,7 +30,7 @@ public class CollectionValue {
     @Column(name = "value", nullable = true)
     private String value;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
         name = "header_id",
         referencedColumnName = "id",
@@ -39,7 +38,7 @@ public class CollectionValue {
     )
     private CollectionHeader header;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "page_id", referencedColumnName = "id", nullable = false)
     private Page page;
 

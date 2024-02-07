@@ -46,22 +46,22 @@ public class Block {
     @JoinColumn(name = "page_id", referencedColumnName = "id", nullable = true)
     private Page page;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "file_id", referencedColumnName = "id", nullable = true)
     private File file;
 
     @OneToMany(
-        cascade = CascadeType.ALL,
         fetch = FetchType.LAZY,
-        mappedBy = "collection"
+        mappedBy = "collection",
+        orphanRemoval = true
     )
     private List<Page> pages;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "prev_id", referencedColumnName = "id", nullable = true)
     private Block prev;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "next_id", referencedColumnName = "id", nullable = true)
     private Block next;
 }

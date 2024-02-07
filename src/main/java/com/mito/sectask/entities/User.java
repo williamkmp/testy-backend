@@ -1,6 +1,5 @@
 package com.mito.sectask.entities;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -46,14 +45,10 @@ public class User {
     @Column(name = "refresh_token", nullable = true)
     private String refreshToken;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = true)
     private File image;
 
-    @OneToMany(
-        cascade = CascadeType.ALL,
-        mappedBy = "user",
-        fetch = FetchType.LAZY
-    )
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)
     private List<Authority> authorities;
 }

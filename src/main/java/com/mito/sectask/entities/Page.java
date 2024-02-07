@@ -40,18 +40,18 @@ public class Page {
     @Column(name = "image_position", nullable = false)
     private Float imagePosition = (float) 0;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.REMOVE,
+        orphanRemoval = true
+    )
     @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = true)
     private File image;
 
-    @OneToMany(
-        fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL,
-        mappedBy = "page"
-    )
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "page", orphanRemoval = true)
     private List<Block> blocks;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(
         name = "collection_id",
         referencedColumnName = "id",
@@ -59,7 +59,7 @@ public class Page {
     )
     private Block collection;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "page")
+    @OneToMany(mappedBy = "page", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Authority> authorities;
 
     @CreationTimestamp

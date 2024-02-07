@@ -1,7 +1,6 @@
 package com.mito.sectask.entities;
 
 import com.mito.sectask.values.PROPERTIES_TYPE;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -36,7 +35,7 @@ public class CollectionHeader {
     @Column(name = "options", nullable = true)
     private List<String> options;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
         name = "block_id",
         referencedColumnName = "id",
