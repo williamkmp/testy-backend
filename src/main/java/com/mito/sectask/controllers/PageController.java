@@ -380,8 +380,9 @@ public class PageController {
                 memberList.add(
                     new MemberDto()
                         .setId(user.getId().toString())
-                        .setFullName(user.getFullName())
+                        .setEmail(user.getEmail())
                         .setTagName(user.getTagName())
+                        .setFullName(user.getFullName())
                         .setAuthority(userAuthority.getName())
                         .setImageId(
                             user.getImage() != null
