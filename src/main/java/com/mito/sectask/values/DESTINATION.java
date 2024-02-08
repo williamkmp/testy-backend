@@ -97,6 +97,16 @@ public class DESTINATION {
     }
 
     /**
+     * STOMP destination url for /topic/page/{pageId}/member
+     *
+     * @param pageId {@link Long} page id
+     * @return {@link String} STOMP destination path
+     */
+    public static String pageMember(Long pageId) {
+        return "/topic/page/" + pageId.toString() + "/member";
+    }
+
+    /**
      *  STOMP destination url form /topic/page/{pageId}/user/{userId}/error
      *
      * @param pageId {@link Long} page id
