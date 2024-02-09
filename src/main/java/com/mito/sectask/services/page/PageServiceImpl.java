@@ -18,6 +18,8 @@ import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -154,9 +156,7 @@ public class PageServiceImpl implements PageService {
     @Transactional
     public Optional<Page> getRootOfPage(Long pageId) {
         Optional<Page> maybePage = pageRepository.findById(pageId);
-
         if (maybePage.isEmpty()) return Optional.empty();
-
         Page page = maybePage.get();
         while (page.getCollection() != null) {
             Block collection = page.getCollection();
@@ -171,5 +171,32 @@ public class PageServiceImpl implements PageService {
         return pageRepository.findAllByCollectionIdOrderByCreatedAtDesc(
             collectionId
         );
+    }
+
+    @Override
+    public List<Page> searchPageByName(String searchText, Long userId)
+        throws ResourceNotFoundException {
+        List<Page> rootPages = getRootPages(userId);
+        Set<Long> authorizedRootPageId = rootPages
+            .stream()
+            .map(page -> page.getId())
+            .collect(Collectors.toSet());
+        List<Page> searchResults = pageRepository.searchByTitle(
+            "%" + searchText + "%"
+        );
+
+        List<Page> filteredResult = new ArrayList<>();
+        for (Page page : searchResults) {
+            Page rootPage = getRootOfPage(page.getId())
+                .orElseThrow(ResourceNotFoundException::new);
+            Boolean isAuthorized = authorizedRootPageId.contains(
+                rootPage.getId()
+            );
+            if (Boolean.TRUE.equals(isAuthorized)) {
+                filteredResult.add(page);
+            }
+        }
+
+        return filteredResult;
     }
 }

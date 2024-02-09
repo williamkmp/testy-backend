@@ -33,4 +33,7 @@ public interface PageRepository extends JpaRepository<Page, Long> {
     public List<Page> findAllByCollectionIdOrderByCreatedAtDesc(
         String collectionId
     );
+
+    @Query("SELECT p FROM Page p WHERE LOWER(p.name) LIKE LOWER(:titleQuery)")
+    public List<Page> searchByTitle(@Param("titleQuery") String pageTitle);
 }

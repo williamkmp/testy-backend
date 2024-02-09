@@ -2,6 +2,7 @@ package com.mito.sectask.services.page;
 
 import com.mito.sectask.dto.dto.InviteDto;
 import com.mito.sectask.entities.Page;
+import com.mito.sectask.exceptions.exceptions.ResourceNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,4 +82,14 @@ public interface PageService {
      * @return {@link List}<{@link Page}> pages of a given colelction
      */
     public List<Page> findByCollectionId(String collectionId);
+
+    /**
+     * find all page by name which the user have authority over
+     *
+     * @param searchText {@link String} text
+     * @param userId {@link Long} user id
+     * @return {@link List}<{@link Page}> search result
+     */
+    public List<Page> searchPageByName(String searchText, Long userId)
+        throws ResourceNotFoundException;
 }

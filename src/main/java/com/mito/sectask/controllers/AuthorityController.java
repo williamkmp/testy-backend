@@ -129,7 +129,7 @@ public class AuthorityController {
                 .orElseThrow(ResourceNotFoundException::new);
             Page rootPage = pageService
                 .getRootOfPage(pageId)
-                .orElseThrow(ResourceNotFoundException::new);            
+                .orElseThrow(ResourceNotFoundException::new);
             String pageCollectionId = page.getCollection() != null
                 ? page.getCollection().getId()
                 : null;

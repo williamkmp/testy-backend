@@ -130,6 +130,35 @@ public class PageController {
             );
     }
 
+    @GetMapping("/search/{searchText}")
+    @Authenticated(true)
+    public Response<MenuPreviewDto[]> searchPageByName(
+        @PathVariable("searchText") String searchText,
+        @Caller User caller
+    ) {
+        try {
+            List<Page> searchResult = pageService.searchPageByName(
+                searchText,
+                caller.getId()
+            );
+            return new Response<MenuPreviewDto[]>(HttpStatus.OK)
+                .setData(
+                    searchResult
+                        .stream()
+                        .map(result ->
+                            new MenuPreviewDto()
+                                .setId(result.getId().toString())
+                                .setIconKey(result.getIconKey())
+                                .setTitle(result.getName())
+                        )
+                        .collect(Collectors.toList())
+                        .toArray(new MenuPreviewDto[0])
+                );
+        } catch (Exception e) {
+            throw new ResourceNotFoundHttpException();
+        }
+    }
+
     @PutMapping(
         path = "/{pageId}",
         consumes = MediaType.APPLICATION_JSON_VALUE,
