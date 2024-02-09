@@ -111,4 +111,13 @@ public interface UserService {
      * @return boolean is password match and valid
      */
     public Boolean validatePassword(Long userId, String password);
+
+    /**
+     * search a list of user based of a given eamil query string
+     * using fuzzy search
+     *
+     * @param emailQuery {@link String} email
+     * @return {@link List}<{@link User}> result based off fuzzy comparison
+     */
+    public List<User> searchByEmail(String emailQuery);
 }

@@ -131,4 +131,9 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(ResourceNotFoundException::new);
         return findMembersOfPage(collection.getPage().getId());
     }
+
+    @Override
+    public List<User> searchByEmail(String emailQuery) {
+        return userRepository.searchByEmail("%" + emailQuery + "%");
+    }
 }

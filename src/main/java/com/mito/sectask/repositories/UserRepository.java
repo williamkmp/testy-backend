@@ -28,4 +28,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
         "SELECT u FROM User u JOIN u.authorities a JOIN a.page p WHERE p.id = :pageId"
     )
     List<User> findAllByRootPageId(@Param("pageId") Long pageId);
+
+    @Query(
+        """
+            SELECT u
+            FROM User u
+            WHERE LOWER(u.email) LIKE LOWER(:emailString)
+        """
+    )
+    List<User> searchByEmail(@Param("emailString") String emailString);
 }

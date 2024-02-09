@@ -18,8 +18,10 @@ import com.mito.sectask.values.VALIDATION;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -54,6 +56,31 @@ public class UserController {
                     .setFullName(caller.getFullName())
                     .setImageId(imageId)
             );
+    }
+
+    @GetMapping(path = "/email/{emailQuery}")
+    @Authenticated(true)
+    public Response<UserDto[]> searchByName(
+        @PathVariable("emailQuery") String emailQuery
+    ) {
+        List<User> results = userService.searchByEmail(emailQuery);
+        UserDto[] resposeResult = results
+            .stream()
+            .map(user ->
+                new UserDto()
+                    .setId(user.getId().toString())
+                    .setEmail(user.getEmail())
+                    .setFullName(user.getFullName())
+                    .setTagName(user.getTagName())
+                    .setImageId(
+                        user.getImage() != null
+                            ? user.getImage().getId().toString()
+                            : null
+                    )
+            )
+            .collect(Collectors.toList())
+            .toArray(new UserDto[0]);
+        return new Response<UserDto[]>(HttpStatus.OK).setData(resposeResult);
     }
 
     @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
