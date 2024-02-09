@@ -28,6 +28,7 @@ import com.mito.sectask.values.USER_ROLE;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -61,7 +62,7 @@ public class AuthorityController {
                 .getUserPageAuthority(caller.getId(), pageId)
                 .orElseThrow(ForbiddenException::new);
             Page page = pageService
-                .getRootOfPage(pageId)
+                .findById(pageId)
                 .orElseThrow(ResourceNotFoundException::new);
             Page rootPage = pageService
                 .getRootOfPage(pageId)
@@ -69,32 +70,36 @@ public class AuthorityController {
             User user = userService
                 .findById(Long.valueOf(request.getId()))
                 .orElseThrow(ResourceNotFoundException::new);
-
-            roleService.save(
-                new Authority()
-                    .setIsPending(Boolean.FALSE)
-                    .setPage(rootPage)
-                    .setUser(user)
-                    .setRole(userRole)
+            Optional<Authority> maybeAuthority = roleService.findAuthority(
+                Long.valueOf(request.getId()),
+                page.getId()
             );
 
-            socket.convertAndSend(
-                DESTINATION.userPreview(user.getId()),
-                new PreviewMessageDto()
-                    .setAction(PREVIEW_ACTION.ADD)
-                    .setId(page.getId().toString())
-                    .setName(page.getName())
-                    .setIconKey(page.getIconKey())
-                    .setParentId(
-                        page.getCollection() != null
-                            ? page.getCollection().getId()
-                            : null
-                    ),
-                Map.ofEntries(
-                    Map.entry(KEY.SENDER_USER_ID, caller.getId().toString()),
-                    Map.entry(KEY.SENDER_SESSION_ID, sessionId)
-                )
-            );
+            if (maybeAuthority.isEmpty()) {
+                roleService.save(
+                    new Authority()
+                        .setIsPending(Boolean.FALSE)
+                        .setPage(rootPage)
+                        .setUser(user)
+                        .setRole(userRole)
+                );
+                socket.convertAndSend(
+                    DESTINATION.userPreview(user.getId()),
+                    new PreviewMessageDto()
+                        .setAction(PREVIEW_ACTION.ADD)
+                        .setId(rootPage.getId().toString())
+                        .setName(rootPage.getName())
+                        .setIconKey(rootPage.getIconKey()),
+                    Map.ofEntries(
+                        Map.entry(
+                            KEY.SENDER_USER_ID,
+                            caller.getId().toString()
+                        ),
+                        Map.entry(KEY.SENDER_SESSION_ID, sessionId)
+                    )
+                );
+            }
+
             return new Response<>(HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundHttpException();
@@ -122,6 +127,9 @@ public class AuthorityController {
             Page page = pageService
                 .findById(pageId)
                 .orElseThrow(ResourceNotFoundException::new);
+            Page rootPage = pageService
+                .getRootOfPage(pageId)
+                .orElseThrow(ResourceNotFoundException::new);            
             String pageCollectionId = page.getCollection() != null
                 ? page.getCollection().getId()
                 : null;
@@ -140,9 +148,9 @@ public class AuthorityController {
                         DESTINATION.userPreview(userId),
                         new PreviewMessageDto()
                             .setAction(PREVIEW_ACTION.DELETE)
-                            .setId(page.getId().toString())
-                            .setName(page.getName())
-                            .setIconKey(page.getIconKey())
+                            .setId(rootPage.getId().toString())
+                            .setName(rootPage.getName())
+                            .setIconKey(rootPage.getIconKey())
                             .setParentId(pageCollectionId),
                         Map.ofEntries(
                             Map.entry(
@@ -180,19 +188,16 @@ public class AuthorityController {
             Page page = pageService
                 .findById(pageId)
                 .orElseThrow(ResourceNotFoundException::new);
-            String pageCollectionId = page.getCollection() != null
-                ? page.getCollection().getId()
-                : null;
+            Page rootPage = pageService
+                .getRootOfPage(pageId)
+                .orElseThrow(ResourceNotFoundException::new);
 
-            roleService.deleteAuthority(caller.getId(), pageId);
+            roleService.deleteAuthority(caller.getId(), page.getId());
             socket.convertAndSend(
                 DESTINATION.userPreview(caller.getId()),
                 new PreviewMessageDto()
                     .setAction(PREVIEW_ACTION.DELETE)
-                    .setId(page.getId().toString())
-                    .setName(page.getName())
-                    .setIconKey(page.getIconKey())
-                    .setParentId(pageCollectionId),
+                    .setId(rootPage.getId().toString()),
                 Map.ofEntries(
                     Map.entry(KEY.SENDER_USER_ID, caller.getId().toString()),
                     Map.entry(KEY.SENDER_SESSION_ID, sessionId)
