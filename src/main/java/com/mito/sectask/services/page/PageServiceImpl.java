@@ -179,7 +179,7 @@ public class PageServiceImpl implements PageService {
         List<Page> rootPages = getRootPages(userId);
         Set<Long> authorizedRootPageId = rootPages
             .stream()
-            .map(page -> page.getId())
+            .map(Page::getId)
             .collect(Collectors.toSet());
         List<Page> searchResults = pageRepository.searchByTitle(
             "%" + searchText + "%"
