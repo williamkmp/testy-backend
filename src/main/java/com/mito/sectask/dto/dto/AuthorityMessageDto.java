@@ -1,6 +1,7 @@
 package com.mito.sectask.dto.dto;
 
-import io.micrometer.common.lang.NonNull;
+import com.mito.sectask.values.ACTION;
+import com.mito.sectask.values.USER_ROLE;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -10,13 +11,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class AuthorityMessageDto {
 
-    @NonNull private String id;
-
-    @NonNull private String email;
-
-    @NonNull private String tagName;
-
-    @NonNull private String fullName;
-
-    private String imageId;
+    private ACTION action;
+    private String id;
+    private USER_ROLE role;
 }
