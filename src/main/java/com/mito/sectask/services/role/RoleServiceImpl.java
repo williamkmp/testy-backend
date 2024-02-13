@@ -49,6 +49,7 @@ public class RoleServiceImpl implements RoleService {
             Authority savedAuthority = authorityRepository.save(authority);
             return Optional.of(savedAuthority);
         } catch (Exception e) {
+            e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -67,6 +68,7 @@ public class RoleServiceImpl implements RoleService {
                 .orElse(null);
             return Optional.of(authority);
         } catch (Exception e) {
+            e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -79,13 +81,14 @@ public class RoleServiceImpl implements RoleService {
         USER_ROLE role
     ) {
         try {
-            Role userRole = find(USER_ROLE.VIEWERS);
+            Role userRole = find(role);
             Authority authority = findAuthority(userId, pageId)
                 .orElseThrow(ResourceNotFoundException::new);
             authority.setRole(userRole);
             Authority updatedAuthority = authorityRepository.save(authority);
             return Optional.of(updatedAuthority);
         } catch (Exception e) {
+            e.printStackTrace();
             return Optional.empty();
         }
     }
