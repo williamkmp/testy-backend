@@ -16,4 +16,5 @@ public class BlockDto {
     private String iconKey;
     private Float width;
     private String fileId;
+    private Boolean isChecked;
 }

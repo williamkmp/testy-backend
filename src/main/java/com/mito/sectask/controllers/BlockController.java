@@ -144,6 +144,7 @@ public class BlockController {
             block.setWidth(request.getWidth());
             block.setIconKey(request.getIconKey());
             block.setFile(newFile);
+            block.setIsChecked(request.getIsChecked());
             block =
                 blockService
                     .save(block)
@@ -195,7 +196,8 @@ public class BlockController {
                         newFile != null ? newFile.getId().toString() : null
                     )
                     .setWidth(request.getWidth())
-                    .setIconKey(request.getIconKey()),
+                    .setIconKey(request.getIconKey())
+                    .setIsChecked(request.getIsChecked()),
                 Map.ofEntries(
                     Map.entry(KEY.SENDER_USER_ID, sender.getId().toString()),
                     Map.entry(KEY.SENDER_SESSION_ID, sessionId)
@@ -359,6 +361,7 @@ public class BlockController {
                         .setContent(request.getContent())
                         .setWidth(request.getWidth())
                         .setIconKey(request.getIconKey())
+                        .setIsChecked(request.getIsChecked())
                 )
                 .orElseThrow(NotFoundException::new);
 
@@ -370,6 +373,7 @@ public class BlockController {
                     .setWidth(insertedBlock.getWidth())
                     .setContent(insertedBlock.getContent())
                     .setIconKey(insertedBlock.getIconKey())
+                    .setIsChecked(insertedBlock.getIsChecked())
                     .setPrevId(
                         insertedBlock.getPrev() != null
                             ? insertedBlock.getPrev().getId()

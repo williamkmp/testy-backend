@@ -36,6 +36,9 @@ public class Block {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content = "<p></p>";
 
+    @Column(name = "isChecked", nullable = false, columnDefinition = "TEXT")
+    private Boolean isChecked = Boolean.FALSE;
+
     @Column(name = "icon_key", nullable = false)
     private String iconKey = "emoji-1215";
 

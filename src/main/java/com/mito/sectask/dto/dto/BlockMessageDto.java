@@ -16,6 +16,7 @@ public class BlockMessageDto {
     private String iconKey;
     private Float width;
     private String fileId;
+    private Boolean isChecked;
 
     private String prevId;
     private String nextId;

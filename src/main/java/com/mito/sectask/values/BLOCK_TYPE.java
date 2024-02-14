@@ -7,6 +7,7 @@ public enum BLOCK_TYPE {
     BLOCK_QUOTES,
     BULLET_LIST,
     NUMBERED_LIST,
+    CHECKBOX,
     PARAGRAPH,
     DIVIDER,
     FILE,

@@ -577,6 +577,7 @@ public class PageController {
                         .setContent(block.getContent())
                         .setIconKey(block.getIconKey())
                         .setWidth(block.getWidth())
+                        .setIsChecked(block.getIsChecked())
                         .setFileId(
                             block.getFile() != null
                                 ? block.getFile().getId().toString()
