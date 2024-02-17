@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.mito</groupId>
 	<artifactId>sectask</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>sectask</name>
 	<description>Secure Task backend server application</description>
 	<properties>
