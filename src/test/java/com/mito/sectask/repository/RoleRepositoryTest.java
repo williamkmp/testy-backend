@@ -57,7 +57,7 @@ class RoleRepositoryTest {
         Assertions
             .assertThat(williamTestyRole.getName())
             .as("User role is correct")
-            .isEqualTo(USER_ROLE.COLLABORATORS);
+            .isEqualTo(USER_ROLE.FULL_ACCESS);
 
         Role williamBimayRole = roleRepository
             .findByRootPageId(bimayPageId, williamId)
