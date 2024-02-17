@@ -44,7 +44,7 @@ public class SeedRunner implements CommandLineRunner {
 
             // Registering seeder
             seeders.add(imageSeeder);
-            seeders.add(roleSeeder);
+            // seeders.add(roleSeeder);
             seeders.add(userSeeder);
             seeders.add(pageSeeder);
             seeders.add(authoritySeeder);
