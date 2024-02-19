@@ -118,6 +118,23 @@ public class PageController {
             );
         }
 
+        // Update colleton table view
+        if(createdPage.getCollection() != null) {
+            socket.convertAndSend(
+                DESTINATION.collectionPreview(collectionId),
+                new PreviewMessageDto()
+                    .setAction(PREVIEW_ACTION.ADD)
+                    .setParentId(request.getCollectionId())
+                    .setIconKey(createdPage.getIconKey())
+                    .setName(createdPage.getName())
+                    .setId(createdPage.getId().toString()),
+                Map.ofEntries(
+                    Map.entry(KEY.SENDER_USER_ID, senderId),
+                    Map.entry(KEY.SENDER_SESSION_ID, sessionId)
+                )
+            );
+        }
+
         return new Response<PageDto>(HttpStatus.CREATED)
             .setData(
                 new PageDto()
@@ -252,6 +269,23 @@ public class PageController {
             )
         );
 
+        // Notify collection preview subscriber 
+        if(updatedPage.getCollection() != null) {
+            socket.convertAndSend(
+                DESTINATION.collectionPreview(updatedPage.getCollection().getId()),
+                new PreviewMessageDto()
+                    .setAction(PREVIEW_ACTION.UPDATE)
+                    .setParentId(updatedPage.getCollection().getId())
+                    .setIconKey(updatedPage.getIconKey())
+                    .setName(updatedPage.getName())
+                    .setId(updatedPage.getId().toString()),
+                Map.ofEntries(
+                    Map.entry(KEY.SENDER_USER_ID, caller.getId()),
+                    Map.entry(KEY.SENDER_SESSION_ID, sessionId)
+                )
+            );
+        }
+
         return new Response<PageDto>(HttpStatus.OK)
             .setData(
                 new PageDto()
@@ -323,6 +357,26 @@ public class PageController {
                 for (User member : members) {
                     socket.convertAndSend(
                         DESTINATION.userPreview(member.getId()),
+                        new PreviewMessageDto()
+                            .setAction(PREVIEW_ACTION.DELETE)
+                            .setId(pageId.toString())
+                            .setParentId(pageCollectionId)
+                            .setIconKey(page.getIconKey())
+                            .setName(page.getName()),
+                        Map.ofEntries(
+                            Map.entry(
+                                KEY.SENDER_USER_ID,
+                                caller.getId().toString()
+                            ),
+                            Map.entry(KEY.SENDER_SESSION_ID, session)
+                        )
+                    );
+                }
+
+                // Notify collection subscriber
+                if(pageCollectionId != null) {
+                    socket.convertAndSend(
+                        DESTINATION.collectionPreview(pageCollectionId),
                         new PreviewMessageDto()
                             .setAction(PREVIEW_ACTION.DELETE)
                             .setId(pageId.toString())

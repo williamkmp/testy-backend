@@ -77,13 +77,13 @@ public class DESTINATION {
     }
 
     /**
-     * STOMP destination url for /topic/page/{pageId}/collection
+     * STOMP destination url for /topic/collection/{collectionId}/preview
      *
      * @param pageId {@link Long} page id
      * @return {@link String} STOMP destination path
      */
-    public static String pageCollection(Long pageId) {
-        return "/topic/page/" + pageId.toString() + "/collection";
+    public static String collectionPreview(String collectionId) {
+        return "/topic/collection" + collectionId + "/preview";
     }
 
     /**
