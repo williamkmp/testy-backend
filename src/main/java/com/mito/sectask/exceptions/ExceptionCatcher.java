@@ -19,6 +19,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @Slf4j
 @ControllerAdvice
@@ -32,6 +33,14 @@ public class ExceptionCatcher {
         log.error("Unhandled exception occured", exception);
         return new Response<Object>(HttpStatus.INTERNAL_SERVER_ERROR)
             .setMessage(MESSAGES.ERROR_INTERNAL_SERVER);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public Response<Object> maxUploadSizeException(
+        MaxUploadSizeExceededException exception
+    ) {
+        return new Response<Object>(HttpStatus.PAYLOAD_TOO_LARGE)
+            .setMessage(MESSAGES.ERROR_PAYLOAD_TOO_LARGE);
     }
 
     @ExceptionHandler(HttpStatusCodeException.class)
