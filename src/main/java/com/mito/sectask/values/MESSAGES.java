@@ -11,6 +11,7 @@ public class MESSAGES {
     public static final String ERROR_FORBIDDEN = "forbidden";
     public static final String ERROR_INTERNAL_SERVER = "internal_error";
     public static final String ERROR_RESOURCE_NOT_FOUND = "no_resource";
+    public static final String ERROR_PAYLOAD_TOO_LARGE = "large_payload";
 
     // Messages
     public static final String UPLOAD_SUCCESS = "upload_success";
