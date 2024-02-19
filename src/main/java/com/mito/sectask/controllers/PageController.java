@@ -119,7 +119,7 @@ public class PageController {
         }
 
         // Update colleton table view
-        if(createdPage.getCollection() != null) {
+        if (createdPage.getCollection() != null) {
             socket.convertAndSend(
                 DESTINATION.collectionPreview(collectionId),
                 new PreviewMessageDto()
@@ -269,10 +269,12 @@ public class PageController {
             )
         );
 
-        // Notify collection preview subscriber 
-        if(updatedPage.getCollection() != null) {
+        // Notify collection preview subscriber
+        if (updatedPage.getCollection() != null) {
             socket.convertAndSend(
-                DESTINATION.collectionPreview(updatedPage.getCollection().getId()),
+                DESTINATION.collectionPreview(
+                    updatedPage.getCollection().getId()
+                ),
                 new PreviewMessageDto()
                     .setAction(PREVIEW_ACTION.UPDATE)
                     .setParentId(updatedPage.getCollection().getId())
@@ -374,7 +376,7 @@ public class PageController {
                 }
 
                 // Notify collection subscriber
-                if(pageCollectionId != null) {
+                if (pageCollectionId != null) {
                     socket.convertAndSend(
                         DESTINATION.collectionPreview(pageCollectionId),
                         new PreviewMessageDto()
