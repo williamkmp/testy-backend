@@ -83,7 +83,7 @@ public class DESTINATION {
      * @return {@link String} STOMP destination path
      */
     public static String collectionPreview(String collectionId) {
-        return "/topic/collection" + collectionId + "/preview";
+        return "/topic/collection/" + collectionId + "/preview";
     }
 
     /**
