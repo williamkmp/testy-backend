@@ -118,7 +118,7 @@ public class PageController {
             );
         }
 
-        // Update colleton table view
+        // Update colletion table view
         if (createdPage.getCollection() != null) {
             socket.convertAndSend(
                 DESTINATION.collectionPreview(collectionId),
@@ -255,6 +255,25 @@ public class PageController {
             }
         }
 
+        // Notify collection preview subscriber
+        if (updatedPage.getCollection() != null) {
+            String collectionId = updatedPage.getCollection().getId();
+            String destination = DESTINATION.collectionPreview(collectionId);
+            socket.convertAndSend(
+                destination,
+                new PreviewMessageDto()
+                    .setAction(PREVIEW_ACTION.UPDATE)
+                    .setParentId(updatedPage.getCollection().getId())
+                    .setIconKey(updatedPage.getIconKey())
+                    .setName(updatedPage.getName())
+                    .setId(updatedPage.getId().toString()),
+                Map.ofEntries(
+                    Map.entry(KEY.SENDER_USER_ID, caller.getId().toString()),
+                    Map.entry(KEY.SENDER_SESSION_ID, sessionId)
+                )
+            );
+        }
+
         // Notify all page subscriber
         socket.convertAndSend(
             DESTINATION.pageUpdate(pageId),
@@ -268,25 +287,6 @@ public class PageController {
                 Map.entry(KEY.SENDER_SESSION_ID, sessionId)
             )
         );
-
-        // Notify collection preview subscriber
-        if (updatedPage.getCollection() != null) {
-            socket.convertAndSend(
-                DESTINATION.collectionPreview(
-                    updatedPage.getCollection().getId()
-                ),
-                new PreviewMessageDto()
-                    .setAction(PREVIEW_ACTION.UPDATE)
-                    .setParentId(updatedPage.getCollection().getId())
-                    .setIconKey(updatedPage.getIconKey())
-                    .setName(updatedPage.getName())
-                    .setId(updatedPage.getId().toString()),
-                Map.ofEntries(
-                    Map.entry(KEY.SENDER_USER_ID, caller.getId()),
-                    Map.entry(KEY.SENDER_SESSION_ID, sessionId)
-                )
-            );
-        }
 
         return new Response<PageDto>(HttpStatus.OK)
             .setData(
@@ -581,36 +581,44 @@ public class PageController {
         @PathVariable("pageId") Long pageId,
         @Caller User caller
     ) {
-        Role userRole = roleService
-            .getUserPageAuthority(caller.getId(), pageId)
-            .orElseThrow(ForbiddenHttpException::new);
-        USER_ROLE authority = userRole.getName();
+        try {
+            Role userRole = roleService
+                .getUserPageAuthority(caller.getId(), pageId)
+                .orElseThrow(ForbiddenException::new);
+            USER_ROLE authority = userRole.getName();
 
-        Optional<Page> maybePage = pageService.findById(pageId);
-        if (maybePage.isEmpty()) {
-            return new Response<PageDto>(HttpStatus.BAD_REQUEST)
-                .setMessage(MESSAGES.ERROR_RESOURCE_NOT_FOUND);
+            Page page = pageService
+                .findById(pageId)
+                .orElseThrow(ResourceNotFoundException::new);
+
+            String imageId = (page.getImage() != null)
+                ? page.getImage().getId().toString()
+                : null;
+
+            String collectionId = page.getCollection() != null
+                ? page.getCollection().getId()
+                : null;
+
+            return new Response<PageDto>(HttpStatus.OK)
+                .setData(
+                    new PageDto()
+                        .setId(page.getId().toString())
+                        .setIconKey(page.getIconKey())
+                        .setTitle(page.getName())
+                        .setImagePosition(page.getImagePosition())
+                        .setImageId(imageId)
+                        .setAuthority(authority)
+                        .setCollectionId(collectionId)
+                );
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundHttpException();
+        } catch (ForbiddenException e) {
+            throw new ForbiddenHttpException();
+        } catch (UserNotFoundException e) {
+            throw new UnauthorizedHttpException();
+        } catch (Exception e) {
+            throw new InternalServerErrorHttpException();
         }
-        Page page = maybePage.get();
-        String imageId = (page.getImage() != null)
-            ? page.getImage().getId().toString()
-            : null;
-
-        String collectionId = page.getCollection() != null
-            ? page.getCollection().getId()
-            : null;
-
-        return new Response<PageDto>(HttpStatus.OK)
-            .setData(
-                new PageDto()
-                    .setId(page.getId().toString())
-                    .setIconKey(page.getIconKey())
-                    .setTitle(page.getName())
-                    .setImagePosition(page.getImagePosition())
-                    .setImageId(imageId)
-                    .setAuthority(authority)
-                    .setCollectionId(collectionId)
-            );
     }
 
     @GetMapping("/{pageId}/block")

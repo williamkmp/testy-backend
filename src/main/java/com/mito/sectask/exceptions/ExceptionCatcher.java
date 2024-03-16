@@ -31,6 +31,7 @@ public class ExceptionCatcher {
     @ExceptionHandler(Exception.class)
     public Response<Object> internalServerException(Exception exception) {
         log.error("Unhandled exception occured", exception);
+        exception.printStackTrace();
         return new Response<Object>(HttpStatus.INTERNAL_SERVER_ERROR)
             .setMessage(MESSAGES.ERROR_INTERNAL_SERVER);
     }

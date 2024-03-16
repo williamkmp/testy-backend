@@ -67,6 +67,8 @@ public class RoleServiceImpl implements RoleService {
                 .findByUserAndPage(user.getId(), page.getId())
                 .orElse(null);
             return Optional.of(authority);
+        } catch (ResourceNotFoundException e) {
+            return Optional.empty();
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();
